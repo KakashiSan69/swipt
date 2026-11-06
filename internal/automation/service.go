@@ -15,6 +15,7 @@ import (
 	"time"
 
 	E "github.com/sagernet/sing/common/exceptions"
+	"github.com/swipt-automation/swipt/internal/device"
 	"github.com/swipt-automation/swipt/internal/log"
 )
 
@@ -160,6 +161,17 @@ func (r *runner) supervise(ctx context.Context, cancel context.CancelFunc, previ
 			r.access.Unlock()
 			return
 		}
+		if r.host.deviceLost(err, started) {
+			r.logger.Info("the service waits for the device: ", describeError(err))
+			r.set(ServiceStarting, err)
+			err = r.host.options.Device.WaitConnected(ctx)
+			if err == nil {
+				continue
+			}
+			if ctx.Err() != nil {
+				break
+			}
+		}
 		r.logger.Error("the service stopped: ", failureOf(err).Describe())
 		r.set(ServiceFailed, err)
 		if time.Since(started) >= stableService {
@@ -239,6 +251,11 @@ func (r *runner) log(entry LogEntry) {
 		default:
 		}
 	}
+}
+
+func (h *Host) deviceLost(err error, since time.Time) bool {
+	phone := h.options.Device
+	return phone != nil && errors.Is(err, device.ErrUnavailable) && phone.Disconnected(since)
 }
 
 func (h *Host) publish(id string, state ServiceState) {

@@ -86,6 +86,34 @@ func (p *Phone) begin(ctx context.Context) (*conn, context.Context, func(), erro
 	}, nil
 }
 
+func (p *Phone) Interrupted(since time.Time) bool {
+	s := p.connection
+	s.access.Lock()
+	defer s.access.Unlock()
+	return s.interruptedLocked(since)
+}
+
+func (p *Phone) Disconnected(since time.Time) bool {
+	s := p.connection
+	s.access.Lock()
+	defer s.access.Unlock()
+	if s.closed || s.unavailable != nil || s.failure != nil {
+		return false
+	}
+	return s.attached == nil || s.interruptedLocked(since)
+}
+
+func (s *Connection) interruptedLocked(since time.Time) bool {
+	return s.detachedAt.After(since) || s.attached != nil && s.attached.device.Closed()
+}
+
+func (p *Phone) WaitConnected(ctx context.Context) error {
+	release := p.connection.hold()
+	defer release()
+	_, err := p.connection.waitConn(ctx, true)
+	return err
+}
+
 type phoneGeometry struct {
 	PhoneScreen
 	turns int

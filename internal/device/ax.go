@@ -301,6 +301,7 @@ func (w *axWorker) stalled(job *axJob, stall error) error {
 		w.client = nil
 	}
 	w.conn.connection.recordStall()
+	w.conn.connection.setAXClean(false)
 	performed := ""
 	if job.action {
 		performed = "the action may have been performed; "

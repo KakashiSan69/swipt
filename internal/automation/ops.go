@@ -23,6 +23,7 @@ type operation struct {
 	name     string
 	args     []json.RawMessage
 	recorded []json.RawMessage
+	device   *device.Phone
 }
 
 func (o *operation) record(aim device.Aim, arguments ...json.RawMessage) {
@@ -114,7 +115,18 @@ func (o *operation) phone() (*device.Phone, error) {
 	if phone == nil {
 		return nil, E.Cause1(device.ErrUnavailable, E.New("this server has no device"))
 	}
+	o.device = phone
 	return phone, nil
+}
+
+func (o *operation) dropped(ctx context.Context, err error, since time.Time) bool {
+	if err == nil || ctx.Err() != nil {
+		return false
+	}
+	if _, scripted := errors.AsType[*Failure](err); scripted {
+		return false
+	}
+	return errors.Is(err, context.Canceled) || o.device != nil && o.device.Interrupted(since)
 }
 
 func (o *operation) screen(ctx context.Context) (*device.Phone, error) {
@@ -231,6 +243,8 @@ func (f *Failure) Is(target error) bool {
 		return target == ErrNotFound
 	case "NotAllowedError":
 		return target == ErrNotAllowed
+	case "UnavailableError":
+		return target == device.ErrUnavailable
 	}
 	return false
 }

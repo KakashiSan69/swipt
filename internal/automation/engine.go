@@ -200,9 +200,14 @@ func (h *Host) Call(ctx context.Context, request CallRequest) (json.RawMessage, 
 		return nil, E.Cause1(ErrNotAllowed, E.New("the action ", strconv.Quote(request.Action), " is not exposed to shortcuts"))
 	}
 	h.timeline.record(TimelineEvent{Time: time.Now().UnixMilli(), Type: "action", Swiplet: swiplet.ID, Action: request.Action, Caller: string(request.Caller)})
+	started := time.Now()
 	output, err := h.execute(ctx, swiplet, request.Dialog, request.Log, entry{action: request.Action, input: string(input), caller: request.Caller}, nil)
 	if err != nil && ctx.Err() == nil {
-		h.Log(swiplet.ID, log.LevelError, "the action "+strconv.Quote(request.Action)+" failed: "+failureOf(err).Describe())
+		level := log.LevelError
+		if h.deviceLost(err, started) {
+			level = log.LevelInfo
+		}
+		h.Log(swiplet.ID, level, "the action "+strconv.Quote(request.Action)+" failed: "+failureOf(err).Describe())
 	}
 	return output, err
 }
@@ -478,7 +483,12 @@ func (e *engine) startOperation(arguments []jsc.Value) (any, error) {
 	go func() {
 		started := time.Now()
 		value, err := run(ctx, call)
-		if _, scripted := errors.AsType[*Failure](err); err != nil && !scripted && ctx.Err() == nil && errors.Is(err, context.Canceled) {
+		attempted := started
+		if call.dropped(ctx, err, attempted) && slices.Contains(readOperations, name) {
+			attempted = time.Now()
+			value, err = run(ctx, call)
+		}
+		if call.dropped(ctx, err, attempted) {
 			err = E.Extend(device.ErrDisconnected, "the connection dropped during ", name)
 		}
 		if slices.Contains(timelineOperations, name) && e.host.timeline.active() {

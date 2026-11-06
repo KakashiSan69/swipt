@@ -126,6 +126,7 @@ type Connection struct {
 	attemptErr     error
 	failedAttempts uint64
 	attached       *conn
+	detachedAt     time.Time
 	attemptCancel  context.CancelCauseFunc
 	deviceWake     chan struct{}
 	screen         rfb.ServerScreen
@@ -250,7 +251,7 @@ func (s *Connection) release() {
 
 func (s *Connection) acquire(ctx context.Context) (*conn, func(), error) {
 	release := s.hold()
-	c, err := s.waitConn(ctx)
+	c, err := s.waitConn(ctx, false)
 	if err != nil {
 		release()
 		return nil, nil, err
@@ -258,7 +259,7 @@ func (s *Connection) acquire(ctx context.Context) (*conn, func(), error) {
 	return c, release, nil
 }
 
-func (s *Connection) waitConn(ctx context.Context) (*conn, error) {
+func (s *Connection) waitConn(ctx context.Context, persistent bool) (*conn, error) {
 	s.access.Lock()
 	attempts := s.failedAttempts
 	s.access.Unlock()
@@ -269,7 +270,7 @@ func (s *Connection) waitConn(ctx context.Context) (*conn, error) {
 		var err error
 		s.access.Lock()
 		c, wake := s.attached, s.deviceWake
-		if c != nil && c.ctx.Err() != nil {
+		if c != nil && (c.ctx.Err() != nil || c.device.Closed()) {
 			c = nil
 		}
 		switch {
@@ -290,7 +291,7 @@ func (s *Connection) waitConn(ctx context.Context) (*conn, error) {
 		select {
 		case <-wake:
 		case <-patience.C:
-			patient = false
+			patient = persistent
 		case <-ctx.Done():
 			s.access.Lock()
 			attempt := s.attemptErr
@@ -698,6 +699,7 @@ func (s *Connection) attach(session context.Context, device *coredevice.Device, 
 func (s *Connection) detach(c *conn) error {
 	s.access.Lock()
 	s.attached = nil
+	s.detachedAt = time.Now()
 	s.wakeWaitersLocked()
 	s.access.Unlock()
 	c.cancel()

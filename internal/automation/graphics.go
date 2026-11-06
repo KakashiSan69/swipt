@@ -17,6 +17,7 @@ import (
 
 	"github.com/sagernet/sing/common"
 	E "github.com/sagernet/sing/common/exceptions"
+	"github.com/swipt-automation/swipt/internal/device"
 	"github.com/swipt-automation/swipt/internal/jsc"
 )
 
@@ -39,6 +40,11 @@ var (
 	graphicsEngines atomic.Uint64
 )
 
+var readOperations = []string{
+	"device.info", "device.state", "device.installedApplications", "device.applicationIcon", "device.pasteboard",
+	"accessibility.snapshot", "accessibility.find", "accessibility.changed",
+}
+
 var timelineOperations = []string{
 	"device.unlock", "device.launchApplication", "input.tap", "input.swipe", "input.drag", "input.pinch", "input.touch", "input.pressKey",
 	"input.button", "accessibility.tap", "accessibility.setText", "accessibility.perform",
@@ -58,7 +64,16 @@ func (c *GraphicsCall) Screenshot() ([]byte, float64, error) {
 	if err != nil {
 		return nil, 0, err
 	}
-	return phone.Capture(c.ctx)
+	attempted := time.Now()
+	data, scale, err := phone.Capture(c.ctx)
+	if c.call.dropped(c.ctx, err, attempted) {
+		attempted = time.Now()
+		data, scale, err = phone.Capture(c.ctx)
+	}
+	if c.call.dropped(c.ctx, err, attempted) {
+		err = E.Extend(device.ErrDisconnected, "the connection dropped during the screenshot")
+	}
+	return data, scale, err
 }
 
 func (c *GraphicsCall) Tracing() bool {
