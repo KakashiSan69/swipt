@@ -27,8 +27,10 @@
     _clock = [SWRTPClock new];
     _end = kCMTimeZero;
     [NSFileManager.defaultManager removeItemAtURL:url error:nil];
-    _writer = [[AVAssetWriter alloc] initWithURL:url fileType:AVFileTypeQuickTimeMovie error:error];
+    NSError *creating = nil;
+    _writer = [[AVAssetWriter alloc] initWithURL:url fileType:AVFileTypeQuickTimeMovie error:&creating];
     if (_writer == nil) {
+        SWFailCause(error, SWErrorNameGeneric, creating, @"graphics: create %@", url.lastPathComponent);
         return nil;
     }
     _input = [[AVAssetWriterInput alloc] initWithMediaType:AVMediaTypeVideo outputSettings:nil sourceFormatHint:format];
@@ -40,7 +42,7 @@
     }
     [_writer addInput:_input];
     if (![_writer startWriting]) {
-        SWFail(error, SWErrorNameGeneric, @"graphics: start writing: %@", _writer.error.localizedDescription ?: @"unknown");
+        SWFailCause(error, SWErrorNameGeneric, _writer.error, @"graphics: start writing");
         return nil;
     }
     [_writer startSessionAtSourceTime:kCMTimeZero];
@@ -72,7 +74,7 @@
         if ([_input appendSampleBuffer:sample]) {
             _end = CMTimeAdd(time, duration);
         } else if (_failure == nil) {
-            _failure = _writer.error.localizedDescription ?: @"the writer rejected a frame";
+            _failure = SWErrorMessageOf(_writer.error) ?: @"the writer rejected a frame";
         }
     }
     CFRelease(sample);
@@ -87,7 +89,7 @@
     AVAssetWriter *writer = _writer;
     NSString *failure = _failure;
     [writer finishWritingWithCompletionHandler:^{
-        done(writer.status == AVAssetWriterStatusCompleted ? failure : writer.error.localizedDescription ?: failure ?: @"the video could not be finished");
+        done(writer.status == AVAssetWriterStatusCompleted ? failure : SWErrorMessageOf(writer.error) ?: failure ?: @"the video could not be finished");
     }];
 }
 

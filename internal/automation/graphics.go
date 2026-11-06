@@ -17,7 +17,6 @@ import (
 
 	"github.com/sagernet/sing/common"
 	E "github.com/sagernet/sing/common/exceptions"
-	"github.com/swipt-automation/swipt/internal/device"
 	"github.com/swipt-automation/swipt/internal/jsc"
 )
 
@@ -71,7 +70,7 @@ func (c *GraphicsCall) Screenshot() ([]byte, float64, error) {
 		data, scale, err = phone.Capture(c.ctx)
 	}
 	if c.call.dropped(c.ctx, err, attempted) {
-		err = E.Extend(device.ErrDisconnected, "the connection dropped during the screenshot")
+		err = c.call.droppedError(err, "during the screenshot")
 	}
 	return data, scale, err
 }
@@ -97,7 +96,11 @@ func (c *GraphicsCall) Authorize(name string, write bool) error {
 	if !write {
 		roots, where = append(roots, filepath.Join(e.swiplet.Directory, AssetsFolder)), "the data, cache or assets directory"
 	}
-	if resolved, err := resolvePath(filepath.Clean(name)); err == nil && filepath.IsAbs(name) {
+	resolved, err := resolvePath(filepath.Clean(name))
+	if err != nil {
+		return E.Cause(err, "graphics: resolve ", strconv.Quote(name))
+	}
+	if filepath.IsAbs(name) {
 		for _, root := range common.FilterNotDefault(roots) {
 			base, err := resolvePath(root)
 			if err != nil {

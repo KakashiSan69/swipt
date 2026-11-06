@@ -1,5 +1,4 @@
-SHELL := /bin/bash
-.SHELLFLAGS := -o pipefail -c
+SHELL := /bin/bash -o pipefail
 .SILENT:
 
 RUNTIME := internal/automation/runtime
@@ -74,6 +73,8 @@ fmt:
 
 lint:
 	golangci-lint run ./...
+	! grep -n 'localizedDescription' internal/graphics/*.m | grep -v '^internal/graphics/SWError.m'
+	! grep -nE '[eE]rror:nil' internal/graphics/*.m | grep -vE 'removeItemAtURL|regularExpressionWithPattern|NSJSONSerialization|stop:nil'
 
 lint_install:
 	go install -v github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest

@@ -3,6 +3,8 @@
 #import "SWHEVC.h"
 
 #import "SWAccessUnit.h"
+#import "SWError.h"
+#import "SWGoBridge.h"
 
 @implementation SWRTPClock {
     BOOL _hasLast;
@@ -48,7 +50,11 @@ CMVideoFormatDescriptionRef SWHEVCFormat(NSArray<NSData *> *nals) {
     const size_t sizes[3] = {vps.length, sps.length, pps.length};
     CMVideoFormatDescriptionRef description = NULL;
     OSStatus status = CMVideoFormatDescriptionCreateFromHEVCParameterSets(NULL, 3, pointers, sizes, 4, NULL, &description);
-    return status == noErr ? description : NULL;
+    if (status != noErr) {
+        SWLogError([NSString stringWithFormat:@"read the HEVC parameter sets: %@", SWErrorMessageOf(SWErrorStatus(status))]);
+        return NULL;
+    }
+    return description;
 }
 
 CMSampleBufferRef SWHEVCSample(SWAccessUnit *unit, CMVideoFormatDescriptionRef format, CMTime time, CMTime duration) {

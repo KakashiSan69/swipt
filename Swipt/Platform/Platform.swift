@@ -169,11 +169,21 @@ final class Platform {
         let call = UncheckedSendable(value: core.newActionCall(swiplet, action: action, input: input, caller: caller, observer: events, showsInApp: showsInApp)!)
         let presenting = Task {
             for await request in requests {
+                let decoded: DialogRequest
                 do {
-                    let answer = try await present(try JSONDecoder().decode(DialogRequest.self, from: Data(request.utf8)))
+                    decoded = try JSONDecoder().decode(DialogRequest.self, from: Data(request.utf8))
+                } catch {
+                    call.value.fail(String(describing: error))
+                    continue
+                }
+                do {
+                    let answer = try await present(decoded)
                     call.value.answer(answer.json)
                 } catch {
                     guard !Task.isCancelled else { return }
+                    if !(error is CancellationError) {
+                        Self.logger.notice("Present the dialog: \(error, privacy: .public)")
+                    }
                     call.value.dismiss()
                 }
             }
@@ -205,8 +215,8 @@ final class Platform {
         core.logSwiplet(swiplet, level: level, message: message)
     }
 
-    func swiplets() -> [LibSwiptSwipletInfo] {
-        guard let list = core.swiplets() else { return [] }
+    func swiplets() throws -> [LibSwiptSwipletInfo] {
+        let list = try core.swiplets()
         return (0..<list.len()).compactMap { list.get($0) }
     }
 
@@ -282,8 +292,15 @@ final class Platform {
             return
         }
         let box = UncheckedSendable(value: core)
-        guard #available(iOS 27, *), let decoded = try? JSONDecoder().decode(DialogRequest.self, from: Data(request.utf8)) else {
+        guard #available(iOS 27, *) else {
             box.value.dismissDialog(dialogID)
+            return
+        }
+        let decoded: DialogRequest
+        do {
+            decoded = try JSONDecoder().decode(DialogRequest.self, from: Data(request.utf8))
+        } catch {
+            box.value.failDialog(dialogID, message: String(describing: error))
             return
         }
         dialogs[dialogID] = Task {
@@ -307,7 +324,7 @@ final class Platform {
         if active, !wasActive {
             UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { _, error in
                 if let error {
-                    Self.logger.error("Request notification authorization: \(error.localizedDescription, privacy: .public)")
+                    Self.logger.error("Request notification authorization: \(error, privacy: .public)")
                 }
             }
         }
@@ -424,7 +441,7 @@ final class Platform {
             self.cloudflareTunnel = nil
             let box = UncheckedSendable(value: cloudflareTunnel)
             Self.queue.async {
-                do { try box.value.close() } catch { Self.logger.error("Close the Cloudflare tunnel: \(error.localizedDescription, privacy: .public)") }
+                do { try box.value.close() } catch { Self.logger.error("Close the Cloudflare tunnel: \(error, privacy: .public)") }
             }
         }
         guard let options else { return }

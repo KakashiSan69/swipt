@@ -91,7 +91,11 @@ func (s *swipletService) swipletOf(swiplet automation.Swiplet) *proto.Swiplet {
 }
 
 func (s *swipletService) ListSwiplets(context.Context, *emptypb.Empty) (*proto.ListSwipletsResponse, error) {
-	return &proto.ListSwipletsResponse{Swiplets: common.Map(s.options.Swiplets.Swiplets(), s.swipletOf)}, nil
+	swiplets, err := s.options.Swiplets.Swiplets()
+	if err != nil {
+		return nil, apiError(err)
+	}
+	return &proto.ListSwipletsResponse{Swiplets: common.Map(swiplets, s.swipletOf)}, nil
 }
 
 func inputOf(value *structpb.Value) (json.RawMessage, error) {
@@ -237,7 +241,7 @@ func (s *swipletService) DeploySwiplet(stream grpc.ClientStreamingServer[proto.D
 	var archive bytes.Buffer
 	for {
 		request, err := stream.Recv()
-		if err == io.EOF {
+		if errors.Is(err, io.EOF) {
 			break
 		}
 		if err != nil {
@@ -407,7 +411,7 @@ func (s *swipletService) WriteDataFile(stream grpc.ClientStreamingServer[proto.W
 	var data bytes.Buffer
 	for {
 		request, err := stream.Recv()
-		if err == io.EOF {
+		if errors.Is(err, io.EOF) {
 			break
 		}
 		if err != nil {

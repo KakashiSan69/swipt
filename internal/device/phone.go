@@ -93,6 +93,16 @@ func (p *Phone) Interrupted(since time.Time) bool {
 	return s.interruptedLocked(since)
 }
 
+func (p *Phone) DropCause() error {
+	s := p.connection
+	s.access.Lock()
+	defer s.access.Unlock()
+	if s.attached != nil && s.attached.device.Err() != nil {
+		return s.attached.device.Err()
+	}
+	return s.detachCause
+}
+
 func (p *Phone) Disconnected(since time.Time) bool {
 	s := p.connection
 	s.access.Lock()

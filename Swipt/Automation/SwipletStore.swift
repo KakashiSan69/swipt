@@ -45,7 +45,13 @@ final class SwipletStore {
     }
 
     func reload() {
-        let swiplets = Platform.shared.swiplets()
+        let swiplets: [LibSwiptSwipletInfo]
+        do {
+            swiplets = try Platform.shared.swiplets()
+        } catch {
+            ErrorAlert.shared.report(String(localized: "Couldn’t Load the Swiplets"), error: error)
+            return
+        }
         manifests = Dictionary(uniqueKeysWithValues: swiplets.compactMap { swiplet in swiplet.manifest.map { (swiplet.id_, $0) } })
         directories = Dictionary(uniqueKeysWithValues: swiplets.map { ($0.id_, URL(fileURLWithPath: $0.directory, isDirectory: true)) })
         titles = manifests.mapValues { manifest in

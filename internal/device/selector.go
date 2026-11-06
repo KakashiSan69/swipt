@@ -3,6 +3,7 @@ package device
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"io"
 	"regexp"
 	"slices"
@@ -60,7 +61,7 @@ func ParseSelector(data []byte) (*Selector, error) {
 	if err != nil {
 		return nil, err
 	}
-	if _, err = decoder.Token(); err != io.EOF {
+	if _, err = decoder.Token(); !errors.Is(err, io.EOF) {
 		return nil, E.Extend(ErrInvalid, "the selector is not one JSON value")
 	}
 	return selector, nil

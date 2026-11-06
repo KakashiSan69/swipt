@@ -6,6 +6,7 @@
 #import <stdatomic.h>
 
 #import "SWAccessUnit.h"
+#import "SWError.h"
 #import "SWGoBridge.h"
 #import "SWHEVC.h"
 
@@ -14,6 +15,8 @@
     VTDecompressionSessionRef _session;
     BOOL _waitingForKeyframe;
     atomic_bool _failed;
+    atomic_int _failedStatus;
+    OSStatus _reportedStatus;
     SWRTPClock *_clock;
 }
 
@@ -55,12 +58,19 @@
     VTDecompressionSessionRef created = NULL;
     OSStatus status = VTDecompressionSessionCreate(NULL, format, NULL, (__bridge CFDictionaryRef)attributes, NULL, &created);
     if (status != noErr || created == NULL) {
-        SWLogError([NSString stringWithFormat:@"create the screen decoder: OSStatus %d", (int)status]);
+        SWLogError([NSString stringWithFormat:@"create the screen decoder: %@", SWErrorMessageOf(SWErrorStatus(status))]);
         return NO;
     }
     VTSessionSetProperty(created, kVTDecompressionPropertyKey_RealTime, kCFBooleanTrue);
     _session = created;
     return YES;
+}
+
+- (void)reportStatus:(OSStatus)status {
+    if (status != _reportedStatus) {
+        _reportedStatus = status;
+        SWLogError([NSString stringWithFormat:@"decode the screen: %@", SWErrorMessageOf(SWErrorStatus(status))]);
+    }
 }
 
 - (BOOL)adoptParameterSets:(SWAccessUnit *)unit {
@@ -84,6 +94,7 @@
 
 - (BOOL)decode:(SWAccessUnit *)unit {
     if (atomic_exchange(&_failed, false)) {
+        [self reportStatus:atomic_load(&_failedStatus)];
         [self invalidate];
     }
     if (unit.damaged) {
@@ -119,6 +130,7 @@
                     return;
                 }
                 if (decoded != noErr || image == NULL) {
+                    atomic_store(&decoder->_failedStatus, decoded);
                     atomic_store(&decoder->_failed, true);
                     return;
                 }
@@ -127,6 +139,7 @@
         });
     CFRelease(sample);
     if (status != noErr) {
+        [self reportStatus:status];
         [self invalidate];
         return YES;
     }

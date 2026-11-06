@@ -12,7 +12,9 @@ extern NSString *const SWErrorNameNotFound;
 
 NSError *SWMakeError(NSString *name, NSString *message);
 void SWFail(NSError **error, NSString *name, NSString *format, ...) NS_FORMAT_FUNCTION(3, 4);
+void SWFailCause(NSError **error, NSString *name, NSError *cause, NSString *format, ...) NS_FORMAT_FUNCTION(4, 5);
 void SWFailWith(NSError **error, NSError *cause);
+NSError *SWErrorStatus(OSStatus status);
 NSError *SWErrorFromFailure(NSString *failure);
 NSError *SWErrorAborted(void);
 NSError *SWErrorEnded(void);

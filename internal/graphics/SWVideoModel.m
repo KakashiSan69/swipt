@@ -5,6 +5,7 @@
 #import "SWCancelToken.h"
 #import "SWChangeTracker.h"
 #import "SWError.h"
+#import "SWGoBridge.h"
 #import "SWImageNode.h"
 #import "SWJSON.h"
 #import "SWRaster.h"
@@ -204,7 +205,7 @@ AVAssetTrack *SWVideoFirstTrack(AVURLAsset *asset, NSError **error) {
     }];
     dispatch_semaphore_wait(loaded, DISPATCH_TIME_FOREVER);
     if (failure != nil) {
-        SWFailWith(error, failure);
+        SWFailCause(error, SWErrorNameData, failure, @"graphics: read %@", asset.URL.lastPathComponent);
         return nil;
     }
     if (tracks.firstObject == nil) {
@@ -229,9 +230,13 @@ NSDictionary *SWVideoChangeJSON(SWChange *change, double factor, double scale, N
 
 SWVideoModel *SWVideoOpen(NSURL *url, SWCancelToken *token, NSError **error) {
     NSData *data = [NSData dataWithContentsOfURL:SWVideoSidecar(url)];
-    NSDictionary *metadata = data == nil ? nil : [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+    NSError *failure = nil;
+    NSDictionary *metadata = data == nil ? nil : [NSJSONSerialization JSONObjectWithData:data options:0 error:&failure];
     if ([metadata isKindOfClass:NSDictionary.class]) {
         return [[SWVideoModel alloc] initWithURL:url metadata:metadata error:error];
+    }
+    if (failure != nil) {
+        SWLogError([NSString stringWithFormat:@"read the metadata of %@: %@", url.lastPathComponent, SWErrorMessageOf(failure)]);
     }
     return SWVideoAnalyze(url, token, error);
 }

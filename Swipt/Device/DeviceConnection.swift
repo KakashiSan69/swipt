@@ -84,6 +84,7 @@ final class DeviceConnection {
         probeClients += 1
         guard probeTask == nil else { return }
         probeTask = Task {
+            var reportedFailure: String?
             while !Task.isCancelled {
                 let found: Bool
                 let throughLocalNetwork: Bool
@@ -96,9 +97,9 @@ final class DeviceConnection {
                     let result = await withTaskCancellationHandler {
                         do {
                             let localNetwork = try await blocking { try probe.value.run().localNetwork }
-                            return (found: true, localNetwork: localNetwork)
+                            return (found: true, localNetwork: localNetwork, failure: String?.none)
                         } catch {
-                            return (found: false, localNetwork: false)
+                            return (found: false, localNetwork: false, failure: error.localizedDescription)
                         }
                     } onCancel: {
                         probe.value.cancel()
@@ -106,6 +107,10 @@ final class DeviceConnection {
                     guard !Task.isCancelled else { return }
                     found = result.found
                     throughLocalNetwork = result.localNetwork
+                    if let failure = result.failure, failure != reportedFailure {
+                        Self.logger.notice("Look for the tunnel: \(failure, privacy: .public)")
+                    }
+                    reportedFailure = result.failure
                 }
                 if tunnelFound != found {
                     tunnelFound = found
@@ -171,7 +176,7 @@ final class DeviceConnection {
             do {
                 try change(box.value)
             } catch {
-                Self.logger.error("Configure the device: \(error.localizedDescription, privacy: .public)")
+                Self.logger.error("Configure the device: \(error, privacy: .public)")
             }
         }
     }

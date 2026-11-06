@@ -10,6 +10,7 @@ import "C"
 
 import (
 	"context"
+	"errors"
 	"runtime/cgo"
 	"strconv"
 	"unsafe"
@@ -53,7 +54,7 @@ func (a *Advertisement) pump() {
 		default:
 		}
 		ready, err := unix.Poll([]unix.PollFd{{Fd: fd, Events: unix.POLLIN}}, pollInterval)
-		if err == unix.EINTR {
+		if errors.Is(err, unix.EINTR) {
 			continue
 		}
 		if err != nil {

@@ -145,6 +145,7 @@ func (f *foreground) contradicted(ctx context.Context, front frontApplication) b
 	}
 	shown, err := f.foregroundProcesses(ctx, []uint64{front.pid, current.pid})
 	if err != nil {
+		f.conn.connection.trace(front.at, "stale.unknown", front.bundleID+" pid "+strconv.FormatUint(front.pid, 10)+": "+err.Error(), time.Since(front.at))
 		return false
 	}
 	reason := ""

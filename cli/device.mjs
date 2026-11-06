@@ -574,6 +574,7 @@ export async function deployProject(context) {
 }
 
 async function follow(signal, fatal, run) {
+  let reported;
   while (!signal.aborted) {
     try {
       await run();
@@ -581,6 +582,10 @@ async function follow(signal, fatal, run) {
       if (unauthenticated(error)) {
         fatal(error);
         return;
+      }
+      if (!signal.aborted && error.message !== reported) {
+        reported = error.message;
+        console.error(tr("error: {message}", { message: error.message }));
       }
     }
     try {

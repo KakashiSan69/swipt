@@ -8,6 +8,7 @@ import React
 import ReactAppDependencyProvider
 import SwiftUI
 internal import SwiptHost
+import os
 
 @available(iOS 27, *)
 struct SwipletInterface: View {
@@ -369,13 +370,19 @@ final class SwipletHost {
         let id = UUID().uuidString
         let runtime = runtime(name, entry: entry)
         runtime.attached += 1
+        var source = ""
+        do {
+            source = try String(contentsOf: entry.url, encoding: .utf8)
+        } catch {
+            AppDirectory.logger.error("read the interface of \(name, privacy: .public): \(error, privacy: .public)")
+        }
         let view = runtime.factory.rootViewFactory.view(
             withModuleName: "main",
             initialProperties: [
                 "surface": id,
                 "name": name,
                 "file": entry.url.lastPathComponent,
-                "source": (try? String(contentsOf: entry.url, encoding: .utf8)) ?? "",
+                "source": source,
                 "dataDirectory": SwipletStore.shared.dataDirectory(of: name)?.absoluteString ?? "",
                 "assetsDirectory": SwipletStore.shared.assetsDirectory(of: name)?.absoluteString ?? "",
                 "cacheDirectory": SwipletStore.cacheDirectory(of: name).absoluteString,

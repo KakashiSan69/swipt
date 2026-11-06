@@ -23,7 +23,7 @@ func (e *engine) watch(ctx context.Context, kind string, args []json.RawMessage,
 			return
 		}
 		if errors.Is(err, context.Canceled) {
-			err = E.Extend(device.ErrDisconnected, "the connection dropped while watching ", kind)
+			err = call.droppedError(err, "while watching "+kind)
 		}
 		publish(nil, err)
 	}

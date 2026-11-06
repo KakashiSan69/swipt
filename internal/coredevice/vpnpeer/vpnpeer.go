@@ -32,13 +32,13 @@ type tunnel struct {
 // addresses, sorted by name, then tries route gateways, route destinations
 // and point-to-point peers, in that order (minimuxer 12be70d,
 // Sources/Services/DeviceConnectionManager.swift:206-214, 260-283).
-func candidates(allowLocal bool) []netip.Addr {
+func candidates(allowLocal bool) ([]netip.Addr, error) {
 	if allowLocal {
 		if addresses := guestAddresses(); len(addresses) > 0 {
-			return addresses
+			return addresses, nil
 		}
 	}
-	tunnels, local := scan()
+	tunnels, local, err := scan()
 	var result []netip.Addr
 	add := func(address netip.Addr) {
 		if address.IsUnspecified() || address.IsLoopback() || address.IsMulticast() ||
@@ -56,7 +56,7 @@ func candidates(allowLocal bool) []netip.Addr {
 		}
 	}
 	add(fixedAddress)
-	return result
+	return result, err
 }
 
 type Peer struct {
@@ -65,9 +65,9 @@ type Peer struct {
 }
 
 func Find(ctx context.Context, port uint16, allowLocal bool) (Peer, error) {
-	addresses := candidates(allowLocal)
+	addresses, scanErr := candidates(allowLocal)
 	if len(addresses) == 0 {
-		return Peer{}, E.New("vpnpeer: no VPN address to try")
+		return Peer{}, E.Errors(E.New("vpnpeer: no VPN address to try"), scanErr)
 	}
 	ctx, cancel := context.WithTimeout(ctx, answerLimit)
 	defer cancel()
@@ -98,7 +98,7 @@ func Find(ctx context.Context, port uint16, allowLocal bool) (Peer, error) {
 		}
 		errs[answer.index] = answer.err
 	}
-	return Peer{}, E.Cause(E.Errors(errs...), "none of the VPN addresses ", strings.Join(F.MapToString(addresses), ", "), " answers on port ", port)
+	return Peer{}, E.Cause(E.Errors(append(errs, scanErr)...), "none of the VPN addresses ", strings.Join(F.MapToString(addresses), ", "), " answers on port ", port)
 }
 
 func loopsThroughLocalNetwork(ctx context.Context, address netip.Addr) bool {

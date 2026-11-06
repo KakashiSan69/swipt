@@ -16,6 +16,7 @@ import (
 
 	"github.com/sagernet/sing/common"
 	E "github.com/sagernet/sing/common/exceptions"
+	"github.com/swipt-automation/swipt/internal/coredevice/nserror"
 	"github.com/swipt-automation/swipt/internal/coredevice/xpc"
 
 	"howett.net/plist"
@@ -45,17 +46,16 @@ var cryptexFiles = []struct {
 }
 
 type CryptexError struct {
-	Routine     string
-	Domain      string
-	Code        int64
-	Description string
+	Routine string
+	Code    int64
+	levels  []nserror.Level
 }
 
 func (e *CryptexError) Error() string {
-	if e.Domain == "" {
+	if len(e.levels) == 0 {
 		return fmt.Sprintf("imagemounter: cryptexd %s: error %d", e.Routine, e.Code)
 	}
-	return fmt.Sprintf("imagemounter: cryptexd %s: %s (%s %d)", e.Routine, e.Description, e.Domain, e.Code)
+	return fmt.Sprintf("imagemounter: cryptexd %s: %s", e.Routine, nserror.Describe(e.levels))
 }
 
 func (c *Client) MountCryptex(ctx context.Context, dir string) error {
@@ -377,12 +377,8 @@ func exchangeCryptexd(conn *xpc.Conn, routine string, argv map[string]any, send 
 // idevice/src/services/cryptexd.rs:342-346).
 func cryptexReply(routine string, reply map[string]any) (map[string]any, error) {
 	if cferr, ok := reply["cferr"].(map[string]any); ok {
-		cryptexError := &CryptexError{Routine: routine}
-		cryptexError.Domain, _ = cferr["cferr_domain"].(string)
-		cryptexError.Code = signedValue(cferr["cferr_code"])
-		userInfo, _ := cferr["cferr_userinfo"].(map[string]any)
-		cryptexError.Description, _ = userInfo["NSLocalizedDescription"].(string)
-		return nil, cryptexError
+		levels := nserror.Chain(map[string]any{"domain": cferr["cferr_domain"], "code": cferr["cferr_code"], "userInfo": cferr["cferr_userinfo"]})
+		return nil, &CryptexError{Routine: routine, Code: levels[0].Code, levels: levels}
 	}
 	if code := signedValue(reply["error"]); code != 0 {
 		return nil, &CryptexError{Routine: routine, Code: code}

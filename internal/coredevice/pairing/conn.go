@@ -13,6 +13,7 @@ import (
 	"strings"
 
 	E "github.com/sagernet/sing/common/exceptions"
+	"github.com/swipt-automation/swipt/internal/coredevice/nserror"
 )
 
 // idevice frames RPPairing JSON with this magic and a big-endian uint16
@@ -192,7 +193,7 @@ func (c *conn) readPairingData() ([]byte, error) {
 			return nil, E.New("pairing: expected a pairing event, got ", fmt.Sprint(message))
 		}
 		if rejected := lookupObject(event, "pairingRejectedWithError"); rejected != nil {
-			return nil, &PairingRejectedError{Reason: lookupString(rejected, "wrappedError", "userInfo", "NSLocalizedDescription")}
+			return nil, &PairingRejectedError{Reason: nserror.Describe(nserror.Chain(lookupObject(rejected, "wrappedError")))}
 		}
 		if lookup(event, "pairVerifyFailed") != nil {
 			return nil, ErrPairVerifyFailed

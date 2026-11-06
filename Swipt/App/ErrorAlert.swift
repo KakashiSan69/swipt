@@ -37,7 +37,7 @@ final class ErrorAlert {
         }
         UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: Self.identifier(of: alert), content: content, trigger: nil)) { error in
             if let error {
-                Self.logger.error("Post the error notification: \(error.localizedDescription, privacy: .public)")
+                Self.logger.error("Post the error notification: \(error, privacy: .public)")
             }
         }
         #endif

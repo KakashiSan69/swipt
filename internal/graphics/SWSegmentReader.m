@@ -50,8 +50,10 @@
 }
 
 - (AVAssetReader *)openAt:(double)seconds error:(NSError **)error {
-    AVAssetReader *reader = [[AVAssetReader alloc] initWithAsset:_asset error:error];
+    NSError *opening = nil;
+    AVAssetReader *reader = [[AVAssetReader alloc] initWithAsset:_asset error:&opening];
     if (reader == nil) {
+        SWFailCause(error, SWErrorNameGeneric, opening, @"graphics: read the video");
         return nil;
     }
     reader.timeRange = CMTimeRangeMake(CMTimeMakeWithSeconds(MAX(seconds - 1, 0), 600), kCMTimePositiveInfinity);
@@ -63,7 +65,7 @@
     }
     [reader addOutput:output];
     if (![reader startReading]) {
-        SWFail(error, SWErrorNameGeneric, @"graphics: read the video: %@", reader.error.localizedDescription ?: @"unknown");
+        SWFailCause(error, SWErrorNameGeneric, reader.error, @"graphics: read the video");
         return nil;
     }
     return reader;

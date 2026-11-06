@@ -378,7 +378,11 @@ func (h *Host) WatchServices(ctx context.Context, observe func(id string, state 
 		delete(h.watchers, watcher)
 		h.watchAccess.Unlock()
 	}()
-	for _, swiplet := range h.Swiplets() {
+	swiplets, err := h.Swiplets()
+	if err != nil {
+		return err
+	}
+	for _, swiplet := range swiplets {
 		if !swiplet.Manifest.Service {
 			continue
 		}

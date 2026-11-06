@@ -75,8 +75,9 @@ static OSStatus SWTransfer(CVPixelBufferRef source, CVPixelBufferRef destination
     NSDictionary *attributes = @{(__bridge id)kCVPixelBufferIOSurfacePropertiesKey: @{}};
     NSInteger bufferWidth = MAX((NSInteger)CVPixelBufferGetWidth(_pixelBuffer) / 4, width);
     NSInteger bufferHeight = MAX((NSInteger)CVPixelBufferGetHeight(_pixelBuffer) / 4, height);
-    if (CVPixelBufferCreate(NULL, bufferWidth, bufferHeight, kCVPixelFormatType_32BGRA, (__bridge CFDictionaryRef)attributes, &made) != kCVReturnSuccess) {
-        SWFail(error, SWErrorNameGeneric, @"graphics: allocate the scaled frame");
+    CVReturn allocated = CVPixelBufferCreate(NULL, bufferWidth, bufferHeight, kCVPixelFormatType_32BGRA, (__bridge CFDictionaryRef)attributes, &made);
+    if (allocated != kCVReturnSuccess) {
+        SWFailCause(error, SWErrorNameGeneric, SWErrorStatus(allocated), @"graphics: allocate the scaled frame");
         return nil;
     }
     OSStatus status = kVTPixelTransferNotSupportedErr;
@@ -85,7 +86,7 @@ static OSStatus SWTransfer(CVPixelBufferRef source, CVPixelBufferRef destination
     }
     if (status != noErr) {
         CVPixelBufferRelease(made);
-        SWFail(error, SWErrorNameGeneric, @"graphics: scale the frame (%d)", (int)status);
+        SWFailCause(error, SWErrorNameGeneric, SWErrorStatus(status), @"graphics: scale the frame");
         return nil;
     }
     SWRaster *scaled = [[SWRaster alloc] initWithPixelBuffer:made width:width height:height error:error];

@@ -118,7 +118,12 @@ static NSArray *SWScreenTargets(SWCall *call, NSUInteger first, NSError **error)
         if (match == nil) {
             continue;
         }
-        NSDictionary *box = [recognized boundingBoxLine:(NSInteger)line candidate:0 start:(NSInteger)match.range.location end:(NSInteger)NSMaxRange(match.range) error:nil];
+        NSError *failure = nil;
+        NSDictionary *box = [recognized boundingBoxLine:(NSInteger)line candidate:0 start:(NSInteger)match.range.location end:(NSInteger)NSMaxRange(match.range) error:&failure];
+        if (box == nil && _context.tracing) {
+            double now = SWNowMilliseconds();
+            [_context traceName:@"screen.find.box" detail:[NSString stringWithFormat:@"the whole line stands in for %@: %@", [text substringWithRange:match.range], SWErrorMessageOf(failure) ?: @"the range is outside the line"] started:now duration:0];
+        }
         NSArray<NSNumber *> *numbers = (box ?: entry)[@"frame"];
         if (![numbers isKindOfClass:NSArray.class] || numbers.count != 4) {
             continue;

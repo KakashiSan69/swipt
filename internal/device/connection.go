@@ -127,6 +127,7 @@ type Connection struct {
 	failedAttempts uint64
 	attached       *conn
 	detachedAt     time.Time
+	detachCause    error
 	attemptCancel  context.CancelCauseFunc
 	deviceWake     chan struct{}
 	screen         rfb.ServerScreen
@@ -700,6 +701,7 @@ func (s *Connection) detach(c *conn) error {
 	s.access.Lock()
 	s.attached = nil
 	s.detachedAt = time.Now()
+	s.detachCause = c.device.Err()
 	s.wakeWaitersLocked()
 	s.access.Unlock()
 	c.cancel()

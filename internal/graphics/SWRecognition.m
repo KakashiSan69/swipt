@@ -7,6 +7,7 @@
 #import "SWArguments.h"
 #import "SWCancelToken.h"
 #import "SWError.h"
+#import "SWGoBridge.h"
 #import "SWImageNode.h"
 #import "SWJSON.h"
 #import "SWRaster.h"
@@ -78,9 +79,12 @@ static NSDictionary<NSString *, id> *SWShape(VNRectangleObservation *observation
 
 @end
 
-static void SWRestrict(VNRequest *request) {
+static BOOL SWRestrict(VNRequest *request, NSError **error) {
     if (@available(iOS 17.0, macOS 14.0, *)) {
-        NSDictionary<VNComputeStage, NSArray<id<MLComputeDeviceProtocol>> *> *supported = [request supportedComputeStageDevicesAndReturnError:nil];
+        NSDictionary<VNComputeStage, NSArray<id<MLComputeDeviceProtocol>> *> *supported = [request supportedComputeStageDevicesAndReturnError:error];
+        if (supported == nil) {
+            return NO;
+        }
         for (VNComputeStage stage in supported) {
             id<MLComputeDeviceProtocol> engine = nil;
             id<MLComputeDeviceProtocol> processor = nil;
@@ -98,6 +102,7 @@ static void SWRestrict(VNRequest *request) {
             }
         }
     }
+    return YES;
 }
 
 static NSString *SWMatchLanguage(NSString *preferred, NSArray<NSString *> *supported) {
@@ -119,10 +124,10 @@ static NSString *SWMatchLanguage(NSString *preferred, NSArray<NSString *> *suppo
     return byLanguage;
 }
 
-static NSArray<NSString *> *SWDeviceLanguages(VNRecognizeTextRequest *request) {
-    NSArray<NSString *> *supported = [request supportedRecognitionLanguagesAndReturnError:nil];
-    if (supported.count == 0) {
-        return @[];
+static NSArray<NSString *> *SWDeviceLanguages(VNRecognizeTextRequest *request, NSError **error) {
+    NSArray<NSString *> *supported = [request supportedRecognitionLanguagesAndReturnError:error];
+    if (supported == nil) {
+        return nil;
     }
     NSMutableArray<NSString *> *chosen = [NSMutableArray array];
     for (NSString *preferred in [NSLocale.preferredLanguages arrayByAddingObject:@"en-US"]) {
@@ -146,8 +151,12 @@ static BOOL SWPerform(VNRequest *request, SWRaster *raster, NSError **error) {
         return NO;
     }
     VNImageRequestHandler *handler = [[VNImageRequestHandler alloc] initWithCGImage:image options:@{}];
-    BOOL performed = [handler performRequests:@[request] error:error];
+    NSError *failure = nil;
+    BOOL performed = [handler performRequests:@[request] error:&failure];
     CGImageRelease(image);
+    if (!performed) {
+        SWFailCause(error, SWErrorNameGeneric, failure, @"graphics: run %@", NSStringFromClass(request.class));
+    }
     return performed;
 }
 
@@ -155,9 +164,14 @@ void SWRecognitionWarm(void) {
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), ^{
         VNRecognizeTextRequest *request = [VNRecognizeTextRequest new];
         request.recognitionLevel = VNRequestTextRecognitionLevelAccurate;
-        request.recognitionLanguages = SWDeviceLanguages(request);
-        SWRestrict(request);
-        SWPerform(request, [[SWRaster alloc] initWithWidth:64 height:32 channels:4], nil);
+        NSError *failure = nil;
+        NSArray<NSString *> *languages = SWDeviceLanguages(request, &failure);
+        if (languages != nil) {
+            request.recognitionLanguages = languages;
+        }
+        if (languages == nil || !SWRestrict(request, &failure) || !SWPerform(request, [[SWRaster alloc] initWithWidth:64 height:32 channels:4], &failure)) {
+            SWLogError([NSString stringWithFormat:@"warm the text recognizer: %@", SWErrorMessageOf(failure)]);
+        }
     });
 }
 
@@ -178,7 +192,11 @@ SWRecognizedText *SWRecognizeText(SWImageNode *node, SWArguments *arguments, SWC
     if (correction != nil) {
         request.usesLanguageCorrection = correction.boolValue;
     }
-    request.recognitionLanguages = [arguments strings:@"languages"] ?: SWDeviceLanguages(request);
+    NSArray<NSString *> *languages = [arguments strings:@"languages"] ?: SWDeviceLanguages(request, error);
+    if (languages == nil) {
+        return nil;
+    }
+    request.recognitionLanguages = languages;
     NSNumber *detect = [arguments number:@"detectLanguage"];
     if (detect != nil) {
         if (@available(iOS 16.0, macOS 13.0, *)) {
@@ -202,8 +220,7 @@ SWRecognizedText *SWRecognizeText(SWImageNode *node, SWArguments *arguments, SWC
             }
         }
     }
-    SWRestrict(request);
-    if (!SWPerform(request, sampled, error) || [token failIfCancelled:error]) {
+    if (!SWRestrict(request, error) || !SWPerform(request, sampled, error) || [token failIfCancelled:error]) {
         return nil;
     }
     double width = raster.width;
@@ -216,9 +233,8 @@ SWRecognizedText *SWRecognizeText(SWImageNode *node, SWArguments *arguments, SWC
 
 VNFeaturePrintObservation *SWFeaturePrint(SWImageNode *node, SWCancelToken *token, NSError **error) {
     VNGenerateImageFeaturePrintRequest *request = [VNGenerateImageFeaturePrintRequest new];
-    SWRestrict(request);
     SWRaster *raster = [node raster:token error:error];
-    if (raster == nil || !SWPerform(request, raster, error)) {
+    if (raster == nil || !SWRestrict(request, error) || !SWPerform(request, raster, error)) {
         return nil;
     }
     VNFeaturePrintObservation *observation = request.results.firstObject;
@@ -243,9 +259,8 @@ BOOL SWFeatureDistance(VNFeaturePrintObservation *reference, SWImageNode *other,
 
 NSArray<NSDictionary<NSString *, id> *> *SWDetectBarcodes(SWImageNode *node, SWCancelToken *token, NSError **error) {
     VNDetectBarcodesRequest *request = [VNDetectBarcodesRequest new];
-    SWRestrict(request);
     SWRaster *raster = [node raster:token error:error];
-    if (raster == nil || !SWPerform(request, raster, error)) {
+    if (raster == nil || !SWRestrict(request, error) || !SWPerform(request, raster, error)) {
         return nil;
     }
     double width = raster.width;

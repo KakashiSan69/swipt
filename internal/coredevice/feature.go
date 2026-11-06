@@ -4,10 +4,9 @@ import (
 	"context"
 	"fmt"
 	"slices"
-	"strconv"
-	"strings"
 
 	E "github.com/sagernet/sing/common/exceptions"
+	"github.com/swipt-automation/swipt/internal/coredevice/nserror"
 	"github.com/swipt-automation/swipt/internal/coredevice/xpc"
 
 	"github.com/google/uuid"
@@ -16,21 +15,17 @@ import (
 type FeatureError struct {
 	Feature string
 	Code    int64
-	chain   []string
-	causes  []featureCause
-}
-
-type featureCause struct {
-	domain string
-	code   int64
+	levels  []nserror.Level
 }
 
 func (e *FeatureError) Error() string {
-	return e.Feature + ": " + strings.Join(e.chain, ": ")
+	return e.Feature + ": " + nserror.Describe(e.levels)
 }
 
 func (e *FeatureError) CausedBy(domain string, code int64) bool {
-	return slices.Contains(e.causes, featureCause{domain, code})
+	return slices.ContainsFunc(e.levels, func(level nserror.Level) bool {
+		return level.Domain == domain && level.Code == code
+	})
 }
 
 // pymobiledevice3 uses CoreDevice 629.3 and DDI protocol 2 (pymobiledevice3
@@ -81,31 +76,9 @@ func FeatureOutput(feature string, reply map[string]any) (map[string]any, error)
 	if !isDictionary {
 		return nil, E.New(feature, ": unexpected reply: ", fmt.Sprint(reply))
 	}
-	result := &FeatureError{Feature: feature}
-	for nsError != nil {
-		var code int64
-		switch number := nsError["code"].(type) {
-		case int64:
-			code = number
-		case uint64:
-			code = int64(number)
-		}
-		if result.chain == nil {
-			result.Code = code
-		}
-		domain, _ := nsError["domain"].(string)
-		userInfo, _ := nsError["userInfo"].(map[string]any)
-		description, _ := userInfo["NSLocalizedDescription"].(string)
-		if description == "" {
-			description, _ = userInfo["NSDebugDescription"].(string)
-		}
-		text := domain + " " + strconv.FormatInt(code, 10)
-		if description != "" {
-			text = description + " (" + text + ")"
-		}
-		result.chain = append(result.chain, text)
-		result.causes = append(result.causes, featureCause{domain, code})
-		nsError, _ = userInfo["NSUnderlyingError"].(map[string]any)
+	result := &FeatureError{Feature: feature, levels: nserror.Chain(nsError)}
+	if len(result.levels) > 0 {
+		result.Code = result.levels[0].Code
 	}
 	return nil, result
 }

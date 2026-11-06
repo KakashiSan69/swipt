@@ -24,7 +24,18 @@ struct AlertState {
     }
 
     init(_ failure: String, error: (any Error)?) {
-        self.init(failure, errorMessage: error?.localizedDescription ?? "")
+        self.init(failure, errorMessage: error.map(Self.message) ?? "")
+    }
+
+    private static func message(of error: any Error) -> String {
+        let bridged = error as NSError
+        if error is LocalizedError || bridged.domain == "go" {
+            return error.localizedDescription
+        }
+        // A Swift error bridged to NSError localizes as "The operation couldn't be completed. (Domain error N.)";
+        // only its description names the case and payload.
+        let description = String(describing: error)
+        return description.hasPrefix("Error Domain=") ? "\(error.localizedDescription) (\(bridged.domain) \(bridged.code))" : description
     }
 
     init(_ failure: String, errorMessage: String, closeLabel: String = String(localized: "OK"), onClose: @escaping () -> Void = {}) {

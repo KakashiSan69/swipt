@@ -159,6 +159,9 @@ export async function runningSwipt(name, signal) {
     if (signal.aborted || !(error instanceof RpcError)) {
       throw error;
     }
+    if (error.code === Code.Unauthenticated) {
+      console.error(tr("error: {message}", { message: error.message }));
+    }
     return undefined;
   }
   return client;

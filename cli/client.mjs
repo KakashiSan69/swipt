@@ -55,6 +55,11 @@ function statusMessage(text) {
   }
 }
 
+const causeText = (cause) =>
+  cause?.errors?.length > 0
+    ? cause.errors.map(causeText).join("; ")
+    : cause?.message || cause?.code;
+
 const transportError = (error) => {
   if (error instanceof RpcError) {
     return error;
@@ -62,10 +67,9 @@ const transportError = (error) => {
   if (error?.name === "AbortError") {
     return new RpcError(Code.Canceled, "the call was canceled");
   }
-  const cause = error?.cause;
   return new RpcError(
     Code.Unavailable,
-    cause?.message || cause?.code || error?.message || String(error),
+    causeText(error?.cause) || error?.message || String(error),
   );
 };
 

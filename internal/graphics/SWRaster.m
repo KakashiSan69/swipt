@@ -28,8 +28,9 @@
     if (self == nil) {
         return nil;
     }
-    if (CVPixelBufferLockBaseAddress(pixelBuffer, kCVPixelBufferLock_ReadOnly) != kCVReturnSuccess) {
-        SWFail(error, SWErrorNameGeneric, @"graphics: lock the frame");
+    CVReturn locked = CVPixelBufferLockBaseAddress(pixelBuffer, kCVPixelBufferLock_ReadOnly);
+    if (locked != kCVReturnSuccess) {
+        SWFailCause(error, SWErrorNameGeneric, SWErrorStatus(locked), @"graphics: lock the frame");
         return nil;
     }
     _pixelBuffer = CVPixelBufferRetain(pixelBuffer);

@@ -25,7 +25,6 @@ import (
 
 	"github.com/sagernet/sing/common"
 	E "github.com/sagernet/sing/common/exceptions"
-	"github.com/swipt-automation/swipt/internal/device"
 	"github.com/swipt-automation/swipt/internal/jsc"
 	"github.com/swipt-automation/swipt/internal/log"
 
@@ -274,10 +273,16 @@ func (h *Host) newEngine(swiplet Swiplet, dialog Dialog, logger log.ContextLogge
 		subscriptions: make(map[string]*subscription), blobs: make(map[string][]byte), resources: make(map[string]*resource),
 		sources: sync.OnceValue(func() *sourcemap.Consumer {
 			data, err := os.ReadFile(filepath.Join(swiplet.Directory, SourceFolder, ExtensionMap))
-			if err != nil {
+			if errors.Is(err, fs.ErrNotExist) {
 				return nil
 			}
-			consumer, _ := sourcemap.Parse("", data)
+			var consumer *sourcemap.Consumer
+			if err == nil {
+				consumer, err = sourcemap.Parse("", data)
+			}
+			if err != nil {
+				logger.Warn("read the source map: ", err)
+			}
 			return consumer
 		}),
 	}
@@ -489,7 +494,7 @@ func (e *engine) startOperation(arguments []jsc.Value) (any, error) {
 			value, err = run(ctx, call)
 		}
 		if call.dropped(ctx, err, attempted) {
-			err = E.Extend(device.ErrDisconnected, "the connection dropped during ", name)
+			err = call.droppedError(err, "during "+name)
 		}
 		if slices.Contains(timelineOperations, name) && e.host.timeline.active() {
 			arguments := args

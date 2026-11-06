@@ -7,6 +7,7 @@ import (
 	"sync"
 	"time"
 
+	E "github.com/sagernet/sing/common/exceptions"
 	"github.com/swipt-automation/swipt/internal/automation"
 	"github.com/swipt-automation/swipt/internal/graphics"
 	"github.com/swipt-automation/swipt/internal/log"
@@ -59,7 +60,7 @@ type Platform struct {
 	dialog     automation.Dialog
 
 	dialogAccess sync.Mutex
-	dialogs      map[int64]chan string
+	dialogs      map[int64]chan dialogAnswer
 	lastDialog   int64
 
 	apiAccess sync.Mutex
@@ -67,7 +68,7 @@ type Platform struct {
 }
 
 func NewPlatform(options *PlatformOptions, handler PlatformHandler, deviceOptions *DeviceOptions, deviceHandler DeviceHandler) *Platform {
-	p := &Platform{logFactory: newLogFactory(), handler: handler, app: options.AppBundleID, appVersion: options.AppVersion, appBuild: options.AppBuild, dialogs: make(map[int64]chan string)}
+	p := &Platform{logFactory: newLogFactory(), handler: handler, app: options.AppBundleID, appVersion: options.AppVersion, appBuild: options.AppBuild, dialogs: make(map[int64]chan dialogAnswer)}
 	p.device = newDevice(deviceOptions, deviceHandler, p.logFactory)
 	p.dialog = automation.Dialog{App: p.app, InApp: true, Ask: p.ask, Backdrop: handler.OnBackdrop, Active: handler.AppActive}
 	p.host = automation.New(automation.Options{
@@ -97,9 +98,12 @@ func (p *Platform) Start() error {
 		return err
 	}
 	go func() {
-		_ = p.host.WatchServices(context.Background(), func(swiplet string, state automation.ServiceState) {
+		err := p.host.WatchServices(context.Background(), func(swiplet string, state automation.ServiceState) {
 			p.handler.OnServiceChanged(swiplet, state.Enabled, string(state.Status), state.Error, unixMilli(state.Since))
 		})
+		if err != nil {
+			p.logFactory.Logger().Error("watch the services: ", err)
+		}
 	}()
 	go p.host.WatchDatabases(context.Background(), "", func(change automation.DatabaseChange) {
 		p.handler.OnDatabaseChanged(change.Swiplet, change.Database, change.Path, change.Table, change.RowID)
@@ -130,6 +134,17 @@ type ActionCall struct {
 type dialogAnswer struct {
 	text      string
 	dismissed bool
+	failure   string
+}
+
+func (a dialogAnswer) result() (string, error) {
+	switch {
+	case a.failure != "":
+		return "", E.New("show the dialog: ", a.failure)
+	case a.dismissed:
+		return "", automation.ErrDismissed
+	}
+	return a.text, nil
 }
 
 type ActionObserver interface {
@@ -143,10 +158,7 @@ func (p *Platform) NewActionCall(swiplet, action, input, caller string, observer
 		observer.OnRequest(request)
 		select {
 		case answer := <-call.answers:
-			if answer.dismissed {
-				return "", automation.ErrDismissed
-			}
-			return answer.text, nil
+			return answer.result()
 		case <-ctx.Done():
 			return "", ctx.Err()
 		}
@@ -168,6 +180,13 @@ func (c *ActionCall) Run() (string, error) {
 func (c *ActionCall) Answer(answer string) {
 	select {
 	case c.answers <- dialogAnswer{text: answer}:
+	default:
+	}
+}
+
+func (c *ActionCall) Fail(message string) {
+	select {
+	case c.answers <- dialogAnswer{failure: message}:
 	default:
 	}
 }
@@ -207,7 +226,7 @@ func (p *Platform) ServiceState(swiplet string) *ServiceState {
 }
 
 func (p *Platform) ask(ctx context.Context, request string) (string, error) {
-	answers := make(chan string, 1)
+	answers := make(chan dialogAnswer, 1)
 	p.dialogAccess.Lock()
 	p.lastDialog++
 	id := p.lastDialog
@@ -215,11 +234,8 @@ func (p *Platform) ask(ctx context.Context, request string) (string, error) {
 	p.dialogAccess.Unlock()
 	p.handler.OnDialog(id, request)
 	select {
-	case answer, answered := <-answers:
-		if !answered {
-			return "", automation.ErrDismissed
-		}
-		return answer, nil
+	case answer := <-answers:
+		return answer.result()
 	case <-ctx.Done():
 		if p.takeDialog(id) != nil {
 			p.handler.OnDialogWithdrawn(id)
@@ -228,7 +244,7 @@ func (p *Platform) ask(ctx context.Context, request string) (string, error) {
 	}
 }
 
-func (p *Platform) takeDialog(id int64) chan string {
+func (p *Platform) takeDialog(id int64) chan dialogAnswer {
 	p.dialogAccess.Lock()
 	defer p.dialogAccess.Unlock()
 	answers := p.dialogs[id]
@@ -238,12 +254,18 @@ func (p *Platform) takeDialog(id int64) chan string {
 
 func (p *Platform) AnswerDialog(dialogID int64, answer string) {
 	if answers := p.takeDialog(dialogID); answers != nil {
-		answers <- answer
+		answers <- dialogAnswer{text: answer}
 	}
 }
 
 func (p *Platform) DismissDialog(dialogID int64) {
 	if answers := p.takeDialog(dialogID); answers != nil {
-		close(answers)
+		answers <- dialogAnswer{dismissed: true}
+	}
+}
+
+func (p *Platform) FailDialog(dialogID int64, message string) {
+	if answers := p.takeDialog(dialogID); answers != nil {
+		answers <- dialogAnswer{failure: message}
 	}
 }

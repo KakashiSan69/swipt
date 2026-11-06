@@ -7,6 +7,7 @@ interface Pending {
   reject(error: unknown): void;
   signal?: AbortSignal;
   release(): void;
+  site: Error;
 }
 
 interface Subscription {
@@ -31,6 +32,7 @@ export function invoke<T>(
   options: CallOptions = {},
 ): Promise<T> {
   const { signal } = options;
+  const site = new Error();
   return new Promise<T>((resolve, reject) => {
     if (signal?.aborted) {
       reject(signal.reason);
@@ -46,6 +48,7 @@ export function invoke<T>(
       reject,
       signal,
       release,
+      site,
     });
     native.start(id, name, JSON.stringify(args));
   });
@@ -83,7 +86,9 @@ export function settle(id: string): void {
   } else if (entry.signal?.aborted) {
     entry.reject(entry.signal.reason);
   } else {
-    entry.reject(errorFrom(JSON.parse(failure)));
+    const error = errorFrom(JSON.parse(failure));
+    error.stack = entry.site.stack;
+    entry.reject(error);
   }
 }
 
@@ -96,6 +101,7 @@ export function stream<T>(
 ): AsyncIterable<T> {
   return {
     [Symbol.asyncIterator](): AsyncIterator<T> {
+      const site = new Error();
       let id: string | undefined;
       let buffered: T[] = [];
       let waiter:
@@ -122,6 +128,7 @@ export function stream<T>(
         current?.reject(signal!.reason);
       };
       const fail = (error: Error) => {
+        error.stack = site.stack;
         const current = waiter;
         waiter = undefined;
         finish();

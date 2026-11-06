@@ -300,8 +300,11 @@ static NSDictionary *SWFeedEvent(SWFeedWindow window) {
     BOOL hasOrigin = _hasOrigin;
     double origin = _origin;
     [_lock unlock];
-    if (hasOrigin) {
-        [_tracker tick:SWNowMilliseconds() - origin error:nil];
+    NSError *failure = nil;
+    if (hasOrigin && ![_tracker tick:SWNowMilliseconds() - origin error:&failure]) {
+        [_lock lock];
+        [_failures addObject:SWErrorMessageOf(failure)];
+        [_lock unlock];
     }
 }
 

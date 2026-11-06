@@ -129,6 +129,18 @@ func (o *operation) dropped(ctx context.Context, err error, since time.Time) boo
 	return errors.Is(err, context.Canceled) || o.device != nil && o.device.Interrupted(since)
 }
 
+func (o *operation) droppedError(err error, doing string) error {
+	if o.device != nil {
+		if cause := o.device.DropCause(); cause != nil {
+			err = cause
+		}
+	}
+	if errors.Is(err, context.Canceled) {
+		return E.Extend(device.ErrDisconnected, "the connection dropped ", doing)
+	}
+	return E.Extend(device.ErrDisconnected, "the connection dropped ", doing, ": ", err)
+}
+
 func (o *operation) screen(ctx context.Context) (*device.Phone, error) {
 	phone, err := o.phone()
 	if err != nil {

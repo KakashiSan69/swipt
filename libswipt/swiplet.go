@@ -105,12 +105,16 @@ func (l *SwipletList) Len() int32 { return int32(len(l.items)) }
 
 func (l *SwipletList) Get(index int32) *SwipletInfo { return l.items[index] }
 
-func (p *Platform) Swiplets() *SwipletList {
+func (p *Platform) Swiplets() (*SwipletList, error) {
+	swiplets, err := p.host.Swiplets()
+	if err != nil {
+		return nil, err
+	}
 	list := &SwipletList{}
-	for _, swiplet := range p.host.Swiplets() {
+	for _, swiplet := range swiplets {
 		list.items = append(list.items, &SwipletInfo{ID: swiplet.ID, Directory: swiplet.Directory, Manifest: newSwipletManifest(swiplet.Manifest)})
 	}
-	return list
+	return list, nil
 }
 
 func (p *Platform) InstallSwiplet(file string) (string, error) {

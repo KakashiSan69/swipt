@@ -117,7 +117,11 @@ func New(options Options) *Host {
 
 func (h *Host) Start() {
 	h.restoreLocation()
-	for _, swiplet := range h.Swiplets() {
+	swiplets, err := h.Swiplets()
+	if err != nil {
+		h.logger.Error("start the services: ", err)
+	}
+	for _, swiplet := range swiplets {
 		if !swiplet.Manifest.Service {
 			continue
 		}
@@ -126,6 +130,7 @@ func (h *Host) Start() {
 		}
 		r, err := h.runner(swiplet.ID)
 		if err != nil {
+			h.logger.Error("start the service of ", swiplet.ID, ": ", err)
 			continue
 		}
 		r.access.Lock()
@@ -146,10 +151,13 @@ func (h *Host) Close() {
 	}
 }
 
-func (h *Host) Swiplets() []Swiplet {
+func (h *Host) Swiplets() ([]Swiplet, error) {
 	entries, err := os.ReadDir(h.options.Directory)
+	if errors.Is(err, fs.ErrNotExist) {
+		return nil, nil
+	}
 	if err != nil {
-		return nil
+		return nil, E.Cause(err, "read the swiplets")
 	}
 	var swiplets []Swiplet
 	for _, entry := range entries {
@@ -158,12 +166,19 @@ func (h *Host) Swiplets() []Swiplet {
 		}
 		directory := filepath.Join(h.options.Directory, entry.Name())
 		manifest, err := LoadManifest(directory)
-		if err != nil || manifest.ID != entry.Name() {
+		if errors.Is(err, fs.ErrNotExist) {
+			continue
+		}
+		if err == nil && manifest.ID != entry.Name() {
+			err = E.New("its manifest names ", strconv.Quote(manifest.ID))
+		}
+		if err != nil {
+			h.logger.Error("load the swiplet ", entry.Name(), ": ", err)
 			continue
 		}
 		swiplets = append(swiplets, Swiplet{ID: manifest.ID, Directory: directory, Manifest: manifest})
 	}
-	return swiplets
+	return swiplets, nil
 }
 
 func (h *Host) Swiplet(id string) (Swiplet, error) {

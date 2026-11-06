@@ -50,13 +50,13 @@ static BOOL SWExportGIF(NSURL *target, NSArray<NSNumber *> *times, double step, 
 static BOOL SWAppendFrame(AVAssetWriter *writer, AVAssetWriterInputPixelBufferAdaptor *adaptor, SWRaster *raster, CMTime time, NSError **error) {
     CVPixelBufferPoolRef pool = adaptor.pixelBufferPool;
     if (pool == NULL) {
-        SWFail(error, SWErrorNameGeneric, @"graphics: the video writer has no buffers: %@", writer.error.localizedDescription ?: @"unknown");
+        SWFailCause(error, SWErrorNameGeneric, writer.error, @"graphics: the video writer has no buffers");
         return NO;
     }
     CVPixelBufferRef buffer = NULL;
-    CVPixelBufferPoolCreatePixelBuffer(NULL, pool, &buffer);
+    CVReturn allocated = CVPixelBufferPoolCreatePixelBuffer(NULL, pool, &buffer);
     if (buffer == NULL) {
-        SWFail(error, SWErrorNameGeneric, @"graphics: allocate a video frame");
+        SWFailCause(error, SWErrorNameGeneric, SWErrorStatus(allocated), @"graphics: allocate a video frame");
         return NO;
     }
     CVPixelBufferLockBaseAddress(buffer, 0);
@@ -74,7 +74,7 @@ static BOOL SWAppendFrame(AVAssetWriter *writer, AVAssetWriterInputPixelBufferAd
     BOOL appended = [adaptor appendPixelBuffer:buffer withPresentationTime:time];
     CVPixelBufferRelease(buffer);
     if (!appended) {
-        SWFail(error, SWErrorNameGeneric, @"graphics: write the video: %@", writer.error.localizedDescription ?: @"unknown");
+        SWFailCause(error, SWErrorNameGeneric, writer.error, @"graphics: write the video");
     }
     return appended;
 }
@@ -85,8 +85,10 @@ static BOOL SWExportMovie(NSURL *target, NSString *format, NSArray<NSNumber *> *
         return NO;
     }
     BOOL mov = [format isEqualToString:@"mov"];
-    AVAssetWriter *writer = [[AVAssetWriter alloc] initWithURL:target fileType:mov ? AVFileTypeQuickTimeMovie : AVFileTypeMPEG4 error:error];
+    NSError *creating = nil;
+    AVAssetWriter *writer = [[AVAssetWriter alloc] initWithURL:target fileType:mov ? AVFileTypeQuickTimeMovie : AVFileTypeMPEG4 error:&creating];
     if (writer == nil) {
+        SWFailCause(error, SWErrorNameGeneric, creating, @"graphics: create %@", target.lastPathComponent);
         return NO;
     }
     AVAssetWriterInput *input = [[AVAssetWriterInput alloc] initWithMediaType:AVMediaTypeVideo outputSettings:@{
@@ -104,7 +106,7 @@ static BOOL SWExportMovie(NSURL *target, NSString *format, NSArray<NSNumber *> *
     }
     [writer addInput:input];
     if (![writer startWriting]) {
-        SWFail(error, SWErrorNameGeneric, @"graphics: start the video: %@", writer.error.localizedDescription ?: @"unknown");
+        SWFailCause(error, SWErrorNameGeneric, writer.error, @"graphics: start the video");
         return NO;
     }
     [writer startSessionAtSourceTime:kCMTimeZero];
@@ -140,7 +142,7 @@ static BOOL SWExportMovie(NSURL *target, NSString *format, NSArray<NSNumber *> *
     }];
     dispatch_semaphore_wait(finished, DISPATCH_TIME_FOREVER);
     if (writer.status != AVAssetWriterStatusCompleted) {
-        SWFail(error, SWErrorNameGeneric, @"graphics: finish the video: %@", writer.error.localizedDescription ?: @"unknown");
+        SWFailCause(error, SWErrorNameGeneric, writer.error, @"graphics: finish the video");
         return NO;
     }
     return YES;

@@ -134,7 +134,7 @@ final class ServiceResolver {
     private func fail(_ code: DNSServiceErrorType) {
         guard !cancelled else { return }
         let error = Failure(code: code)
-        Self.logger.error("Service resolution failed: \(error.localizedDescription, privacy: .public)")
+        Self.logger.error("Service resolution failed: \(error, privacy: .public)")
         cancel()
     }
 

@@ -5,6 +5,7 @@ import Perception
 import SwiftUI
 import UIKit
 import UniformTypeIdentifiers
+import os
 
 @available(iOS 27, *)
 @Perceptible
@@ -612,14 +613,19 @@ private struct ValueDialog: View {
         case .file:
             chooser(SystemText.workflowUI("File"))
                 .fileImporter(isPresented: $isChoosing, allowedContentTypes: [.item], allowsMultipleSelection: false) { result in
-                    guard case .success(let urls) = result, let url = urls.first else { return }
-                    let accessing = url.startAccessingSecurityScopedResource()
-                    defer {
-                        if accessing { url.stopAccessingSecurityScopedResource() }
+                    do {
+                        guard let url = try result.get().first else { return }
+                        let accessing = url.startAccessingSecurityScopedResource()
+                        defer {
+                            if accessing { url.stopAccessingSecurityScopedResource() }
+                        }
+                        let data = try Data(contentsOf: url)
+                        let type = (try? url.resourceValues(forKeys: [.contentTypeKey]).contentType) ?? UTType(filenameExtension: url.pathExtension)
+                        chosen = (url.lastPathComponent, .file(name: url.lastPathComponent, type: type?.identifier ?? "", data: data))
+                    } catch CocoaError.userCancelled {
+                    } catch {
+                        ErrorAlert.shared.report(String(localized: "Can’t Open the File"), error: error)
                     }
-                    guard let data = try? Data(contentsOf: url) else { return }
-                    let type = (try? url.resourceValues(forKeys: [.contentTypeKey]).contentType) ?? UTType(filenameExtension: url.pathExtension)
-                    chosen = (url.lastPathComponent, .file(name: url.lastPathComponent, type: type?.identifier ?? "", data: data))
                 }
         case .person:
             chooser(SystemText.workflowKit("Contact"))
@@ -1018,7 +1024,12 @@ private struct PlacemarkSearch: View {
 
     private func confirm(_ completion: MKLocalSearchCompletion) {
         Task {
-            let item = try? await MKLocalSearch(request: MKLocalSearch.Request(completion: completion)).start().mapItems.first
+            var item: MKMapItem?
+            do {
+                item = try await MKLocalSearch(request: MKLocalSearch.Request(completion: completion)).start().mapItems.first
+            } catch {
+                AppDirectory.logger.error("look up the place: \(error, privacy: .public)")
+            }
             let name = item?.name ?? completion.title
             choose(name, .placemark(name: name, coordinate: item?.location.coordinate, address: item?.address?.fullAddress))
         }

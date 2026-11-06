@@ -9,6 +9,7 @@ package pasteboard
 
 import (
 	"context"
+	"fmt"
 	"reflect"
 	"slices"
 	"strconv"
@@ -20,6 +21,7 @@ import (
 	E "github.com/sagernet/sing/common/exceptions"
 	"github.com/sagernet/sing/common/logger"
 	"github.com/swipt-automation/swipt/internal/coredevice"
+	"github.com/swipt-automation/swipt/internal/coredevice/dtx"
 	"github.com/swipt-automation/swipt/internal/coredevice/xpc"
 
 	"github.com/google/uuid"
@@ -359,8 +361,13 @@ func (c *Client) isOwn(snapshot Snapshot) bool {
 var ErrRefused = E.New("pasteboard: the device refused the request")
 
 func snapshotReply(reply map[string]any, replyCommand string) (Snapshot, error) {
-	if _, refused := reply["error"]; refused {
-		return Snapshot{}, ErrRefused
+	if refusal, refused := reply["error"]; refused {
+		if archive, isArchive := refusal.([]byte); isArchive {
+			if decoded, err := dtx.UnmarshalArchive(archive); err == nil {
+				refusal = decoded
+			}
+		}
+		return Snapshot{}, E.Extend(ErrRefused, fmt.Sprint(refusal))
 	}
 	if command, _ := reply["command"].(string); command != replyCommand {
 		return Snapshot{}, E.New("pasteboard: got ", strconv.Quote(command), ", want ", replyCommand)

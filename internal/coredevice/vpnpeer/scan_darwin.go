@@ -7,15 +7,16 @@ import (
 	"syscall"
 
 	"github.com/sagernet/sing/common"
+	E "github.com/sagernet/sing/common/exceptions"
 
 	"golang.org/x/net/route"
 	"golang.org/x/sys/unix"
 )
 
-func scan() ([]tunnel, []netip.Addr) {
+func scan() ([]tunnel, []netip.Addr, error) {
 	interfaces, err := net.Interfaces()
 	if err != nil {
-		return nil, nil
+		return nil, nil, E.Cause(err, "vpnpeer: read the interfaces")
 	}
 	var local []netip.Addr
 	var tunnels []tunnel
@@ -52,9 +53,10 @@ func scan() ([]tunnel, []netip.Addr) {
 		tunnels = append(tunnels, tunnel{name: iface.Name})
 	}
 	if len(tunnels) == 0 {
-		return nil, local
+		return nil, local, nil
 	}
-	for _, message := range readRIB(route.RIBTypeRoute) {
+	routes, routesErr := readRIB(route.RIBTypeRoute)
+	for _, message := range routes {
 		routeMessage, isRoute := message.(*route.RouteMessage)
 		if !isRoute {
 			continue
@@ -70,7 +72,8 @@ func scan() ([]tunnel, []netip.Addr) {
 			tunnels[index].destinations = append(tunnels[index].destinations, address)
 		}
 	}
-	for _, message := range readRIB(route.RIBTypeInterface) {
+	addresses, addressesErr := readRIB(route.RIBTypeInterface)
+	for _, message := range addresses {
 		addressMessage, isAddress := message.(*route.InterfaceAddrMessage)
 		if !isAddress || !pointToPoint[addressMessage.Index] {
 			continue
@@ -84,7 +87,7 @@ func scan() ([]tunnel, []netip.Addr) {
 		}
 	}
 	common.SortBy(tunnels, func(it tunnel) string { return it.name })
-	return tunnels, local
+	return tunnels, local, E.Errors(routesErr, addressesErr)
 }
 
 func onLocalNetwork(address netip.Addr) bool {
@@ -114,16 +117,16 @@ func onLocalNetwork(address netip.Addr) bool {
 	return false
 }
 
-func readRIB(kind route.RIBType) []route.Message {
+func readRIB(kind route.RIBType) ([]route.Message, error) {
 	rib, err := route.FetchRIB(syscall.AF_UNSPEC, kind, 0)
 	if err != nil {
-		return nil
+		return nil, E.Cause(err, "vpnpeer: read the routing table")
 	}
 	messages, err := route.ParseRIB(kind, rib)
 	if err != nil {
-		return nil
+		return nil, E.Cause(err, "vpnpeer: parse the routing table")
 	}
-	return messages
+	return messages, nil
 }
 
 func ipv4(addresses []route.Addr, slot int) (netip.Addr, bool) {

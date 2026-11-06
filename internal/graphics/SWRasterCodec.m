@@ -54,9 +54,10 @@ SWRaster *SWRasterDecode(NSData *data, NSError **error) {
             (__bridge id)kCGImageSourceShouldCacheImmediately: @YES,
         });
     }
+    CGImageSourceStatus status = CGImageSourceGetStatusAtIndex(source, 0);
     CFRelease(source);
     if (image == NULL) {
-        SWFail(error, SWErrorNameData, @"graphics: the image could not be decoded");
+        SWFail(error, SWErrorNameData, @"graphics: the image could not be decoded (CGImageSourceStatus %d)", (int)status);
         return nil;
     }
     SWRaster *raster = SWRasterFromImage(image, error);

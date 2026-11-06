@@ -19,8 +19,10 @@ SWVideoModel *SWVideoAnalyze(NSURL *url, SWCancelToken *token, NSError **error) 
     NSInteger turns = (((NSInteger)round(atan2(transform.b, transform.a) / (M_PI / 2))) % 4 + 4) % 4;
     NSInteger width = (NSInteger)size.width;
     NSInteger height = (NSInteger)size.height;
-    AVAssetReader *reader = [[AVAssetReader alloc] initWithAsset:asset error:error];
+    NSError *opening = nil;
+    AVAssetReader *reader = [[AVAssetReader alloc] initWithAsset:asset error:&opening];
     if (reader == nil) {
+        SWFailCause(error, SWErrorNameData, opening, @"graphics: read %@", url.lastPathComponent);
         return nil;
     }
     AVAssetReaderTrackOutput *output = [[AVAssetReaderTrackOutput alloc] initWithTrack:track outputSettings:@{
@@ -31,7 +33,7 @@ SWVideoModel *SWVideoAnalyze(NSURL *url, SWCancelToken *token, NSError **error) 
     output.alwaysCopiesSampleData = NO;
     [reader addOutput:output];
     if (![reader startReading]) {
-        SWFail(error, SWErrorNameData, @"graphics: read %@: %@", url.lastPathComponent, reader.error.localizedDescription ?: @"unknown");
+        SWFailCause(error, SWErrorNameData, reader.error, @"graphics: read %@", url.lastPathComponent);
         return nil;
     }
     SWChangeTracker *tracker = [SWChangeTracker new];
