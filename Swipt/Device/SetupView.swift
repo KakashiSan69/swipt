@@ -1,3 +1,4 @@
+import Network
 import Perception
 import SwiftUI
 import UIKit
@@ -83,32 +84,42 @@ struct LoopbackSetupView: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var hasLocalDevVPN = false
     @State private var hasSingBox = false
+    @State private var usesCellular = false
+    @State private var pathMonitor: NWPathMonitor?
 
     private let device = Platform.shared.device
 
     var body: some View {
-        SetupPage("network", Text("Loopback VPN"), description: Text("Swipt needs a loopback VPN to connect to developer services. LocalDevVPN or sing-box is recommended.")) {
-            VStack(spacing: 24) {
-                Divider()
-                VStack(spacing: 12) {
-                    if hasLocalDevVPN {
-                        SetupPrimaryButton(title: Text("Open LocalDevVPN")) { UIApplication.shared.open(Self.localDevVPN) }
-                    } else {
-                        SetupPrimaryButton(title: Text("Get LocalDevVPN")) { UIApplication.shared.open(Self.localDevVPNStore) }
+        SetupPage(
+            usesCellular ? "antenna.radiowaves.left.and.right.slash" : "network",
+            usesCellular ? Text("Unsupported Network") : Text("Loopback VPN"),
+            description: usesCellular
+                ? Text("Swipt only stops working on cellular data, due to Apple’s restrictions on developer services.")
+                : Text("Swipt needs a loopback VPN to connect to developer services. LocalDevVPN or sing-box is recommended.")
+        ) {
+            if !usesCellular {
+                VStack(spacing: 24) {
+                    Divider()
+                    VStack(spacing: 12) {
+                        if hasLocalDevVPN {
+                            SetupPrimaryButton(title: Text("Open LocalDevVPN")) { UIApplication.shared.open(Self.localDevVPN) }
+                        } else {
+                            SetupPrimaryButton(title: Text("Get LocalDevVPN")) { UIApplication.shared.open(Self.localDevVPNStore) }
+                        }
+                    }
+                    Divider()
+                    VStack(spacing: 12) {
+                        if hasSingBox {
+                            SetupPrimaryButton(title: Text("Open sing-box")) { UIApplication.shared.open(Self.singBox) }
+                            SetupSecondaryButton(title: Text("Import example profile into sing-box"), action: shareProfile)
+                        } else {
+                            SetupPrimaryButton(title: Text("Get sing-box")) { UIApplication.shared.open(Self.singBoxStore) }
+                        }
                     }
                 }
-                Divider()
-                VStack(spacing: 12) {
-                    if hasSingBox {
-                        SetupPrimaryButton(title: Text("Open sing-box")) { UIApplication.shared.open(Self.singBox) }
-                        SetupSecondaryButton(title: Text("Import example profile into sing-box"), action: shareProfile)
-                    } else {
-                        SetupPrimaryButton(title: Text("Get sing-box")) { UIApplication.shared.open(Self.singBoxStore) }
-                    }
-                }
+                .frame(maxWidth: 480)
+                .padding(.top, 8)
             }
-            .frame(maxWidth: 480)
-            .padding(.top, 8)
         } actions: {
         }
         .onChangeCompat(of: scenePhase == .active, initial: true) { active in
@@ -120,6 +131,19 @@ struct LoopbackSetupView: View {
             if found {
                 next()
             }
+        }
+        .onAppear {
+            let monitor = NWPathMonitor()
+            monitor.pathUpdateHandler = { path in
+                let cellular = path.usesInterfaceType(.cellular)
+                Task { @MainActor in usesCellular = cellular }
+            }
+            monitor.start(queue: .main)
+            pathMonitor = monitor
+        }
+        .onDisappear {
+            pathMonitor?.cancel()
+            pathMonitor = nil
         }
     }
 

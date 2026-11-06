@@ -48243,6 +48243,310 @@
         }
       }
     },
+    "Swipt only stops working on cellular data, due to Apple’s restrictions on developer services." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "لا يتوقف Swipt عن العمل إلا عند استخدام البيانات الخلوية، وذلك بسبب القيود التي تفرضها Apple على خدمات المطور."
+          }
+        },
+        "bg" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Swipt спира да работи само при мобилни данни заради ограниченията на Apple за услугите за разработчици."
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "শুধু মোবাইল ডেটা ব্যবহার করলেই Swipt কাজ করা বন্ধ করে, কারণ Apple ডেভেলপার পরিষেবাগুলির উপর বিধিনিষেধ আরোপ করে।"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "L’app Swipt només deixa de funcionar amb dades mòbils, a causa de les restriccions d’Apple als serveis de desenvolupador."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Aplikace Swipt přestává fungovat jen na mobilních datech, a to kvůli omezením vývojářských služeb ze strany společnosti Apple."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Swipt holder kun op med at virke på mobildata på grund af Apples begrænsninger af udviklertjenester."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Nur über mobile Daten funktioniert Swipt nicht, da Apple die Entwicklerdienste einschränkt."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Το Swipt σταματά να λειτουργεί μόνο με δεδομένα κινητού δικτύου, λόγω των περιορισμών της Apple στις υπηρεσίες προγραμματιστή."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Swipt solo deja de funcionar con datos móviles, debido a las restricciones de Apple sobre los servicios de desarrollador."
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Swipt solo deja de funcionar con datos celulares, debido a las restricciones de Apple sobre los servicios de desarrollador."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Swipt lakkaa toimimasta vain mobiilidataa käytettäessä, koska Apple rajoittaa kehittäjäpalveluita."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Swipt cesse de fonctionner uniquement avec les données cellulaires, en raison des restrictions d’Apple sur les services de développeur."
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "L’app Swipt cesse de fonctionner uniquement avec les données cellulaires, en raison des restrictions d’Apple sur les services de développeur."
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "માત્ર મોબાઇલ ડેટા પર જ Swipt કામ કરવાનું બંધ કરે છે, કારણ કે Apple ડેવલપર સેવાઓ પર પ્રતિબંધો મૂકે છે."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "רק בשימוש בנתונים סלולריים Swipt מפסיק לפעול, בגלל ההגבלות של Apple על שירותי המפתחים."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "केवल मोबाइल डेटा पर Swipt काम करना बंद कर देता है, क्योंकि Apple डेवलपर सेवाओं पर प्रतिबंध लगाता है।"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Aplikacija Swipt prestaje raditi samo na mobilnim podacima zbog ograničenja tvrtke Apple za usluge za programere."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "A Swipt csak mobiladat-kapcsolaton nem működik, mert az Apple korlátozza a fejlesztői szolgáltatásokat."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Swipt hanya berhenti berfungsi saat menggunakan data seluler, karena pembatasan Apple pada layanan pengembang."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Swipt smette di funzionare solo con i dati cellulare, a causa delle restrizioni di Apple sui servizi per sviluppatori."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Swiptが動作しなくなるのはモバイルデータ通信の使用時のみです。これは、デベロッパサービスに対するAppleの制限によるものです。"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Swipt тек ұялы деректерді пайдаланғанда ғана жұмысын тоқтатады, себебі Apple әзірлеуші қызметтеріне шектеу қояды."
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ಮೊಬೈಲ್ ಡೇಟಾದಲ್ಲಿ ಮಾತ್ರ Swipt ಆ್ಯಪ್ ಕಾರ್ಯನಿರ್ವಹಿಸುವುದನ್ನು ನಿಲ್ಲಿಸುತ್ತದೆ, ಏಕೆಂದರೆ Apple ಡೆವಲಪರ್ ಸೇವೆಗಳ ಮೇಲೆ ನಿರ್ಬಂಧಗಳನ್ನು ವಿಧಿಸುತ್ತದೆ."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Swipt는 셀룰러 데이터 사용 시에만 작동하지 않습니다. 이는 개발자 서비스에 대한 Apple의 제한 때문입니다."
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "„Swipt” nustoja veikti tik naudojant mobiliojo ryšio duomenis dėl „Apple” taikomų kūrėjo paslaugų apribojimų."
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "മൊബൈൽ ഡാറ്റയിൽ മാത്രമാണ് Swipt പ്രവർത്തിക്കാത്തത്, ഡെവലപ്പർ സർവീസുകളിൽ Apple ഏർപ്പെടുത്തിയ നിയന്ത്രണങ്ങളാണ് ഇതിന് കാരണം."
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "केवळ मोबाइल डेटावर Swipt काम करणे थांबवते, कारण Apple डेव्हलपर सेवांवर निर्बंध घालते."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Swipt hanya berhenti berfungsi apabila menggunakan data selular, disebabkan sekatan Apple pada perkhidmatan pembangun."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Swipt slutter bare å virke på mobildata, på grunn av Apples begrensninger på utviklertjenester."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Swipt werkt alleen niet via mobiele data, vanwege de beperkingen van Apple op ontwikkelaarsdiensten."
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "କେବଳ ମୋବାଇଲ୍ ଡାଟାରେ Swipt କାମ କରିବା ବନ୍ଦ କରିଦିଏ, କାରଣ Apple ଡେଭଲପର୍ ସେବା ଉପରେ ପ୍ରତିବନ୍ଧକ ଲଗାଇଛି।"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ਸਿਰਫ਼ ਮੋਬਾਈਲ ਡਾਟਾ 'ਤੇ ਹੀ Swipt ਕੰਮ ਕਰਨਾ ਬੰਦ ਕਰਦੀ ਹੈ, ਕਿਉਂਕਿ Apple ਡਿਵੈਲਪਰ ਸੇਵਾਵਾਂ 'ਤੇ ਪਾਬੰਦੀਆਂ ਲਗਾਉਂਦਾ ਹੈ।"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Aplikacja Swipt przestaje działać tylko podczas korzystania z danych komórkowych, z powodu ograniczeń nakładanych przez Apple na usługi deweloperskie."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "O Swipt só deixa de funcionar com dados celulares, devido às restrições da Apple aos serviços de desenvolvedor."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "O Swipt só deixa de funcionar com dados móveis, devido às restrições da Apple aos serviços de programador."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Aplicația Swipt încetează să funcționeze doar când se folosesc date celulare, din cauza restricțiilor impuse de Apple asupra serviciilor pentru dezvoltatori."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Swipt не работает только при использовании сотовых данных из-за ограничений Apple на службы разработчика."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Apka Swipt prestáva fungovať iba pri používaní mobilných dát, a to pre obmedzenia vývojárskych služieb zo strany spoločnosti Apple."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Aplikacija Swipt preneha delovati samo pri uporabi mobilnih podatkov, in sicer zaradi omejitev, ki jih Apple uvaja za storitve za razvijalce."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Swipt slutar bara fungera på mobildata, på grund av Apples begränsningar för utvecklartjänster."
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "மொபைல் டேட்டாவில் மட்டுமே Swipt வேலை செய்வதை நிறுத்துகிறது, ஏனெனில் டெவலப்பர் சேவைகளுக்கு Apple கட்டுப்பாடுகளை விதிக்கிறது."
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "మొబైల్ డేటాలో మాత్రమే Swipt పని చేయడం ఆగిపోతుంది, ఎందుకంటే డెవలపర్ సర్వీస్‌లపై Apple పరిమితులు విధిస్తుంది."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Swipt จะหยุดทำงานเฉพาะเมื่อใช้ข้อมูลเซลลูลาร์เท่านั้น เนื่องจากข้อจำกัดของ Apple เกี่ยวกับบริการนักพัฒนา"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Swipt, Apple’ın geliştirici servislerine getirdiği kısıtlamalar nedeniyle yalnızca hücresel veri kullanılırken çalışmaz."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Програма Swipt перестає працювати лише під час використання стільникових даних через обмеження Apple на служби розробника."
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "صرف موبائل ڈیٹا پر Swipt کام کرنا بند کر دیتا ہے، کیونکہ Apple ڈیولپر سروسز پر پابندیاں لگاتا ہے۔"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Swipt chỉ ngừng hoạt động khi dùng dữ liệu di động, do Apple hạn chế các dịch vụ nhà phát triển."
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "只有使用流動數據時，Swipt 才無法運作，這是由於 Apple 對開發者服務的限制。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "只有当使用移动数据时，Swipt 无法工作，这是由于 Apple 对开发者服务的限制。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "只有使用行動數據時，Swipt 才無法運作，這是由於 Apple 對開發者服務的限制。"
+          }
+        }
+      }
+    },
     "System Default" : {
       "localizations" : {
         "ar" : {
@@ -55565,6 +55869,310 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "URL"
+          }
+        }
+      }
+    },
+    "Unsupported Network" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "شبكة غير مدعومة"
+          }
+        },
+        "bg" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Неподдържана мрежа"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "অসমর্থিত নেটওয়ার্ক"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Xarxa no compatible"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Nepodporovaná síť"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Netværket understøttes ikke"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Nicht unterstütztes Netzwerk"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Μη υποστηριζόμενο δίκτυο"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Red no compatible"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Red no compatible"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Verkkoa ei tueta"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Réseau non pris en charge"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Réseau non pris en charge"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "નેટવર્ક સપોર્ટેડ નથી"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "רשת לא נתמכת"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "असमर्थित नेटवर्क"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Nepodržana mreža"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Nem támogatott hálózat"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Jaringan Tidak Didukung"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Rete non supportata"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "未対応のネットワーク"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Қолдау көрсетілмейтін желі"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ಬೆಂಬಲವಿಲ್ಲದ ನೆಟ್‌ವರ್ಕ್"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "지원되지 않는 네트워크"
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Nepalaikomas tinklas"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "പിന്തുണയില്ലാത്ത നെറ്റ്‌വർക്ക്"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "सपोर्ट नसलेले नेटवर्क"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Rangkaian Tidak Disokong"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Nettverket støttes ikke"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Niet-ondersteund netwerk"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ଅସମର୍ଥିତ ନେଟ୍‌ୱର୍କ୍"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ਅਸਮਰਥਿਤ ਨੈੱਟਵਰਕ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Nieobsługiwana sieć"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Rede incompatível"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Rede incompatível"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Rețea neacceptată"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Неподдерживаемая сеть"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Nepodporovaná sieť"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Nepodprto omrežje"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Nätverket stöds inte"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ஆதரிக்கப்படாத நெட்வொர்க்"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "సపోర్ట్ చేయని నెట్‌వర్క్"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "เครือข่ายที่ไม่รองรับ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Desteklenmeyen Ağ"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Непідтримувана мережа"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "غیر تعاون یافتہ نیٹ ورک"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Mạng không được hỗ trợ"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "不支援的網絡"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "不支持的网络"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "不支援的網路"
           }
         }
       }
