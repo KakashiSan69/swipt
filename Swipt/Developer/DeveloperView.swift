@@ -115,10 +115,6 @@ private struct LocalNetworkView: View {
 }
 
 private struct CloudflareView: View {
-    @State private var isLoggingIn = false
-    @State private var isLoggingOut = false
-    @State private var alert: AlertState?
-
     @Perception.Bindable private var settings = DeveloperSettings.shared
 
     var body: some View {
@@ -134,27 +130,6 @@ private struct CloudflareView: View {
                     } label: {
                         LabeledContentCompat("Mode") {
                             Text(verbatim: settings.cloudflareMode.name)
-                        }
-                    }
-                    if settings.cloudflareMode == .tunnel {
-                        if settings.cloudflareAccount.isEmpty {
-                            Button("Log In", action: logIn)
-                                .disabled(isLoggingIn)
-                        } else {
-                            Button {
-                                isLoggingOut = true
-                            } label: {
-                                LabeledContentCompat("Account") {
-                                    Text(verbatim: settings.cloudflareZone)
-                                }
-                            }
-                            .foregroundStyle(.primary)
-                            .confirmationDialog("Account", isPresented: $isLoggingOut) {
-                                Button("Log Out", role: .destructive, action: logOut)
-                            }
-                        }
-                        ValueRow(title: "Domain", value: settings.cloudflareHostname, keyboard: .URL) {
-                            settings.cloudflareHostname = $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
                         }
                     }
                     ValueRow(
@@ -194,7 +169,99 @@ private struct CloudflareView: View {
                 }
             }
             .navigationTitle(Text(verbatim: "Cloudflare"))
-            .alert($alert)
+        }
+    }
+}
+
+private struct CloudflareModeView: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var mode: CloudflareMode
+    @State private var account: String
+    @State private var accountName: String
+    @State private var zone: String
+    @State private var subdomain: String
+    @State private var isLoggingIn = false
+    @State private var alert: AlertState?
+
+    init() {
+        let settings = DeveloperSettings.shared
+        _mode = State(initialValue: settings.cloudflareMode)
+        _account = State(initialValue: settings.cloudflareAccount)
+        _accountName = State(initialValue: settings.cloudflareAccountName)
+        _zone = State(initialValue: settings.cloudflareZone)
+        let suffix = ".\(settings.cloudflareZone)"
+        _subdomain = State(initialValue: settings.cloudflareHostname.hasSuffix(suffix) ? String(settings.cloudflareHostname.dropLast(suffix.count)) : "")
+    }
+
+    var body: some View {
+        Form {
+            Section("Mode") {
+                Picker("Mode", selection: $mode) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(verbatim: CloudflareMode.quickTunnel.name)
+                        Text("Uses a domain provided by Cloudflare, which is released when turned off.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                    .tag(CloudflareMode.quickTunnel)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(verbatim: CloudflareMode.tunnel.name)
+                        Text("Uses your own account and domain.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                    .tag(CloudflareMode.tunnel)
+                }
+                .pickerStyle(.inline)
+                .labelsHidden()
+            }
+            if mode == .tunnel {
+                Section {
+                    if account.isEmpty {
+                        Button("Log In", action: logIn)
+                            .disabled(isLoggingIn)
+                    } else {
+                        if !accountName.isEmpty {
+                            LabeledContentCompat("Name") {
+                                Text(verbatim: accountName)
+                            }
+                        }
+                        Button("Reauthorize", action: logIn)
+                            .disabled(isLoggingIn)
+                    }
+                } header: {
+                    Text("Account")
+                }
+                if !account.isEmpty {
+                    Section("Domain") {
+                        LabeledContentCompat("Domain") {
+                            Text(verbatim: zone)
+                        }
+                        ValueRow(title: "Subdomain", value: subdomain, keyboard: .URL) { text in
+                            var label = text.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+                            if label.hasSuffix(".\(zone)") {
+                                label.removeLast(zone.count + 1)
+                            }
+                            subdomain = label.trimmingCharacters(in: CharacterSet(charactersIn: "."))
+                        }
+                    }
+                }
+            }
+        }
+        .navigationTitle(Text(verbatim: "Cloudflare"))
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button("Save", action: save)
+                    .disabled(!isComplete)
+            }
+        }
+        .alert($alert)
+    }
+
+    private var isComplete: Bool {
+        switch mode {
+        case .quickTunnel: true
+        case .tunnel: !account.isEmpty && !subdomain.isEmpty
         }
     }
 
@@ -203,12 +270,12 @@ private struct CloudflareView: View {
         Task {
             defer { isLoggingIn = false }
             do {
-                guard let account = try await CloudflareWebLogin().run() else { return }
-                settings.cloudflareAccount = account.credential
-                settings.cloudflareZone = account.zoneName
-                settings.cloudflareNamedTunnel = ""
-                if !account.zoneName.isEmpty {
-                    settings.cloudflareHostname = "\(Platform.shared.hostLabel).\(account.zoneName)".lowercased()
+                guard let login = try await CloudflareWebLogin().run() else { return }
+                account = login.credential
+                accountName = login.accountName
+                zone = login.zoneName
+                if subdomain.isEmpty {
+                    subdomain = Platform.shared.hostLabel.lowercased()
                 }
             } catch {
                 alert = AlertState(String(localized: "Can’t Log In"), error: error)
@@ -216,43 +283,17 @@ private struct CloudflareView: View {
         }
     }
 
-    private func logOut() {
-        settings.cloudflareAccount = ""
-        settings.cloudflareZone = ""
-        settings.cloudflareNamedTunnel = ""
-        settings.cloudflareHostname = ""
-    }
-}
-
-private struct CloudflareModeView: View {
-    @Perception.Bindable private var settings = DeveloperSettings.shared
-
-    var body: some View {
-        WithPerceptionTracking {
-            Form {
-                Section("Mode") {
-                    Picker("Mode", selection: $settings.cloudflareMode) {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(verbatim: CloudflareMode.quickTunnel.name)
-                            Text("Uses a domain provided by Cloudflare, which is released when turned off.")
-                                .font(.footnote)
-                                .foregroundStyle(.secondary)
-                        }
-                        .tag(CloudflareMode.quickTunnel)
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(verbatim: CloudflareMode.tunnel.name)
-                            Text("Uses your own account and domain.")
-                                .font(.footnote)
-                                .foregroundStyle(.secondary)
-                        }
-                        .tag(CloudflareMode.tunnel)
-                    }
-                    .pickerStyle(.inline)
-                    .labelsHidden()
-                }
-            }
-            .navigationTitle(Text(verbatim: "Cloudflare"))
+    private func save() {
+        let settings = DeveloperSettings.shared
+        if account != settings.cloudflareAccount {
+            settings.cloudflareNamedTunnel = ""
         }
+        settings.cloudflareAccount = account
+        settings.cloudflareAccountName = accountName
+        settings.cloudflareZone = zone
+        settings.cloudflareHostname = account.isEmpty ? "" : "\(subdomain).\(zone)"
+        settings.cloudflareMode = mode
+        dismiss()
     }
 }
 

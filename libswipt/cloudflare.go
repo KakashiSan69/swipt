@@ -33,8 +33,9 @@ type CloudflareTunnel struct {
 }
 
 type CloudflareAccount struct {
-	Credential string
-	ZoneName   string
+	Credential  string
+	ZoneName    string
+	AccountName string
 }
 
 type CloudflareLogin struct {
@@ -60,8 +61,11 @@ func (l *CloudflareLogin) Wait() (*CloudflareAccount, error) {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), zoneLookupTimeout)
 	defer cancel()
-	zone, _ := account.ZoneName(ctx)
-	return &CloudflareAccount{Credential: string(credential), ZoneName: zone}, nil
+	zone, err := account.Zone(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &CloudflareAccount{Credential: string(credential), ZoneName: zone.Name, AccountName: zone.Account.Name}, nil
 }
 
 func (l *CloudflareLogin) Cancel() {

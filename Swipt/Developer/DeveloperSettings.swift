@@ -17,6 +17,7 @@ final class DeveloperSettings {
         static let cloudflarePath = "developerCloudflarePath"
         static let cloudflareMode = "developerCloudflareMode"
         static let cloudflareAccount = "developerCloudflareAccount"
+        static let cloudflareAccountName = "developerCloudflareAccountName"
         static let cloudflareZone = "developerCloudflareZone"
         static let cloudflareHostname = "developerCloudflareHostname"
         static let cloudflareQuickTunnel = "developerCloudflareQuickTunnel"
@@ -60,6 +61,10 @@ final class DeveloperSettings {
         didSet { store.set(cloudflareAccount, for: Key.cloudflareAccount) }
     }
 
+    var cloudflareAccountName: String {
+        didSet { store.set(cloudflareAccountName, for: Key.cloudflareAccountName) }
+    }
+
     var cloudflareZone: String {
         didSet { store.set(cloudflareZone, for: Key.cloudflareZone) }
     }
@@ -96,6 +101,7 @@ final class DeveloperSettings {
         cloudflarePath = store.value(String.self, for: Key.cloudflarePath) ?? "/"
         cloudflareMode = store.value(CloudflareMode.self, for: Key.cloudflareMode) ?? .quickTunnel
         cloudflareAccount = store.value(String.self, for: Key.cloudflareAccount) ?? ""
+        cloudflareAccountName = store.value(String.self, for: Key.cloudflareAccountName) ?? ""
         cloudflareZone = store.value(String.self, for: Key.cloudflareZone) ?? ""
         cloudflareHostname = store.value(String.self, for: Key.cloudflareHostname) ?? ""
         cloudflareQuickTunnel = store.value(String.self, for: Key.cloudflareQuickTunnel) ?? ""

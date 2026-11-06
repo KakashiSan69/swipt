@@ -99,15 +99,20 @@ func (a Account) request(ctx context.Context, method string, path string, body a
 	return json.Unmarshal(envelope.Result, result)
 }
 
-func (a Account) ZoneName(ctx context.Context) (string, error) {
-	var zone struct {
+type Zone struct {
+	Name    string `json:"name"`
+	Account struct {
 		Name string `json:"name"`
-	}
+	} `json:"account"`
+}
+
+func (a Account) Zone(ctx context.Context) (Zone, error) {
+	var zone Zone
 	err := a.request(ctx, http.MethodGet, "/zones/"+a.ZoneID, nil, &zone)
 	if err != nil {
-		return "", E.Cause(err, "cloudflare: read zone")
+		return Zone{}, E.Cause(err, "cloudflare: read zone")
 	}
-	return zone.Name, nil
+	return zone, nil
 }
 
 func (a Account) createTunnel(ctx context.Context) (tunnelState, error) {
