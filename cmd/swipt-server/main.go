@@ -37,6 +37,7 @@ func main() {
 	command.Flags().StringVarP(&options.Device, "device", "d", "", "the device, by name or UDID")
 	command.Flags().StringVar(&options.Passcode, "passcode", "", "unlock device with this passcode")
 	command.Flags().StringVar(&options.PasscodeType, "passcode-type", "", "pin (4 or 6 digits, default), numeric or alphanumeric")
+	command.Flags().StringVar(&options.DiskImage, "disk-image", "", "the directory of the Developer Disk Image to mount (default: this Mac's)")
 	pairCommand := &cobra.Command{
 		Use:          "pair [-d NAME|UDID] [-o FILE]",
 		Short:        "Create a remote pairing record for Swipt",

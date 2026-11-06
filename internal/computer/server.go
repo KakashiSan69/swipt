@@ -36,6 +36,7 @@ type Options struct {
 	Device       string
 	Passcode     string
 	PasscodeType string
+	DiskImage    string
 	Version      string
 	Logs         *log.Factory
 	Output       io.Writer
@@ -85,13 +86,19 @@ func Run(ctx context.Context, options Options) error {
 	}
 	defer listener.Close()
 
+	diskImage := options.DiskImage
+	if diskImage == "" {
+		if _, err := os.Stat(diskImages); err == nil {
+			diskImage = diskImages
+		}
+	}
 	deviceLogger := options.Logs.NewLogger("device")
 	connection := device.New(device.Options{
 		Name:               paired.Name,
 		Connect:            connect(paired.UDID, deviceLogger),
 		Logger:             deviceLogger,
 		Observer:           observer{},
-		DiskImageDirectory: diskImages,
+		DiskImageDirectory: diskImage,
 	})
 	if options.Passcode != "" {
 		if err = connection.UpdateSettings(device.Settings{AutoUnlockPasscode: options.Passcode, AutoUnlockPasscodeType: passcodeKind}); err != nil {

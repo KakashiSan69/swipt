@@ -76,7 +76,8 @@ func (c *Client) Status(ctx context.Context) (Status, error) {
 		return Status{}, err
 	}
 	if c.device.HasService(cryptexService) {
-		status.Cryptex, err = c.ddiCryptexInstalled(ctx)
+		entry, err := c.ddiCryptex(ctx)
+		status.Cryptex = entry != nil
 		if err != nil {
 			if ctx.Err() != nil {
 				return Status{}, ctx.Err()

@@ -851,6 +851,47 @@ async function findInstalled(context) {
   return { device, team, current };
 }
 
+async function downloadIPA(context, release) {
+  const name = `Swipt-${release.ipa.id}.ipa`;
+  const ipa = path.join(downloads, name);
+  if (fs.existsSync(ipa)) {
+    return ipa;
+  }
+  fs.mkdirSync(downloads, { recursive: true });
+  const partial = `${ipa}.download`;
+  await step(
+    tr("downloading Swipt {version} ({build}) from {release}", {
+      version: release.version,
+      build: release.build,
+      release: release.tag,
+    }),
+    (update) => download(release.ipa.url, partial, context.signal, update),
+  );
+  fs.renameSync(partial, ipa);
+  for (const entry of fs.readdirSync(downloads)) {
+    if (entry !== name) {
+      fs.rmSync(path.join(downloads, entry), { force: true });
+    }
+  }
+  return ipa;
+}
+
+async function localIPA(context) {
+  const cached = fs.existsSync(downloads)
+    ? fs.readdirSync(downloads).find((entry) => entry.endsWith(".ipa"))
+    : undefined;
+  return cached === undefined
+    ? downloadIPA(
+        context,
+        await step(
+          tr("checking the latest release"),
+          () => findRelease(context.options.nightly, context.signal),
+          { transient: true },
+        ),
+      )
+    : path.join(downloads, cached);
+}
+
 async function deploy(context, { device, team, current }, updateOnly) {
   const passcode = await installPasscode(context, device, current);
   const release = await step(
@@ -933,26 +974,7 @@ async function deploy(context, { device, team, current }, updateOnly) {
           }),
           (update) => provision(work, id, team, device, update),
         );
-    const name = `Swipt-${release.ipa.id}.ipa`;
-    const ipa = path.join(downloads, name);
-    if (!fs.existsSync(ipa)) {
-      fs.mkdirSync(downloads, { recursive: true });
-      const partial = `${ipa}.download`;
-      await step(
-        tr("downloading Swipt {version} ({build}) from {release}", {
-          version: release.version,
-          build: release.build,
-          release: release.tag,
-        }),
-        (update) => download(release.ipa.url, partial, context.signal, update),
-      );
-      fs.renameSync(partial, ipa);
-      for (const entry of fs.readdirSync(downloads)) {
-        if (entry !== name) {
-          fs.rmSync(path.join(downloads, entry), { force: true });
-        }
-      }
-    }
+    const ipa = await downloadIPA(context, release);
     const app =
       signing === undefined
         ? await unpack(ipa, work)
@@ -1077,6 +1099,7 @@ export async function installAndOpen(
     id,
     passcode,
     current !== undefined && !paired,
+    app,
   );
 }
 
@@ -1107,7 +1130,7 @@ async function printAPI(context, device) {
   );
 }
 
-async function openConfigured(context, device, id, passcode, updated) {
+async function openConfigured(context, device, id, passcode, updated, app) {
   const publishes = !context.options["no-setup-api"];
   if (device.virtual) {
     await step(
@@ -1122,8 +1145,19 @@ async function openConfigured(context, device, id, passcode, updated) {
       },
     );
   } else {
+    const work = fs.mkdtempSync(path.join(os.tmpdir(), "swipt-disk-image-"));
     try {
-      await trustAndOpen(context, device, id, passcode, updated);
+      await trustAndOpen(
+        context,
+        device,
+        id,
+        passcode,
+        updated,
+        path.join(
+          app ?? (await unpack(await localIPA(context), work)),
+          "DeveloperDiskImage",
+        ),
+      );
     } catch (error) {
       if (error.message !== serverHint) {
         throw error;
@@ -1136,6 +1170,8 @@ async function openConfigured(context, device, id, passcode, updated) {
       if (!(await launch(device, id, publishes ? [publishArgument] : []))) {
         return;
       }
+    } finally {
+      fs.rmSync(work, { recursive: true, force: true });
     }
   }
   if (publishes) {
@@ -1358,7 +1394,7 @@ async function pair(device, id, overwrite = false) {
   return true;
 }
 
-async function serve(udid, passcode, signal) {
+async function serve(udid, passcode, signal, diskImage) {
   const server = spawn(
     serverPath(),
     [
@@ -1367,6 +1403,8 @@ async function serve(udid, passcode, signal) {
       ...(passcode
         ? ["--passcode", passcode.passcode, "--passcode-type", passcode.type]
         : []),
+      "--disk-image",
+      diskImage,
     ],
     {
       stdio: ["ignore", "pipe", "pipe"],
@@ -1410,7 +1448,7 @@ async function serve(udid, passcode, signal) {
   };
 }
 
-async function launchUnlocking(device, id, args, signal) {
+async function launchUnlocking(device, id, args, signal, diskImage) {
   try {
     await launchApp(device, id, args);
     return;
@@ -1422,7 +1460,7 @@ async function launchUnlocking(device, id, args, signal) {
     if (passcode === undefined) {
       throw error;
     }
-    const server = await serve(device.udid, passcode, signal);
+    const server = await serve(device.udid, passcode, signal, diskImage);
     try {
       const failure = await tryUnlock(
         open({ url: await server.url, token: "" }),
@@ -1438,7 +1476,7 @@ async function launchUnlocking(device, id, args, signal) {
   await launchApp(device, id, args);
 }
 
-async function trustAndOpen(context, device, id, given, updated) {
+async function trustAndOpen(context, device, id, given, updated, diskImage) {
   const lines = [];
   let failure;
   let passcode = given;
@@ -1453,6 +1491,7 @@ async function trustAndOpen(context, device, id, given, updated) {
               id,
               context.options["no-setup-api"] ? [] : [publishArgument],
               context.signal,
+              diskImage,
             );
             return;
           } catch (error) {
@@ -1474,7 +1513,12 @@ async function trustAndOpen(context, device, id, given, updated) {
         let server;
         let url;
         while (url === undefined) {
-          server = await serve(device.udid, passcode, context.signal);
+          server = await serve(
+            device.udid,
+            passcode,
+            context.signal,
+            diskImage,
+          );
           try {
             url = await server.url;
           } catch (error) {

@@ -20,7 +20,7 @@ var diskImageVariants = []imagemounter.Variant{imagemounter.Cryptex, imagemounte
 func (s *Connection) prepareDiskImage(ctx context.Context, device *coredevice.Device, images *imagemounter.Client) error {
 	if device.HasService(displayService) {
 		s.relisted = false
-		return nil
+		return s.updateDiskImage(ctx, images)
 	}
 	status, err := images.Status(ctx)
 	if err != nil {
@@ -86,6 +86,30 @@ func (s *Connection) prepareDiskImage(ctx context.Context, device *coredevice.De
 		return &Error{Problem: ProblemNoDiskImage, Err: E.Cause(failure, "the Developer Disk Image is not mounted, and ", directory, " has no usable copy")}
 	}
 	return &Error{Problem: ProblemDiskImage, Err: failure}
+}
+
+func (s *Connection) updateDiskImage(ctx context.Context, images *imagemounter.Client) error {
+	directory := s.options.DiskImageDirectory
+	if directory == "" {
+		return nil
+	}
+	files, err := s.diskImageFiles(ctx, directory, imagemounter.Cryptex)
+	if err != nil {
+		return &Error{Problem: ProblemDiskImage, Err: E.Cause(err, "find ", imagemounter.Cryptex, " disk image files")}
+	}
+	installed, available, outdated, err := images.CryptexOutdated(ctx, files)
+	if err != nil {
+		return &Error{Problem: ProblemDiskImage, Err: E.Cause(err, "compare the Developer Disk Image's version")}
+	}
+	if !outdated {
+		return nil
+	}
+	s.logger.Info("replacing the Developer Disk Image ", installed, " with ", available, " from ", files)
+	if err = images.ReplaceCryptex(ctx, files); err != nil {
+		return &Error{Problem: ProblemDiskImage, Err: E.Cause(err, "replace the Developer Disk Image ", installed, " with ", available)}
+	}
+	s.relisted = true
+	return errRemounted
 }
 
 func (s *Connection) diskImageFiles(ctx context.Context, directory string, variant imagemounter.Variant) (string, error) {
