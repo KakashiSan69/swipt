@@ -133,7 +133,7 @@ type phoneGeometry struct {
 func (c *conn) readGeometry(ctx context.Context) (phoneGeometry, error) {
 	c.geometryAccess.Lock()
 	defer c.geometryAccess.Unlock()
-	if time.Since(c.geometryAt) < phoneGeometryLife || c.connection.feeds.steadySince(c.geometryAt) {
+	if time.Since(c.geometryAt) < phoneGeometryLife || c.connection.screens.steadySince(c.geometryAt) {
 		return c.geometry, nil
 	}
 	asked := time.Now()
@@ -436,8 +436,16 @@ func (m *PhoneModel) convert(space axSpace, node *accessibility.TreeNode, parent
 	return out
 }
 
+type SnapshotScope uint8
+
+const (
+	ScopeFullScreen SnapshotScope = iota
+	ScopeFrontApp
+	ScopeSpringBoard
+)
+
 type SnapshotOptions struct {
-	Front  bool
+	Scope  SnapshotScope
 	Raw    bool
 	Depth  int64
 	Within string
@@ -448,10 +456,12 @@ func (o SnapshotOptions) key() string {
 	switch {
 	case o.Within != "":
 		return "within:" + o.Within + ":" + depth
-	case o.Front:
+	case o.Scope == ScopeFrontApp:
 		return "front:" + depth
+	case o.Scope == ScopeSpringBoard:
+		return "springBoard:" + depth
 	}
-	return "screen:" + depth
+	return "fullScreen:" + depth
 }
 
 func (p *Phone) read(ctx context.Context, c *conn, options SnapshotOptions) (*PhoneModel, error) {
@@ -467,7 +477,7 @@ func (p *Phone) read(ctx context.Context, c *conn, options SnapshotOptions) (*Ph
 		if base, err = p.element(c, options.Within); err != nil {
 			return nil, err
 		}
-	case !options.Front:
+	case options.Scope != ScopeFrontApp:
 		if springboard, err = c.springboardPID(ctx); err != nil {
 			return nil, err
 		}
@@ -492,8 +502,13 @@ func (p *Phone) readScreen(ctx context.Context, c *conn, client *accessibility.R
 		screen, err = client.ReadApplication(ctx, accessibility.ApplicationOptions{
 			Root: &base.AX, Clip: &base.axClip, Depth: options.Depth, Modal: true, Focused: true, Expand: true,
 		})
-	case options.Front:
+	case options.Scope == ScopeFrontApp:
 		screen, err = client.ReadApplication(ctx, accessibility.ApplicationOptions{Depth: options.Depth, Focused: true, Expand: true})
+	case options.Scope == ScopeSpringBoard:
+		screen, err = client.ReadApplication(ctx, accessibility.ApplicationOptions{PID: springboard, Depth: options.Depth})
+		if E.IsMulti(err, accessibility.ErrNoAnswer, accessibility.ErrNoApplication) {
+			c.springboard.CompareAndSwap(springboard, 0)
+		}
 	default:
 		screen, err = client.ReadScreen(ctx, springboard, options.Depth, nil)
 		if errors.Is(err, accessibility.ErrNoApplication) {

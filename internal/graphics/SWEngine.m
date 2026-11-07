@@ -5,10 +5,13 @@
 #import <JavaScriptCore/JavaScriptCore.h>
 
 #import "SWRecordingSession.h"
+#import "SWScreenStream.h"
 
-static void SWAbandonIfRecording(id object) {
+static void SWReleaseOwned(id object) {
     if ([object isKindOfClass:SWRecordingSession.class]) {
         [(SWRecordingSession *)object abandon];
+    } else if ([object isKindOfClass:SWScreenStream.class]) {
+        [(SWScreenStream *)object close];
     }
 }
 
@@ -18,6 +21,7 @@ static void SWAbandonIfRecording(id object) {
     NSInteger _next;
     NSMutableDictionary<NSNumber *, SWCall *> *_prepared;
     NSMutableDictionary<NSNumber *, id> *_objects;
+    NSHashTable<SWScreenStream *> *_streams;
     BOOL _closed;
 }
 
@@ -28,6 +32,7 @@ static void SWAbandonIfRecording(id object) {
         _lock = [NSLock new];
         _prepared = [NSMutableDictionary dictionary];
         _objects = [NSMutableDictionary dictionary];
+        _streams = [NSHashTable weakObjectsHashTable];
     }
     return self;
 }
@@ -59,7 +64,7 @@ static void SWAbandonIfRecording(id object) {
     }
     [_lock unlock];
     if (!accepted) {
-        SWAbandonIfRecording(object);
+        SWReleaseOwned(object);
     }
     return identifier;
 }
@@ -76,16 +81,29 @@ static void SWAbandonIfRecording(id object) {
     [self take:identifier];
 }
 
+- (void)trackStream:(SWScreenStream *)stream {
+    [_lock lock];
+    BOOL accepted = !_closed;
+    if (accepted) {
+        [_streams addObject:stream];
+    }
+    [_lock unlock];
+    if (!accepted) {
+        [stream close];
+    }
+}
+
 - (void)close {
     [_lock lock];
     _closed = YES;
     [_prepared removeAllObjects];
-    NSArray *left = _objects.allValues;
+    NSArray *left = [_objects.allValues arrayByAddingObjectsFromArray:_streams.allObjects];
     [_objects removeAllObjects];
+    [_streams removeAllObjects];
     _context = nil;
     [_lock unlock];
     for (id object in left) {
-        SWAbandonIfRecording(object);
+        SWReleaseOwned(object);
     }
 }
 

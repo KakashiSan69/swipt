@@ -5,7 +5,7 @@
 #import "SWError.h"
 #import "SWGoBridge.h"
 #import "SWImageNode.h"
-#import "SWVideoModel.h"
+#import "SWScreenRecording.h"
 
 const NSInteger SWDefaultDifferenceThreshold = 24;
 
@@ -14,10 +14,10 @@ static const struct {
     SWCallFunction function;
 } SWCallTable[] = {
     {"screenshot", SWCallScreenshot},
-    {"screen.get", SWCallScreenGet},
-    {"screen.waitForChange", SWCallWaitForChange},
-    {"screen.waitForStable", SWCallWaitForStable},
-    {"screen.find", SWCallScreenFind},
+    {"screen.open", SWCallScreenOpen},
+    {"screen.close", SWCallScreenClose},
+    {"screen.frame", SWCallScreenFrame},
+    {"screen.record", SWCallScreenRecord},
     {"decode", SWCallDecode},
     {"encode", SWCallEncode},
     {"save", SWCallSave},
@@ -31,13 +31,9 @@ static const struct {
     {"distance", SWCallDistance},
     {"nearest", SWCallNearest},
     {"barcodes", SWCallBarcodes},
-    {"record", SWCallRecord},
     {"recording.stop", SWCallRecordingStop},
-    {"video.open", SWCallVideoOpen},
-    {"video.grid", SWCallVideoGrid},
-    {"video.diff", SWCallVideoDiff},
-    {"video.find", SWCallVideoFind},
-    {"video.export", SWCallVideoExport},
+    {"recording.open", SWCallRecordingOpen},
+    {"recording.export", SWCallRecordingExport},
 };
 
 id SWCallExecute(SWCall *call, NSError **error) {
@@ -72,10 +68,10 @@ id SWCallExecute(SWCall *call, NSError **error) {
     return object;
 }
 
-- (SWVideoModel *)video:(NSError **)error {
+- (SWScreenRecording *)recording:(NSError **)error {
     id object = _objects.firstObject;
-    if (![object isKindOfClass:SWVideoModel.class]) {
-        SWFail(error, SWErrorNameType, @"graphics: %@ needs a Video", _method);
+    if (![object isKindOfClass:SWScreenRecording.class]) {
+        SWFail(error, SWErrorNameType, @"graphics: %@ needs a ScreenRecording", _method);
         return nil;
     }
     return object;

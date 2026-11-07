@@ -11,7 +11,6 @@ import (
 	"path/filepath"
 	"slices"
 	"strconv"
-	"sync"
 	"sync/atomic"
 	"time"
 
@@ -31,22 +30,15 @@ const (
 	graphicsUninstall
 )
 
-const timelineLimit = 100_000
-
 var (
 	errNoGraphics   = E.New("graphics: this platform has no graphics")
-	errScreenEnded  = E.New("graphics: the screen stream ended")
+	errStreamEnded  = E.New("the stream ended")
 	graphicsEngines atomic.Uint64
 )
 
 var readOperations = []string{
 	"device.info", "device.state", "device.installedApplications", "device.applicationIcon", "device.pasteboard",
 	"accessibility.snapshot", "accessibility.find", "accessibility.changed",
-}
-
-var timelineOperations = []string{
-	"device.unlock", "device.launchApplication", "input.tap", "input.swipe", "input.drag", "input.pinch", "input.touch", "input.pressKey",
-	"input.button", "accessibility.tap", "accessibility.setText", "accessibility.perform",
 }
 
 type GraphicsCall struct {
@@ -73,21 +65,6 @@ func (c *GraphicsCall) Screenshot() ([]byte, float64, error) {
 		err = c.call.droppedError(err, "during the screenshot")
 	}
 	return data, scale, err
-}
-
-func (c *GraphicsCall) Tracing() bool {
-	return c.call.engine.host.timeline.active()
-}
-
-func (c *GraphicsCall) Trace(at time.Time, name, detail string, duration time.Duration) {
-	c.call.engine.host.timeline.record(TimelineEvent{
-		Time: at.UnixMilli(), Type: "operation", Name: "trace." + name, Message: detail,
-		DurationMs: float64(duration.Microseconds()) / 1000, Swiplet: c.call.engine.swiplet.ID,
-	})
-}
-
-func (c *GraphicsCall) WatchTimeline() *TimelineWatch {
-	return c.call.engine.host.watchTimeline()
 }
 
 func (c *GraphicsCall) Authorize(name string, write bool) error {
@@ -173,89 +150,9 @@ func (e *engine) watchGraphics(ctx context.Context, call *operation, publish fun
 	go func() {
 		err := graphics.Watch(e.graphics, id, &GraphicsCall{ctx: ctx, call: call}, func(value any) { publish(value, nil) })
 		if err == nil {
-			err = errScreenEnded
+			err = errStreamEnded
 		}
 		ended(err)
 	}()
 	return nil
-}
-
-type TimelineEvent struct {
-	Time       int64             `json:"time"`
-	Type       string            `json:"type"`
-	Name       string            `json:"name,omitempty"`
-	Arguments  []json.RawMessage `json:"arguments,omitempty"`
-	DurationMs float64           `json:"durationMs,omitempty"`
-	Error      string            `json:"error,omitempty"`
-	Swiplet    string            `json:"swiplet,omitempty"`
-	Action     string            `json:"action,omitempty"`
-	Caller     string            `json:"caller,omitempty"`
-	App        string            `json:"app,omitempty"`
-	Level      string            `json:"level,omitempty"`
-	Message    string            `json:"message,omitempty"`
-}
-
-type timeline struct {
-	access  sync.Mutex
-	watches map[*TimelineWatch]struct{}
-}
-
-type TimelineWatch struct {
-	timeline *timeline
-	cancel   context.CancelFunc
-	done     chan struct{}
-	access   sync.Mutex
-	events   []TimelineEvent
-}
-
-func (t *timeline) record(event TimelineEvent) {
-	t.access.Lock()
-	defer t.access.Unlock()
-	for watch := range t.watches {
-		watch.add(event)
-	}
-}
-
-func (t *timeline) active() bool {
-	t.access.Lock()
-	defer t.access.Unlock()
-	return len(t.watches) > 0
-}
-
-func (h *Host) watchTimeline() *TimelineWatch {
-	ctx, cancel := context.WithCancel(h.ctx)
-	watch := &TimelineWatch{timeline: &h.timeline, cancel: cancel, done: make(chan struct{})}
-	h.timeline.access.Lock()
-	h.timeline.watches[watch] = struct{}{}
-	h.timeline.access.Unlock()
-	go func() {
-		defer close(watch.done)
-		if phone := h.options.Device; phone != nil {
-			_ = phone.WatchForeground(ctx, func(app string) {
-				watch.add(TimelineEvent{Time: time.Now().UnixMilli(), Type: "foreground", App: app})
-			})
-		}
-	}()
-	return watch
-}
-
-func (w *TimelineWatch) add(event TimelineEvent) {
-	w.access.Lock()
-	defer w.access.Unlock()
-	if len(w.events) < timelineLimit {
-		w.events = append(w.events, event)
-	}
-}
-
-func (w *TimelineWatch) Stop() []TimelineEvent {
-	w.timeline.access.Lock()
-	delete(w.timeline.watches, w)
-	w.timeline.access.Unlock()
-	w.cancel()
-	<-w.done
-	w.access.Lock()
-	defer w.access.Unlock()
-	events := slices.Clone(w.events)
-	common.SortBy(events, func(it TimelineEvent) int64 { return it.Time })
-	return events
 }

@@ -32,29 +32,10 @@ static NSError *SWTakeFailure(char *failure) {
 
 @end
 
-@implementation SWTimelineWatch
-
-- (NSString *)stop {
-    char *events = swiptGraphicsStopTimeline(self.handle);
-    NSString *text = [NSString stringWithUTF8String:events];
-    free(events);
-    return text;
-}
-
-@end
-
 @implementation SWCallContext
 
 - (BOOL)cancelled {
     return swiptGraphicsCancelled(self.handle);
-}
-
-- (BOOL)tracing {
-    return swiptGraphicsTracing(self.handle);
-}
-
-- (void)traceName:(NSString *)name detail:(NSString *)detail started:(double)started duration:(double)duration {
-    swiptGraphicsTrace(self.handle, SWCString(name), SWCString(detail), started, duration);
 }
 
 - (BOOL)authorize:(NSString *)path write:(BOOL)write error:(NSError **)error {
@@ -76,37 +57,37 @@ static NSError *SWTakeFailure(char *failure) {
     return [NSData dataWithBytesNoCopy:shot.image length:shot.length freeWhenDone:YES];
 }
 
-- (SWTimelineWatch *)watchTimeline {
-    return [[SWTimelineWatch alloc] initWithHandle:swiptGraphicsWatchTimeline(self.handle)];
-}
-
 - (void)publish:(NSString *)value {
     swiptGraphicsPublish(self.handle, SWCString(value));
 }
 
 @end
 
-@implementation SWDeviceFeed
+@implementation SWGoScreenStream
 
-+ (instancetype)openWithError:(NSError **)error {
-    swipt_graphics_screen screen = swiptGraphicsOpenScreen();
++ (instancetype)openWithMode:(NSString *)mode maximumBitrate:(uint64_t)maximumBitrate error:(NSError **)error {
+    swipt_graphics_screen_stream screen = swiptGraphicsOpenScreenStream(SWCString(mode), maximumBitrate);
     if (screen.failure != NULL) {
         SWFailWith(error, SWTakeFailure(screen.failure));
         return nil;
     }
-    SWDeviceFeed *feed = [[self alloc] initWithHandle:screen.feed];
-    feed->_width = (NSInteger)screen.width;
-    feed->_height = (NSInteger)screen.height;
-    feed->_scale = MAX(screen.scale, 1);
-    return feed;
+    SWGoScreenStream *stream = [[self alloc] initWithHandle:screen.stream];
+    stream->_width = (NSInteger)screen.width;
+    stream->_height = (NSInteger)screen.height;
+    stream->_scale = MAX(screen.scale, 1);
+    return stream;
+}
+
+- (void)configureMode:(NSString *)mode maximumBitrate:(uint64_t)maximumBitrate {
+    swiptGraphicsConfigureScreenStream(self.handle, SWCString(mode), maximumBitrate);
 }
 
 - (void)requestKeyFrame {
-    swiptGraphicsRequestKeyFrame(self.handle);
+    swiptGraphicsRequestScreenKeyFrame(self.handle);
 }
 
 - (void)close {
-    swiptGraphicsCloseScreen(self.handle);
+    swiptGraphicsCloseScreenStream(self.handle);
 }
 
 @end

@@ -376,7 +376,7 @@ func (s *Connection) startVideo(ctx context.Context, a *conn, request media.Serv
 	s.videoSize(info.Width, info.Height)
 	s.checkDisplay()
 	s.input.videoReady()
-	s.feeds.viewerStarted(source)
+	s.screens.viewerStarted(source)
 	return source, nil
 }
 
@@ -454,23 +454,23 @@ func (v *videoSource) ReadPackets(ctx context.Context, packets []media.ServerPac
 		return 0, err
 	}
 	v.lastHeard.Store(time.Now().UnixNano())
-	feeds := v.connection.feeds
-	tapping := feeds.tapping(v)
+	screens := v.connection.screens
+	sharing := screens.sharesViewer(v)
 	var batch []byte
 	for i, packet := range v.packets[:n] {
 		if !packet.RTCP {
-			feeds.observe(packet.Buffer.Bytes(), packet.Arrival)
+			screens.observe(packet.Buffer.Bytes(), packet.Arrival)
 			if sps := hevcSPS(rtpPayload(packet.Buffer.Bytes())); sps != nil {
 				v.checkPictureSize(sps)
 			}
 		}
-		if tapping {
-			batch = appendFeedRecord(batch, packet.Buffer.Bytes(), packet.RTCP, packet.Arrival)
+		if sharing {
+			batch = appendPacketRecord(batch, packet.Buffer.Bytes(), packet.RTCP, packet.Arrival)
 		}
 		packets[i] = media.ServerPacket{Buffer: packet.Buffer, RTCP: packet.RTCP, Arrival: packet.Arrival}
 	}
-	if tapping {
-		feeds.deliver(batch, func() bool { return feeds.viewer == v })
+	if sharing {
+		screens.deliver(batch, func() bool { return screens.viewer == v })
 	}
 	return n, nil
 }
@@ -516,7 +516,7 @@ func (v *videoSource) RequestKeyFrame() error {
 
 func (v *videoSource) Close() error {
 	v.connection.streams.retire(v.stream)
-	v.connection.feeds.viewerStopped(v)
+	v.connection.screens.viewerStopped(v)
 	return nil
 }
 

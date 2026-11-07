@@ -4,11 +4,5 @@ const outside = () => {
   );
 };
 
-export const screenshot = outside;
-export const find = outside;
-export const frames = undefined;
-export const waitFor = outside;
-export const waitForChange = outside;
-export const waitForStable = outside;
-export const record = outside;
+export const open = outside;
 export const openRecording = outside;

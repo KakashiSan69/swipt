@@ -1,12 +1,31 @@
 //go:build darwin && cgo
 
-#import "SWSegmentReader.h"
+#import "SWMovieReader.h"
 
 #import <AVFoundation/AVFoundation.h>
 
 #import "SWCancelToken.h"
 #import "SWError.h"
-#import "SWVideoModel.h"
+
+static AVAssetTrack *SWFirstVideoTrack(AVURLAsset *asset, NSError **error) {
+    dispatch_semaphore_t loaded = dispatch_semaphore_create(0);
+    __block NSArray<AVAssetTrack *> *tracks = nil;
+    __block NSError *failure = nil;
+    [asset loadTracksWithMediaType:AVMediaTypeVideo completionHandler:^(NSArray<AVAssetTrack *> *found, NSError *loadError) {
+        tracks = found;
+        failure = loadError;
+        dispatch_semaphore_signal(loaded);
+    }];
+    dispatch_semaphore_wait(loaded, DISPATCH_TIME_FOREVER);
+    if (failure != nil) {
+        SWFailCause(error, SWErrorNameData, failure, @"graphics: read %@", asset.URL.lastPathComponent);
+        return nil;
+    }
+    if (tracks.firstObject == nil) {
+        SWFail(error, SWErrorNameData, @"graphics: %@ has no video track", asset.URL.lastPathComponent);
+    }
+    return tracks.firstObject;
+}
 
 @implementation SWDecodedBuffer
 
@@ -25,7 +44,7 @@
 
 @end
 
-@implementation SWSegmentReader {
+@implementation SWMovieReader {
     AVURLAsset *_asset;
     AVAssetTrack *_track;
     NSLock *_lock;
@@ -41,7 +60,7 @@
         return nil;
     }
     _asset = [AVURLAsset URLAssetWithURL:url options:nil];
-    _track = SWVideoFirstTrack(_asset, error);
+    _track = SWFirstVideoTrack(_asset, error);
     if (_track == nil) {
         return nil;
     }

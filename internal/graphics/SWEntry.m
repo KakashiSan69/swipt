@@ -13,7 +13,7 @@
 #import "SWJSON.h"
 #import "SWNative.h"
 #import "SWRecognition.h"
-#import "SWScreenFeed.h"
+#import "SWScreenCapture.h"
 
 enum {
     SWCommandInstall = 0,
@@ -123,19 +123,19 @@ char *swipt_graphics_watch(uint64_t engine, int64_t identifier, uintptr_t scope)
             return strdup(SWOutcomeFailure(SWErrorEnded()).UTF8String);
         }
         NSError *failure = nil;
-        BOOL watched = SWCallWatch(call, &failure);
+        BOOL watched = SWCallScreenFrames(call, &failure);
         return strdup((watched ? SWOutcomeSuccess(NSNull.null) : SWOutcomeFailure(failure)).UTF8String);
     }
 }
 
-void swipt_graphics_screen_packets(const void *bytes, size_t length) {
+void swipt_graphics_screen_stream_packets(const void *bytes, size_t length) {
     @autoreleasepool {
-        [SWScreenFeed.shared onPackets:[NSData dataWithBytes:bytes length:length]];
+        [SWScreenCapture.shared onPackets:[NSData dataWithBytes:bytes length:length]];
     }
 }
 
-void swipt_graphics_screen_ended(const char *failure) {
+void swipt_graphics_screen_stream_ended(const char *failure) {
     @autoreleasepool {
-        [SWScreenFeed.shared onEnd:[NSString stringWithUTF8String:failure]];
+        [SWScreenCapture.shared onEnd:[NSString stringWithUTF8String:failure]];
     }
 }

@@ -11,7 +11,6 @@ import "C"
 import (
 	"encoding/json"
 	"runtime/cgo"
-	"time"
 
 	"github.com/swipt-automation/swipt/internal/automation"
 )
@@ -35,16 +34,6 @@ func swiptGraphicsCancelled(handle C.uintptr_t) C.bool {
 	return C.bool(scopeOf(handle).call.Context().Err() != nil)
 }
 
-//export swiptGraphicsTracing
-func swiptGraphicsTracing(handle C.uintptr_t) C.bool {
-	return C.bool(scopeOf(handle).call.Tracing())
-}
-
-//export swiptGraphicsTrace
-func swiptGraphicsTrace(handle C.uintptr_t, name *C.char, detail *C.char, startedMs C.double, durationMs C.double) {
-	scopeOf(handle).call.Trace(time.UnixMilli(int64(startedMs)), C.GoString(name), C.GoString(detail), time.Duration(float64(durationMs)*float64(time.Millisecond)))
-}
-
 //export swiptGraphicsAuthorize
 func swiptGraphicsAuthorize(handle C.uintptr_t, path *C.char, write C.bool) *C.char {
 	if err := scopeOf(handle).call.Authorize(C.GoString(path), bool(write)); err != nil {
@@ -60,20 +49,6 @@ func swiptGraphicsScreenshot(handle C.uintptr_t) C.swipt_graphics_screenshot {
 		return C.swipt_graphics_screenshot{failure: C.CString(automation.FailureOf(err))}
 	}
 	return C.swipt_graphics_screenshot{image: C.CBytes(data), length: C.size_t(len(data)), scale: C.double(scale)}
-}
-
-//export swiptGraphicsWatchTimeline
-func swiptGraphicsWatchTimeline(handle C.uintptr_t) C.uintptr_t {
-	return C.uintptr_t(cgo.NewHandle(scopeOf(handle).call.WatchTimeline()))
-}
-
-//export swiptGraphicsStopTimeline
-func swiptGraphicsStopTimeline(handle C.uintptr_t) *C.char {
-	data, err := json.Marshal(cgo.Handle(handle).Value().(*automation.TimelineWatch).Stop())
-	if err != nil {
-		return C.CString("[]")
-	}
-	return C.CString(string(data))
 }
 
 //export swiptGraphicsPublish

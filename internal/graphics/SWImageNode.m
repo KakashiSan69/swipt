@@ -9,7 +9,7 @@
 #import "SWFrame.h"
 #import "SWJSON.h"
 #import "SWRaster.h"
-#import "SWVideoModel.h"
+#import "SWScreenRecording.h"
 
 typedef SWRaster *(^SWImageSource)(SWCancelToken *token, NSError **error);
 typedef SWRaster *(^SWImageOperation)(SWRaster *input, NSError **error);
@@ -70,7 +70,6 @@ typedef SWRaster *(^SWImageOperation)(SWRaster *input, NSError **error);
 + (instancetype)nodeWithFrame:(SWFrame *)frame time:(double)time timestamp:(double)timestamp {
     double scale = frame.geometry.scale;
     SWImageNode *node = [[self alloc] initWithPixelWidth:frame.pixelWidth height:frame.pixelHeight transform:CGAffineTransformMakeScale(1 / scale, 1 / scale) gray:NO time:time timestamp:timestamp];
-    node->_screenFrame = frame;
     node->_source = ^SWRaster *(SWCancelToken *token, NSError **failure) {
         return [frame raster:failure];
     };
@@ -81,17 +80,13 @@ typedef SWRaster *(^SWImageOperation)(SWRaster *input, NSError **error);
     return [self nodeWithFrame:frame time:NAN timestamp:frame.time];
 }
 
-+ (instancetype)nodeWithFrame:(SWFrame *)frame ofVideo:(SWVideoModel *)model {
-    return [self nodeWithFrame:frame time:frame.time timestamp:model.start + frame.time];
-}
-
-+ (instancetype)nodeWithVideo:(SWVideoModel *)model time:(double)time {
++ (instancetype)nodeWithRecording:(SWScreenRecording *)recording time:(double)time {
     NSInteger width = 0;
     NSInteger height = 0;
-    [model pixelSizeAt:time width:&width height:&height];
-    SWImageNode *node = [[self alloc] initWithPixelWidth:width height:height transform:CGAffineTransformMakeScale(1 / model.scale, 1 / model.scale) gray:NO time:time timestamp:model.start + time];
+    [recording pixelSizeAt:time width:&width height:&height];
+    SWImageNode *node = [[self alloc] initWithPixelWidth:width height:height transform:CGAffineTransformMakeScale(1 / recording.scale, 1 / recording.scale) gray:NO time:time timestamp:recording.start + time];
     node->_source = ^SWRaster *(SWCancelToken *token, NSError **failure) {
-        return [model rasterAt:time token:token error:failure];
+        return [recording rasterAt:time token:token error:failure];
     };
     return node;
 }

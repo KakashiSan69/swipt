@@ -384,7 +384,7 @@ declare module "@swipt/api/accessibility" {
   }
 
   export interface SnapshotOptions extends ReadOptions {
-    readonly scope?: "frontApp" | "screen";
+    readonly scope?: "frontApp" | "springBoard" | "fullScreen";
     readonly within?: AccessibilityElement;
     readonly full?: boolean;
   }
@@ -486,6 +486,7 @@ declare module "@swipt/api/input" {
 declare module "@swipt/api/device" {
   import type { CallOptions, ObservableState } from "@swipt/api";
   import type { FileHandle } from "@swipt/api/file-system";
+  import type { RasterImage } from "@swipt/api/image";
 
   export type DisplayState = "off" | "dimmed" | "inactiveOn" | "activeOn";
 
@@ -523,6 +524,7 @@ declare module "@swipt/api/device" {
   }
 
   export function info(options?: CallOptions): Promise<DeviceInfo>;
+  export function screenshot(options?: CallOptions): Promise<RasterImage>;
   export const foregroundApplication: ObservableState<string>;
   export const locked: ObservableState<boolean>;
   export const displayState: ObservableState<DisplayState>;
@@ -564,162 +566,41 @@ declare module "@swipt/api/device" {
 }
 
 declare module "@swipt/api/screen" {
-  import type { CallOptions, ObservableState, Point, Rect } from "@swipt/api";
-  import type { FileHandle } from "@swipt/api/file-system";
-  import type { ImageDifference, RasterImage } from "@swipt/api/image";
+  import type { CallOptions, ObservableState } from "@swipt/api";
+  import type { DirectoryHandle, FileHandle } from "@swipt/api/file-system";
+  import type { RasterImage } from "@swipt/api/image";
 
-  export interface WaitOptions extends CallOptions {
-    readonly region?: Rect;
-    readonly timeoutMs?: number;
-    readonly threshold?: number;
-  }
-
-  export interface ScreenChange {
-    readonly time: number;
-    readonly end: number;
-    readonly frames: readonly Rect[];
-    readonly app: string | null;
-    readonly before: RasterImage;
-    readonly after: RasterImage;
-  }
-
-  export type TimelineEvent =
-    | {
-        readonly time: number;
-        readonly type: "operation";
-        readonly name: string;
-        readonly arguments?: readonly unknown[];
-        readonly durationMs?: number;
-        readonly error?: string;
-        readonly message?: string;
-        readonly swiplet?: string;
-      }
-    | {
-        readonly time: number;
-        readonly type: "action";
-        readonly swiplet: string;
-        readonly action: string;
-        readonly caller: "app" | "shortcuts" | "api";
-      }
-    | { readonly time: number; readonly type: "foreground"; readonly app: string }
-    | {
-        readonly time: number;
-        readonly type: "log";
-        readonly swiplet: string;
-        readonly level: "error" | "warn" | "info" | "debug";
-        readonly message: string;
-      }
-    | {
-        readonly time: number;
-        readonly type: "feed";
-        readonly frames: number;
-        readonly decodedMs: number;
-      };
-
-  export interface ScreenRecording {
-    readonly file: FileHandle;
-    readonly start: number | null;
-    readonly duration: number;
-    readonly width: number;
-    readonly height: number;
-    readonly scale: number;
-    readonly changes: readonly ScreenChange[];
-    readonly events: readonly TimelineEvent[];
-
-    frame(time: number): RasterImage;
-    frames(
-      times:
-        | readonly number[]
-        | {
-            readonly everyMs: number;
-            readonly from?: number;
-            readonly to?: number;
-          },
-    ): RasterImage[];
-    grid(
-      options?: CallOptions & {
-        readonly times?: readonly number[];
-        readonly columns?: number;
-        readonly width?: number;
-      },
-    ): Promise<RasterImage>;
-    diff(
-      from: number,
-      to: number,
-      options?: CallOptions & { readonly threshold?: number },
-    ): Promise<ImageDifference>;
-    find(
-      target: ScreenTarget | readonly ScreenTarget[],
-      options?: Omit<ScreenFindOptions, "timeoutMs"> & {
-        readonly from?: number;
-        readonly to?: number;
-      },
-    ): Promise<(ScreenMatch & { readonly time: number }) | null>;
-    export(
-      options?: CallOptions & {
-        readonly file?: FileHandle;
-        readonly from?: number;
-        readonly to?: number;
-        readonly region?: Rect;
-        readonly scale?: number;
-        readonly format?: "mov" | "mp4" | "gif";
-        readonly frameRate?: number;
-      },
-    ): Promise<FileHandle>;
-  }
+  export type ScreenStreamOptions = CallOptions &
+    (
+      | { readonly mode?: "remoteDesktop"; readonly maximumBitrate?: number }
+      | { readonly mode: "coreDevice" }
+    );
 
   export interface RecordingSession {
-    readonly file: FileHandle;
+    stop(options?: CallOptions): Promise<void>;
+  }
+
+  export interface ScreenStream {
+    readonly frames: ObservableState<RasterImage>;
+    record(
+      directory: DirectoryHandle,
+      options?: CallOptions,
+    ): Promise<RecordingSession>;
+    close(options?: CallOptions): Promise<void>;
+  }
+
+  export interface ScreenRecording {
     readonly start: number;
-    stop(options?: CallOptions): Promise<ScreenRecording>;
+    readonly duration: number;
+    frame(time: number): RasterImage;
+    export(file: FileHandle, options?: CallOptions): Promise<void>;
   }
 
-  export type ScreenTarget = RasterImage | RegExp | string;
-
-  export interface ScreenFindOptions extends CallOptions {
-    readonly region?: Rect;
-    /** Omitted or 0 reads the latest frame once; a positive number or Infinity keeps reading frames until a match, and answers null at the limit. */
-    readonly timeoutMs?: number;
-    readonly threshold?: number;
-    readonly scales?: readonly number[];
-    readonly languages?: readonly string[];
-    readonly minimumHeight?: number;
-    /** Compares templates and the screen as black and white, split at this gray level, so a mark keeps matching over changing backgrounds. */
-    readonly binarize?: number;
-  }
-
-  export interface ScreenMatch {
-    readonly frame: Rect;
-    readonly center: Point;
-    readonly score: number;
-    readonly text: string | null;
-    readonly target: number;
-    readonly image: RasterImage;
-  }
-
-  export function screenshot(options?: CallOptions): Promise<RasterImage>;
-  export function find(
-    target: ScreenTarget | readonly ScreenTarget[],
-    options?: ScreenFindOptions,
-  ): Promise<ScreenMatch | null>;
-  export const frames: ObservableState<RasterImage>;
-  export function waitFor(
-    predicate: (frame: RasterImage) => boolean | Promise<boolean>,
-    options?: CallOptions & { readonly timeoutMs?: number },
-  ): Promise<RasterImage>;
-  export function waitForChange(
-    options?: WaitOptions & { readonly from?: RasterImage },
-  ): Promise<RasterImage>;
-  export function waitForStable(
-    options?: WaitOptions & { readonly durationMs?: number },
-  ): Promise<RasterImage>;
-  export function record(
-    options?: CallOptions & {
-      readonly file?: FileHandle;
-    },
-  ): Promise<RecordingSession>;
+  export function open(
+    options?: ScreenStreamOptions,
+  ): Promise<ScreenStream>;
   export function openRecording(
-    file: FileHandle,
+    directory: DirectoryHandle,
     options?: CallOptions,
   ): Promise<ScreenRecording>;
 }

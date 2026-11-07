@@ -111,7 +111,7 @@ export interface ReadOptions extends CallOptions {
 }
 
 export interface SnapshotOptions extends ReadOptions {
-  readonly scope?: "frontApp" | "screen";
+  readonly scope?: "frontApp" | "springBoard" | "fullScreen";
   readonly within?: AccessibilityElement;
   readonly full?: boolean;
 }

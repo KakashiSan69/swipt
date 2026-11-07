@@ -4,7 +4,7 @@
 @class SWCancelToken;
 @class SWFrame;
 @class SWRaster;
-@class SWVideoModel;
+@class SWScreenRecording;
 
 @interface SWImageNode : NSObject
 @property (nonatomic, readonly) NSInteger pixelWidth;
@@ -15,13 +15,11 @@
 @property (nonatomic, readonly) double timestamp;
 @property (nonatomic, readonly) double scale;
 @property (nonatomic, readonly) CGRect frame;
-@property (nonatomic, readonly) SWFrame *screenFrame;
 @property (nonatomic, readonly) NSInteger estimatedBytes;
 
 + (instancetype)nodeWithEncoded:(NSData *)data scale:(NSNumber *)scale timestamp:(double)timestamp error:(NSError **)error;
 + (instancetype)nodeWithFrame:(SWFrame *)frame;
-+ (instancetype)nodeWithFrame:(SWFrame *)frame ofVideo:(SWVideoModel *)model;
-+ (instancetype)nodeWithVideo:(SWVideoModel *)model time:(double)time;
++ (instancetype)nodeWithRecording:(SWScreenRecording *)recording time:(double)time;
 + (instancetype)nodeWithRaster:(SWRaster *)raster transform:(CGAffineTransform)transform;
 
 - (BOOL)pixelRectInSpace:(CGRect)rect into:(CGRect *)pixels error:(NSError **)error;

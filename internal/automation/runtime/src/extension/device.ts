@@ -9,6 +9,7 @@ import type {
 
 import { invoke, stream } from "./async";
 import { handleOfPath } from "./files";
+import { imageResult, run } from "./image";
 import { act, check, optionsOf, signalOf, type Options } from "./options";
 
 const state = <T>(name: string): ObservableState<T> =>
@@ -32,6 +33,8 @@ export const info = (options?: Options) =>
   invoke<DeviceInfo>("device.info", [], {
     signal: signalOf(check(options, [])),
   });
+export const screenshot = (options?: Options) =>
+  imageResult(run("screenshot", {}, [], signalOf(check(options, []))));
 export const foregroundApplication = state<string>("foreground");
 export const locked = state<boolean>("locked");
 export const displayState = state<DisplayState>("display");

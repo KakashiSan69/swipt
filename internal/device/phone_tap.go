@@ -32,13 +32,13 @@ func (a Aim) String() string {
 	return a.Element + " at " + pointText(a.Point)
 }
 
-func (p *Phone) Tap(ctx context.Context, ref string, timeout time.Duration) (Aim, error) {
+func (p *Phone) Tap(ctx context.Context, ref string, timeout time.Duration) error {
 	return p.aimed(ctx, ref, timeout, "tap", func(ctx context.Context, s *axSession, _ *PhoneNode, at Point) error {
 		return s.tap(ctx, at, 1, 0)
 	})
 }
 
-func (p *Phone) SetText(ctx context.Context, ref, text string, timeout time.Duration) (Aim, error) {
+func (p *Phone) SetText(ctx context.Context, ref, text string, timeout time.Duration) error {
 	return p.aimed(ctx, ref, timeout, "setText", func(ctx context.Context, s *axSession, node *PhoneNode, at Point) error {
 		return s.setText(ctx, node, at, text)
 	})
@@ -47,22 +47,22 @@ func (p *Phone) SetText(ctx context.Context, ref, text string, timeout time.Dura
 // aimed runs act on the element once a tap at the point it answers would reach
 // it, checking again while the element is moving, disabled or behind another
 // one, until the timeout; a negative timeout waits forever and zero checks once.
-func (p *Phone) aimed(ctx context.Context, ref string, timeout time.Duration, name string, act func(ctx context.Context, s *axSession, node *PhoneNode, at Point) error) (Aim, error) {
+func (p *Phone) aimed(ctx context.Context, ref string, timeout time.Duration, name string, act func(ctx context.Context, s *axSession, node *PhoneNode, at Point) error) error {
 	c, ctx, done, err := p.begin(ctx)
 	if err != nil {
-		return Aim{}, err
+		return err
 	}
 	defer done()
 	if err = p.requireScreen(ctx, c); err != nil {
-		return Aim{}, err
+		return err
 	}
 	geometry, err := c.readGeometry(ctx)
 	if err != nil {
-		return Aim{}, err
+		return err
 	}
 	grant, err := p.connection.input.acquire(ctx, c)
 	if err != nil {
-		return Aim{}, err
+		return err
 	}
 	defer grant.release()
 	started := time.Now()
@@ -108,16 +108,16 @@ func (p *Phone) aimed(ctx context.Context, ref string, timeout time.Duration, na
 		if !s.animating && !deadline.IsZero() && time.Now().Add(delay).After(deadline) {
 			p.connection.trace(started, name+".refused", pending, time.Since(started))
 			if timeout == 0 {
-				return s.target, E.Extend(ErrTimeout, pending)
+				return E.Extend(ErrTimeout, pending)
 			}
-			return s.target, E.Extend(ErrTimeout, pending, "; gave up after ", timeout)
+			return E.Extend(ErrTimeout, pending, "; gave up after ", timeout)
 		}
 		if err = sleep(ctx, delay); err != nil {
-			return s.target, err
+			return err
 		}
 		if s.stale {
 			if _, err = p.read(ctx, c, s.reread); err != nil {
-				return s.target, err
+				return err
 			}
 		}
 	}
@@ -125,7 +125,7 @@ func (p *Phone) aimed(ctx context.Context, ref string, timeout time.Duration, na
 		c.events.publish(Event{Kind: EventInput})
 		c.front.acted()
 	}
-	return s.target, err
+	return err
 }
 
 func (s *axSession) aim(ctx context.Context, target *PhoneNode) (Point, string, error) {

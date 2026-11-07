@@ -76,8 +76,6 @@ type Host struct {
 	location        *simulatedLocation
 	locationChanged chan struct{}
 
-	timeline timeline
-
 	databases databaseStore
 
 	appVersions sync.Map
@@ -104,21 +102,10 @@ func New(options Options) *Host {
 		options: options, logFactory: logFactory, logger: logFactory.Logger(),
 		runners: make(map[string]*runner), watchers: make(map[*serviceWatcher]struct{}),
 		locationChanged: make(chan struct{}),
-		timeline:        timeline{watches: make(map[*TimelineWatch]struct{})}, databases: newDatabaseStore(),
+		databases:       newDatabaseStore(),
 	}
 	h.ctx, h.cancel = context.WithCancelCause(context.Background())
 	h.lease = &foregroundLease{host: h}
-	if phone := options.Device; phone != nil {
-		phone.Trace(func(trace device.Trace) {
-			if !h.timeline.active() {
-				return
-			}
-			h.timeline.record(TimelineEvent{
-				Time: trace.At.UnixMilli(), Type: "operation", Name: "trace." + trace.Name, Message: trace.Detail,
-				DurationMs: float64(trace.Duration.Microseconds()) / 1000,
-			})
-		})
-	}
 	return h
 }
 

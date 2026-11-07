@@ -41,20 +41,15 @@ func tap(ctx context.Context, geometry phoneGeometry, input *hid.Client, at Poin
 				return err
 			}
 		}
-		began := time.Now()
 		if err := input.SetTouches(ctx, touch, hid.EdgeNone); err != nil {
 			return err
 		}
-		down := time.Now()
 		if err := sleep(ctx, hold); err != nil {
 			return err
 		}
-		held := time.Now()
 		if err := input.LiftTouches(ctx, touch); err != nil {
 			return err
 		}
-		record(began, "touch", "down sent in "+down.Sub(began).String()+", held "+held.Sub(down).String()+" for "+hold.String()+
-			", up sent in "+time.Since(held).String(), time.Since(began))
 	}
 	return nil
 }

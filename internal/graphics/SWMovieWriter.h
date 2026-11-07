@@ -3,7 +3,7 @@
 
 @class SWAccessUnit;
 
-@interface SWSegmentWriter : NSObject
+@interface SWMovieWriter : NSObject
 @property (nonatomic, readonly) CMVideoFormatDescriptionRef format;
 @property (nonatomic, readonly) NSInteger turns;
 @property (nonatomic, readonly) CMTime end;

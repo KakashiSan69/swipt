@@ -4,7 +4,8 @@
 @class SWImageNode;
 @class SWRecognizedText;
 @class SWRecordingSession;
-@class SWVideoModel;
+@class SWScreenRecording;
+@class SWScreenStream;
 @class SWImageHandle;
 
 @protocol SWImageExports <JSExport>
@@ -34,26 +35,33 @@
 - (instancetype)initWithNode:(SWImageNode *)node;
 @end
 
-@protocol SWRecordingExports <JSExport>
-@property (nonatomic, readonly) NSString *path;
-@property (nonatomic, readonly) double start;
+@protocol SWScreenStreamExports <JSExport>
 @end
 
-@interface SWRecordingHandle : NSObject <SWRecordingExports>
+@interface SWScreenStreamHandle : NSObject <SWScreenStreamExports>
+@property (nonatomic, readonly) SWScreenStream *stream;
+
+- (instancetype)initWithStream:(SWScreenStream *)stream;
+@end
+
+@protocol SWRecordingSessionExports <JSExport>
+@end
+
+@interface SWRecordingSessionHandle : NSObject <SWRecordingSessionExports>
 @property (nonatomic, readonly) SWRecordingSession *session;
 
 - (instancetype)initWithSession:(SWRecordingSession *)session;
 @end
 
-@protocol SWVideoExports <JSExport>
+@protocol SWScreenRecordingExports <JSExport>
 @property (nonatomic, readonly) NSString *info;
 - (SWImageHandle *)frame:(double)time;
 @end
 
-@interface SWVideoHandle : NSObject <SWVideoExports>
-@property (nonatomic, readonly) SWVideoModel *model;
+@interface SWScreenRecordingHandle : NSObject <SWScreenRecordingExports>
+@property (nonatomic, readonly) SWScreenRecording *recording;
 
-- (instancetype)initWithModel:(SWVideoModel *)model;
+- (instancetype)initWithRecording:(SWScreenRecording *)recording;
 @end
 
 @protocol SWTextExports <JSExport>

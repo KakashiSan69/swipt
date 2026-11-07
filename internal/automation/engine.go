@@ -200,7 +200,6 @@ func (h *Host) Call(ctx context.Context, request CallRequest) (json.RawMessage, 
 	if request.Caller == CallerShortcuts && !slices.Contains(swiplet.Manifest.Actions[index].Expose, CallerShortcuts) {
 		return nil, E.Cause1(ErrNotAllowed, E.New("the action ", strconv.Quote(request.Action), " is not exposed to shortcuts"))
 	}
-	h.timeline.record(TimelineEvent{Time: time.Now().UnixMilli(), Type: "action", Swiplet: swiplet.ID, Action: request.Action, Caller: string(request.Caller)})
 	started := time.Now()
 	output, err := h.execute(ctx, swiplet, request.Dialog, request.Log, entry{action: request.Action, input: string(input), caller: request.Caller}, nil)
 	if err != nil && ctx.Err() == nil {
@@ -499,17 +498,6 @@ func (e *engine) startOperation(arguments []jsc.Value) (any, error) {
 		if call.dropped(ctx, err, attempted) {
 			err = call.droppedError(err, "during "+name)
 		}
-		if slices.Contains(timelineOperations, name) && e.host.timeline.active() {
-			arguments := args
-			if strings.HasPrefix(name, "accessibility.") {
-				arguments = call.recorded
-			}
-			event := TimelineEvent{Time: started.UnixMilli(), Type: "operation", Name: name, Arguments: arguments, DurationMs: float64(time.Since(started).Microseconds()) / 1000}
-			if err != nil {
-				event.Error = Message(err)
-			}
-			e.host.timeline.record(event)
-		}
 		select {
 		case e.completions <- completion{id: id, value: value, err: err}:
 		case <-e.ctx.Done():
@@ -666,6 +654,9 @@ func (e *engine) flush() error {
 			}
 			it.cancel()
 			delete(e.subscriptions, id)
+			if errors.Is(failure, errStreamEnded) {
+				return e.callHook(e.hooks.end, id, "")
+			}
 			return e.callHook(e.hooks.end, id, FailureOf(failure))
 		})
 		if err != nil {
@@ -712,12 +703,9 @@ func (e *engine) print(arguments []jsc.Value) (any, error) {
 }
 
 func (e *engine) log(level log.Level, message string) {
-	name := writeLog(e.logger, level, message)
+	writeLog(e.logger, level, message)
 	if logs := e.current.logs; logs != nil {
 		logs(LogEntry{Time: time.Now(), Level: level, Message: message})
-	}
-	if !strings.HasPrefix(e.swiplet.ID, replPrefix) {
-		e.host.timeline.record(TimelineEvent{Time: time.Now().UnixMilli(), Type: "log", Swiplet: e.swiplet.ID, Level: name, Message: message})
 	}
 }
 
@@ -726,24 +714,19 @@ func (h *Host) Log(swiplet string, level log.Level, message string) {
 		writeLog(h.logger, level, message)
 		return
 	}
-	name := writeLog(h.logFactory.NewLogger("swiplet/"+swiplet), level, message)
-	h.timeline.record(TimelineEvent{Time: time.Now().UnixMilli(), Type: "log", Swiplet: swiplet, Level: name, Message: message})
+	writeLog(h.logFactory.NewLogger("swiplet/"+swiplet), level, message)
 }
 
-func writeLog(logger log.ContextLogger, level log.Level, message string) string {
+func writeLog(logger log.ContextLogger, level log.Level, message string) {
 	switch level {
 	case log.LevelError:
 		logger.Error(message)
-		return "error"
 	case log.LevelWarn:
 		logger.Warn(message)
-		return "warn"
 	case log.LevelDebug:
 		logger.Debug(message)
-		return "debug"
 	default:
 		logger.Info(message)
-		return "info"
 	}
 }
 

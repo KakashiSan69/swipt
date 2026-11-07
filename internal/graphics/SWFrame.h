@@ -18,5 +18,4 @@ typedef struct {
 
 - (instancetype)initWithPixelBuffer:(CVPixelBufferRef)pixelBuffer time:(double)time turns:(NSInteger)turns geometry:(SWScreenGeometry)geometry;
 - (SWRaster *)raster:(NSError **)error;
-- (SWRaster *)quarter:(NSError **)error;
 @end

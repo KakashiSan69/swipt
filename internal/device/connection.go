@@ -100,7 +100,7 @@ type Connection struct {
 	logger   logger.ContextLogger
 	notifier *notifier
 	streams  *streamManager
-	feeds    *screenFeeds
+	screens  *screenStreams
 	input    *hidQueue
 	clip     *clipboardBridge
 	phone    *Phone
@@ -169,7 +169,7 @@ func New(options Options) *Connection {
 	s.ctx, s.cancel = context.WithCancel(context.Background())
 	s.notifier = newNotifier()
 	s.streams = newStreamManager(s.logger, s.streamingChanged)
-	s.feeds = newScreenFeeds(s)
+	s.screens = newScreenStreams(s)
 	s.input = newHIDQueue(s, s.logger)
 	s.clip = newClipboardBridge(s, s.logger)
 	s.phone = &Phone{connection: s, logger: s.logger}

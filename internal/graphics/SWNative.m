@@ -11,7 +11,8 @@
 #import "SWJavaScript.h"
 #import "SWRecognition.h"
 #import "SWRecordingSession.h"
-#import "SWVideoModel.h"
+#import "SWScreenStream.h"
+#import "SWScreenRecording.h"
 
 @implementation SWNative {
     SWEngine *_engine;
@@ -44,12 +45,14 @@
         id object = item.toObject;
         if ([object isKindOfClass:SWImageHandle.class]) {
             [unwrapped addObject:((SWImageHandle *)object).node];
-        } else if ([object isKindOfClass:SWRecordingHandle.class]) {
-            [unwrapped addObject:((SWRecordingHandle *)object).session];
-        } else if ([object isKindOfClass:SWVideoHandle.class]) {
-            [unwrapped addObject:((SWVideoHandle *)object).model];
+        } else if ([object isKindOfClass:SWScreenStreamHandle.class]) {
+            [unwrapped addObject:((SWScreenStreamHandle *)object).stream];
+        } else if ([object isKindOfClass:SWRecordingSessionHandle.class]) {
+            [unwrapped addObject:((SWRecordingSessionHandle *)object).session];
+        } else if ([object isKindOfClass:SWScreenRecordingHandle.class]) {
+            [unwrapped addObject:((SWScreenRecordingHandle *)object).recording];
         } else {
-            return SWJavaScriptFail(SWMakeError(SWErrorNameType, [NSString stringWithFormat:@"graphics: argument %d of %@ is not an Image, a Recording, a Video or a Uint8Array", index + 1, method]));
+            return SWJavaScriptFail(SWMakeError(SWErrorNameType, [NSString stringWithFormat:@"graphics: argument %d of %@ is not an Image, a ScreenStream, a RecordingSession, a ScreenRecording or a Uint8Array", index + 1, method]));
         }
     }
     SWCall *call = [[SWCall alloc] initWithMethod:method arguments:parsed objects:unwrapped];
@@ -63,11 +66,14 @@
         SWJavaScriptReportCost(((SWImageNode *)object).estimatedBytes);
         return [JSValue valueWithObject:[[SWImageHandle alloc] initWithNode:object] inContext:context];
     }
-    if ([object isKindOfClass:SWRecordingSession.class]) {
-        return [JSValue valueWithObject:[[SWRecordingHandle alloc] initWithSession:object] inContext:context];
+    if ([object isKindOfClass:SWScreenStream.class]) {
+        return [JSValue valueWithObject:[[SWScreenStreamHandle alloc] initWithStream:object] inContext:context];
     }
-    if ([object isKindOfClass:SWVideoModel.class]) {
-        return [JSValue valueWithObject:[[SWVideoHandle alloc] initWithModel:object] inContext:context];
+    if ([object isKindOfClass:SWRecordingSession.class]) {
+        return [JSValue valueWithObject:[[SWRecordingSessionHandle alloc] initWithSession:object] inContext:context];
+    }
+    if ([object isKindOfClass:SWScreenRecording.class]) {
+        return [JSValue valueWithObject:[[SWScreenRecordingHandle alloc] initWithRecording:object] inContext:context];
     }
     if ([object isKindOfClass:SWRecognizedText.class]) {
         return [JSValue valueWithObject:[[SWTextHandle alloc] initWithText:object] inContext:context];

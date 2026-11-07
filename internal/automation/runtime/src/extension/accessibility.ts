@@ -36,8 +36,13 @@ const view = (options: unknown) => {
     full = false,
     depth,
   } = optionsOf(options, ["scope", "within", "full", "depth"]);
-  if (scope !== undefined && scope !== "frontApp" && scope !== "screen") {
-    throw new TypeError("scope must be frontApp or screen");
+  if (
+    scope !== undefined &&
+    scope !== "frontApp" &&
+    scope !== "springBoard" &&
+    scope !== "fullScreen"
+  ) {
+    throw new TypeError("scope must be frontApp, springBoard or fullScreen");
   }
   if (typeof full !== "boolean") {
     throw new TypeError("full must be a boolean");

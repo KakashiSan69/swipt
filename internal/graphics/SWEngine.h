@@ -2,6 +2,7 @@
 
 @class JSContext;
 @class SWCall;
+@class SWScreenStream;
 
 @interface SWEngine : NSObject
 - (instancetype)initWithContext:(JSContext *)context;
@@ -10,5 +11,6 @@
 - (NSInteger)registerObject:(id)object;
 - (id)take:(NSInteger)identifier;
 - (void)drop:(NSInteger)identifier;
+- (void)trackStream:(SWScreenStream *)stream;
 - (void)close;
 @end

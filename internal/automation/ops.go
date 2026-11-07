@@ -19,16 +19,10 @@ import (
 )
 
 type operation struct {
-	engine   *engine
-	name     string
-	args     []json.RawMessage
-	recorded []json.RawMessage
-	device   *device.Phone
-}
-
-func (o *operation) record(aim device.Aim, arguments ...json.RawMessage) {
-	element, _ := json.Marshal(aim.String())
-	o.recorded = append([]json.RawMessage{element}, arguments...)
+	engine *engine
+	name   string
+	args   []json.RawMessage
+	device *device.Phone
 }
 
 type operationFunc func(ctx context.Context, call *operation) (any, error)
@@ -578,14 +572,19 @@ func depthOf(depth *int64) int64 {
 	return *depth
 }
 
+var snapshotScopes = map[string]device.SnapshotScope{
+	"": device.ScopeFrontApp, "frontApp": device.ScopeFrontApp, "springBoard": device.ScopeSpringBoard, "fullScreen": device.ScopeFullScreen,
+}
+
 func uiSnapshot(ctx context.Context, call *operation) (any, error) {
 	var options snapshotOptions
 	if err := call.decode(0, &strict{&options}); err != nil {
 		return nil, err
 	}
+	scope, known := snapshotScopes[options.Scope]
 	switch {
-	case options.Scope != "" && options.Scope != "frontApp" && options.Scope != "screen":
-		return nil, E.Cause1(ErrInvalid, E.New("scope must be frontApp or screen"))
+	case !known:
+		return nil, E.Cause1(ErrInvalid, E.New("scope must be frontApp, springBoard or fullScreen"))
 	case options.Scope != "" && options.Within != "":
 		return nil, E.Cause1(ErrInvalid, E.New("scope and within are exclusive"))
 	}
@@ -593,7 +592,7 @@ func uiSnapshot(ctx context.Context, call *operation) (any, error) {
 	if err != nil {
 		return nil, err
 	}
-	view, err := phone.Snapshot(ctx, device.SnapshotOptions{Front: options.Scope != "screen", Raw: options.Full, Depth: depthOf(options.Depth), Within: options.Within})
+	view, err := phone.Snapshot(ctx, device.SnapshotOptions{Scope: scope, Raw: options.Full, Depth: depthOf(options.Depth), Within: options.Within})
 	if err != nil {
 		return nil, err
 	}
@@ -666,13 +665,7 @@ func uiSetText(ctx context.Context, phone *device.Phone, call *operation) error 
 	if err != nil {
 		return err
 	}
-	aim, err := phone.SetText(ctx, ref, text, timeout)
-	if aim.Element == "" || aim.Secure {
-		call.record(aim, call.args[2:]...)
-	} else {
-		call.record(aim, call.args[1:]...)
-	}
-	return err
+	return phone.SetText(ctx, ref, text, timeout)
 }
 
 func uiPerform(ctx context.Context, phone *device.Phone, call *operation) error {
@@ -680,9 +673,7 @@ func uiPerform(ctx context.Context, phone *device.Phone, call *operation) error 
 	if err := call.decode(2, &ref, &name); err != nil {
 		return err
 	}
-	aim, err := phone.Perform(ctx, ref, name)
-	call.record(aim, call.args[1:]...)
-	return err
+	return phone.Perform(ctx, ref, name)
 }
 
 func uiTap(ctx context.Context, phone *device.Phone, call *operation) error {
@@ -695,9 +686,7 @@ func uiTap(ctx context.Context, phone *device.Phone, call *operation) error {
 	if err != nil {
 		return err
 	}
-	aim, err := phone.Tap(ctx, ref, timeout)
-	call.record(aim, call.args[1:]...)
-	return err
+	return phone.Tap(ctx, ref, timeout)
 }
 
 // A missing limit waits forever.

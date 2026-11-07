@@ -8,7 +8,8 @@
 #import "SWRaster.h"
 #import "SWRecognition.h"
 #import "SWRecordingSession.h"
-#import "SWVideoModel.h"
+#import "SWScreenStream.h"
+#import "SWScreenRecording.h"
 
 static uint8_t SWClampChannel(NSInteger value) {
     return (uint8_t)MIN(MAX(value, 0), 255);
@@ -113,7 +114,23 @@ static SWImageHandle *SWReported(SWImageNode *node) {
 
 @end
 
-@implementation SWRecordingHandle
+@implementation SWScreenStreamHandle
+
+- (instancetype)initWithStream:(SWScreenStream *)stream {
+    self = [super init];
+    if (self) {
+        _stream = stream;
+    }
+    return self;
+}
+
+- (void)dealloc {
+    [_stream close];
+}
+
+@end
+
+@implementation SWRecordingSessionHandle
 
 - (instancetype)initWithSession:(SWRecordingSession *)session {
     self = [super init];
@@ -127,32 +144,24 @@ static SWImageHandle *SWReported(SWImageNode *node) {
     [_session abandon];
 }
 
-- (NSString *)path {
-    return _session.url.path;
-}
-
-- (double)start {
-    return _session.start;
-}
-
 @end
 
-@implementation SWVideoHandle
+@implementation SWScreenRecordingHandle
 
-- (instancetype)initWithModel:(SWVideoModel *)model {
+- (instancetype)initWithRecording:(SWScreenRecording *)recording {
     self = [super init];
     if (self) {
-        _model = model;
+        _recording = recording;
     }
     return self;
 }
 
 - (NSString *)info {
-    return _model.info;
+    return _recording.info;
 }
 
 - (SWImageHandle *)frame:(double)time {
-    return SWReported([_model nodeAt:time]);
+    return SWReported([_recording nodeAt:time]);
 }
 
 @end

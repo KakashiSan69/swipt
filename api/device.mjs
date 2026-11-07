@@ -5,6 +5,7 @@ const outside = () => {
 };
 
 export const info = outside;
+export const screenshot = outside;
 export const foregroundApplication = undefined;
 export const locked = undefined;
 export const displayState = undefined;

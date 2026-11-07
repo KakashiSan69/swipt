@@ -8,9 +8,9 @@
 #import "SWGoBridge.h"
 #import "SWImageNode.h"
 #import "SWJSON.h"
-#import "SWRaster.h"
-#import "SWScreenComparison.h"
-#import "SWScreenFeed.h"
+#import "SWRecordingSession.h"
+#import "SWScreenRecording.h"
+#import "SWScreenStream.h"
 
 id SWCallScreenshot(SWCall *call, NSError **error) {
     double started = SWNowMilliseconds();
@@ -30,148 +30,47 @@ id SWCallScreenshot(SWCall *call, NSError **error) {
     return node == nil ? nil : @{@"image": @([call.engine registerObject:node])};
 }
 
-id SWCallScreenGet(SWCall *call, NSError **error) {
-    SWScreenFeed *feed = SWScreenFeed.shared;
-    SWScreenGeometry geometry;
-    if (![feed acquire:&geometry error:error]) {
+static SWScreenStream *SWStreamOf(SWCall *call, NSError **error) {
+    id object = call.objects.firstObject;
+    if (![object isKindOfClass:SWScreenStream.class]) {
+        SWFail(error, SWErrorNameType, @"graphics: %@ needs a ScreenStream", call.method);
         return nil;
     }
-    NSInteger sequence = 0;
-    SWFrame *frame = SWScreenFirstFrame(feed, call.token, &sequence, error);
-    [feed releaseFeed];
+    return object;
+}
+
+id SWCallScreenOpen(SWCall *call, NSError **error) {
+    NSNumber *maximumBitrate = [call.arguments number:@"maximumBitrate"];
+    SWScreenStream *stream = [SWScreenStream openWithMode:[call.arguments string:@"mode"] maximumBitrate:(uint64_t)maximumBitrate.unsignedLongLongValue error:error];
+    if (stream == nil) {
+        return nil;
+    }
+    [call.engine trackStream:stream];
+    return @{@"stream": @([call.engine registerObject:stream])};
+}
+
+id SWCallScreenClose(SWCall *call, NSError **error) {
+    SWScreenStream *stream = SWStreamOf(call, error);
+    if (stream == nil) {
+        return nil;
+    }
+    [stream close];
+    return @{};
+}
+
+id SWCallScreenFrame(SWCall *call, NSError **error) {
+    SWScreenStream *stream = SWStreamOf(call, error);
+    SWFrame *frame = stream == nil ? nil : [stream latestFrame:call.token error:error];
     return frame == nil ? nil : @{@"image": @([call.engine registerObject:[SWImageNode nodeWithFrame:frame]])};
 }
 
-static NSDate *SWDeadline(SWArguments *arguments) {
-    double timeout = arguments.timeout;
-    return isfinite(timeout) ? [NSDate dateWithTimeIntervalSinceNow:timeout / 1000] : NSDate.distantFuture;
-}
-
-static id SWWaitForChange(SWCall *call, SWScreenFeed *feed, NSError **error) {
-    SWArguments *arguments = call.arguments;
-    NSDate *limit = SWDeadline(arguments);
-    NSInteger sequence = 0;
-    SWFrame *frame = SWScreenFirstFrame(feed, call.token, &sequence, error);
-    if (frame == nil) {
-        return nil;
-    }
-    SWImageNode *given = [call.objects.firstObject isKindOfClass:SWImageNode.class] ? call.objects.firstObject : nil;
-    SWImageNode *reference = given ?: [SWImageNode nodeWithFrame:frame];
-    CGRect region;
-    BOOL hasRegion = [arguments rect:@"region" into:&region];
-    SWScreenComparison *comparison = [[SWScreenComparison alloc] initWithNode:reference region:hasRegion ? &region : NULL threshold:[arguments integer:@"threshold" fallback:SWDefaultDifferenceThreshold] error:error];
-    SWRaster *before = comparison == nil ? nil : [comparison plane:reference token:call.token error:error];
-    if (before == nil) {
-        return nil;
-    }
-    BOOL check = call.objects.firstObject != nil;
-    NSError *failure = nil;
-    id result = nil;
-    while (result == nil && failure == nil) {
-        @autoreleasepool {
-            if (!check) {
-                frame = [feed frameAfter:sequence until:limit token:call.token sequence:&sequence error:&failure];
-                if (frame == nil) {
-                    if (failure == nil) {
-                        failure = SWMakeError(SWErrorNameTimeout, [NSString stringWithFormat:@"the screen did not change within %ld ms", (long)arguments.timeout]);
-                    }
-                    break;
-                }
-            }
-            check = NO;
-            SWImageNode *node = [SWImageNode nodeWithFrame:frame];
-            SWRaster *plane = [comparison plane:node token:call.token error:&failure];
-            BOOL changed = NO;
-            if (plane != nil && [comparison changed:before from:plane result:&changed error:&failure] && changed) {
-                result = @{@"image": @([call.engine registerObject:node])};
-            }
-        }
-    }
-    if (failure != nil) {
-        SWFailWith(error, failure);
-    }
-    return result;
-}
-
-id SWCallWaitForChange(SWCall *call, NSError **error) {
-    SWScreenFeed *feed = SWScreenFeed.shared;
-    SWScreenGeometry geometry;
-    if (![feed acquire:&geometry error:error]) {
-        return nil;
-    }
-    id result = SWWaitForChange(call, feed, error);
-    [feed releaseFeed];
-    return result;
-}
-
-static id SWWaitForStable(SWCall *call, SWScreenFeed *feed, NSError **error) {
-    SWArguments *arguments = call.arguments;
-    NSDate *limit = SWDeadline(arguments);
-    double quiet = [arguments double:@"durationMs" fallback:500] / 1000;
-    NSInteger sequence = 0;
-    SWFrame *frame = SWScreenFirstFrame(feed, call.token, &sequence, error);
-    if (frame == nil) {
-        return nil;
-    }
-    SWImageNode *node = [SWImageNode nodeWithFrame:frame];
-    CGRect region;
-    BOOL hasRegion = [arguments rect:@"region" into:&region];
-    SWScreenComparison *comparison = [[SWScreenComparison alloc] initWithNode:node region:hasRegion ? &region : NULL threshold:[arguments integer:@"threshold" fallback:SWDefaultDifferenceThreshold] error:error];
-    SWRaster *last = comparison == nil ? nil : [comparison plane:node token:call.token error:error];
-    if (last == nil) {
-        return nil;
-    }
-    NSDate *changedAt = NSDate.date;
-    NSError *failure = nil;
-    while (failure == nil) {
-        @autoreleasepool {
-            NSTimeInterval remaining = quiet + changedAt.timeIntervalSinceNow;
-            if (remaining <= 0) {
-                return @{@"image": @([call.engine registerObject:node])};
-            }
-            if (limit.timeIntervalSinceNow <= 0) {
-                failure = SWMakeError(SWErrorNameTimeout, [NSString stringWithFormat:@"the screen did not settle within %ld ms", (long)arguments.timeout]);
-                break;
-            }
-            NSDate *until = [limit earlierDate:[NSDate dateWithTimeIntervalSinceNow:remaining]];
-            SWFrame *next = [feed frameAfter:sequence until:until token:call.token sequence:&sequence error:&failure];
-            if (next == nil) {
-                continue;
-            }
-            node = [SWImageNode nodeWithFrame:next];
-            SWRaster *current = [comparison plane:node token:call.token error:&failure];
-            BOOL changed = NO;
-            if (current != nil && [comparison changed:last from:current result:&changed error:&failure]) {
-                if (changed) {
-                    changedAt = NSDate.date;
-                }
-                last = current;
-            }
-        }
-    }
-    SWFailWith(error, failure);
-    return nil;
-}
-
-id SWCallWaitForStable(SWCall *call, NSError **error) {
-    SWScreenFeed *feed = SWScreenFeed.shared;
-    SWScreenGeometry geometry;
-    if (![feed acquire:&geometry error:error]) {
-        return nil;
-    }
-    id result = SWWaitForStable(call, feed, error);
-    [feed releaseFeed];
-    return result;
-}
-
-BOOL SWCallWatch(SWCall *call, NSError **error) {
-    if (![call.method isEqualToString:@"screen.watch"]) {
+BOOL SWCallScreenFrames(SWCall *call, NSError **error) {
+    if (![call.method isEqualToString:@"screen.frames"]) {
         SWFail(error, SWErrorNameType, @"graphics: there is no stream %@", call.method);
         return NO;
     }
-    SWScreenFeed *feed = SWScreenFeed.shared;
-    SWScreenGeometry geometry;
-    if (![feed acquire:&geometry error:error]) {
+    SWScreenStream *stream = SWStreamOf(call, error);
+    if (stream == nil) {
         return NO;
     }
     NSInteger sequence = 0;
@@ -179,9 +78,9 @@ BOOL SWCallWatch(SWCall *call, NSError **error) {
     NSError *failure = nil;
     while (failure == nil) {
         @autoreleasepool {
-            SWFrame *next = [feed frameAfter:sequence until:NSDate.distantFuture token:call.token sequence:&sequence error:&failure];
+            SWFrame *next = [stream frameAfter:sequence token:call.token sequence:&sequence error:&failure];
             if (next == nil) {
-                continue;
+                break;
             }
             NSInteger identifier = [call.engine registerObject:[SWImageNode nodeWithFrame:next]];
             if (previous != 0) {
@@ -194,7 +93,43 @@ BOOL SWCallWatch(SWCall *call, NSError **error) {
     if (previous != 0) {
         [call.engine drop:previous];
     }
-    [feed releaseFeed];
     SWFailWith(error, failure);
-    return NO;
+    return failure == nil;
+}
+
+id SWCallScreenRecord(SWCall *call, NSError **error) {
+    SWScreenStream *stream = SWStreamOf(call, error);
+    NSURL *directory = stream == nil ? nil : [call authorized:[call.arguments string:@"path"] write:YES error:error];
+    if (directory == nil) {
+        return nil;
+    }
+    SWRecordingSession *session = [SWRecordingSession startInDirectory:directory stream:stream token:call.token error:error];
+    return session == nil ? nil : @{@"session": @([call.engine registerObject:session])};
+}
+
+id SWCallRecordingStop(SWCall *call, NSError **error) {
+    SWRecordingSession *session = call.objects.firstObject;
+    if (![session isKindOfClass:SWRecordingSession.class]) {
+        SWFail(error, SWErrorNameType, @"graphics: stop needs a RecordingSession");
+        return nil;
+    }
+    return [session stop:call.token error:error] ? @{} : nil;
+}
+
+id SWCallRecordingOpen(SWCall *call, NSError **error) {
+    NSURL *directory = [call authorized:[call.arguments string:@"path"] write:NO error:error];
+    if (directory == nil) {
+        return nil;
+    }
+    SWScreenRecording *recording = [SWScreenRecording openDirectory:directory error:error];
+    return recording == nil ? nil : @{@"recording": @([call.engine registerObject:recording])};
+}
+
+id SWCallRecordingExport(SWCall *call, NSError **error) {
+    SWScreenRecording *recording = [call recording:error];
+    NSURL *target = recording == nil ? nil : [call authorized:[call.arguments string:@"path"] write:YES error:error];
+    if (target == nil) {
+        return nil;
+    }
+    return [recording exportTo:target token:call.token error:error] ? @{} : nil;
 }

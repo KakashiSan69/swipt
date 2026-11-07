@@ -1,6 +1,6 @@
 //go:build darwin && cgo
 
-#import "SWSegmentWriter.h"
+#import "SWMovieWriter.h"
 
 #import <AVFoundation/AVFoundation.h>
 
@@ -8,7 +8,7 @@
 #import "SWError.h"
 #import "SWHEVC.h"
 
-@implementation SWSegmentWriter {
+@implementation SWMovieWriter {
     AVAssetWriter *_writer;
     AVAssetWriterInput *_input;
     SWRTPClock *_clock;
@@ -26,13 +26,13 @@
     _turns = turns;
     _clock = [SWRTPClock new];
     _end = kCMTimeZero;
-    [NSFileManager.defaultManager removeItemAtURL:url error:nil];
     NSError *creating = nil;
     _writer = [[AVAssetWriter alloc] initWithURL:url fileType:AVFileTypeQuickTimeMovie error:&creating];
     if (_writer == nil) {
         SWFailCause(error, SWErrorNameGeneric, creating, @"graphics: create %@", url.lastPathComponent);
         return nil;
     }
+    _writer.movieFragmentInterval = CMTimeMake(1, 1);
     _input = [[AVAssetWriterInput alloc] initWithMediaType:AVMediaTypeVideo outputSettings:nil sourceFormatHint:format];
     _input.expectsMediaDataInRealTime = YES;
     _input.transform = CGAffineTransformMakeRotation(turns * M_PI / 2);

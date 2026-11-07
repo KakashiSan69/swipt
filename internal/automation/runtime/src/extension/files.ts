@@ -240,6 +240,13 @@ export const assets = (): DirectoryHandle =>
 export const cacheDirectory = (): DirectoryHandle =>
   (cache ??= new DirectoryHandle(token, { root: "cache", path: "" }));
 
+export const directoryOf = (value: unknown, name: string): DirectoryHandle => {
+  if (value instanceof DirectoryHandle) {
+    return value;
+  }
+  throw new TypeError(`${name} must be a DirectoryHandle`);
+};
+
 export const fileOf = (value: unknown, name: string): FileHandle => {
   if (value instanceof FileHandle) {
     return value;

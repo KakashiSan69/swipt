@@ -148,15 +148,15 @@ func (p *Phone) element(c *conn, ref string) (*PhoneNode, error) {
 	return node, nil
 }
 
-func (p *Phone) Perform(ctx context.Context, ref, name string) (Aim, error) {
+func (p *Phone) Perform(ctx context.Context, ref, name string) error {
 	c, ctx, done, err := p.begin(ctx)
 	if err != nil {
-		return Aim{}, err
+		return err
 	}
 	defer done()
 	geometry, err := c.readGeometry(ctx)
 	if err != nil {
-		return Aim{}, err
+		return err
 	}
 	started := time.Now()
 	s := &axSession{phone: p, conn: c, geometry: geometry}
@@ -174,5 +174,5 @@ func (p *Phone) Perform(ctx context.Context, ref, name string) (Aim, error) {
 		c.events.publish(Event{Kind: EventInput})
 		c.front.acted()
 	}
-	return s.target, err
+	return err
 }

@@ -1,5 +1,6 @@
 import type { CallOptions, ObservableState } from "./index";
 import type { FileHandle } from "./file-system";
+import type { RasterImage } from "./image";
 
 export type DisplayState = "off" | "dimmed" | "inactiveOn" | "activeOn";
 
@@ -37,6 +38,7 @@ export interface SimulatedLocation {
 }
 
 export declare function info(options?: CallOptions): Promise<DeviceInfo>;
+export declare function screenshot(options?: CallOptions): Promise<RasterImage>;
 export declare const foregroundApplication: ObservableState<string>;
 export declare const locked: ObservableState<boolean>;
 export declare const displayState: ObservableState<DisplayState>;

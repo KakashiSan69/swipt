@@ -55,7 +55,7 @@ func ParseManifest(data []byte) (Manifest, error) {
 	if err := json.Unmarshal(data, &fields); err != nil {
 		return Manifest{}, E.Cause(err, "read ", ManifestFile)
 	}
-	known := manifestFields{Icon: DefaultIcon}
+	known := manifestFields{Icon: DefaultIcon, MinimumAPILevel: 1}
 	if err := json.Unmarshal(data, &known); err != nil {
 		return Manifest{}, E.Cause(err, "read ", ManifestFile)
 	}

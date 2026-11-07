@@ -13,6 +13,7 @@ interface Pending {
 interface Subscription {
   push(value: unknown): void;
   fail(error: Error): void;
+  complete(): void;
 }
 
 const pending = new Map<string, Pending>();
@@ -162,6 +163,12 @@ export function stream<T>(
             }
           },
           fail,
+          complete: () => {
+            const current = waiter;
+            waiter = undefined;
+            finish();
+            current?.resolve({ value: undefined, done: true });
+          },
         });
         signal?.addEventListener("abort", abort);
         native.subscribe(
@@ -207,5 +214,10 @@ export function deliver(id: string, json: string): void {
 }
 
 export function end(id: string, failure: string): void {
-  subscriptions.get(id)?.fail(errorFrom(JSON.parse(failure)));
+  const subscription = subscriptions.get(id);
+  if (failure === "") {
+    subscription?.complete();
+  } else {
+    subscription?.fail(errorFrom(JSON.parse(failure)));
+  }
 }

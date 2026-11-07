@@ -5,7 +5,7 @@
 @class SWCancelToken;
 @class SWEngine;
 @class SWImageNode;
-@class SWVideoModel;
+@class SWScreenRecording;
 
 @interface SWCall : NSObject
 @property (nonatomic, readonly) NSString *method;
@@ -17,14 +17,14 @@
 
 - (instancetype)initWithMethod:(NSString *)method arguments:(SWArguments *)arguments objects:(NSArray *)objects;
 - (SWImageNode *)image:(NSUInteger)index error:(NSError **)error;
-- (SWVideoModel *)video:(NSError **)error;
+- (SWScreenRecording *)recording:(NSError **)error;
 - (NSURL *)authorized:(NSString *)path write:(BOOL)write error:(NSError **)error;
 @end
 
 typedef id (*SWCallFunction)(SWCall *call, NSError **error);
 
 id SWCallExecute(SWCall *call, NSError **error);
-BOOL SWCallWatch(SWCall *call, NSError **error);
+BOOL SWCallScreenFrames(SWCall *call, NSError **error);
 
 id SWCallDecode(SWCall *call, NSError **error);
 id SWCallEncode(SWCall *call, NSError **error);
@@ -43,17 +43,13 @@ id SWCallBarcodes(SWCall *call, NSError **error);
 id SWCallDifference(SWImageNode *first, SWImageNode *second, NSInteger threshold, SWCancelToken *token, NSError **error);
 
 id SWCallScreenshot(SWCall *call, NSError **error);
-id SWCallScreenGet(SWCall *call, NSError **error);
-id SWCallWaitForChange(SWCall *call, NSError **error);
-id SWCallWaitForStable(SWCall *call, NSError **error);
-id SWCallScreenFind(SWCall *call, NSError **error);
+id SWCallScreenOpen(SWCall *call, NSError **error);
+id SWCallScreenClose(SWCall *call, NSError **error);
+id SWCallScreenFrame(SWCall *call, NSError **error);
+id SWCallScreenRecord(SWCall *call, NSError **error);
 
-id SWCallRecord(SWCall *call, NSError **error);
 id SWCallRecordingStop(SWCall *call, NSError **error);
-id SWCallVideoOpen(SWCall *call, NSError **error);
-id SWCallVideoGrid(SWCall *call, NSError **error);
-id SWCallVideoDiff(SWCall *call, NSError **error);
-id SWCallVideoFind(SWCall *call, NSError **error);
-id SWCallVideoExport(SWCall *call, NSError **error);
+id SWCallRecordingOpen(SWCall *call, NSError **error);
+id SWCallRecordingExport(SWCall *call, NSError **error);
 
 extern const NSInteger SWDefaultDifferenceThreshold;

@@ -52,7 +52,7 @@ func (e *engine) watch(ctx context.Context, kind string, args []json.RawMessage,
 			return E.Cause1(ErrInvalid, E.New("unknown state ", strconv.Quote(name)))
 		}
 		return nil
-	case "screen.watch":
+	case "screen.frames":
 		return e.watchGraphics(ctx, call, publish, ended)
 	case "sqlite.changes":
 		if err := call.decode(0); err != nil {

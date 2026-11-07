@@ -1,6 +1,6 @@
 //go:build darwin && cgo
 
-#import "SWScreenFeed.h"
+#import "SWScreenCapture.h"
 
 #import "SWAccessUnit.h"
 #import "SWCancelToken.h"
@@ -8,37 +8,35 @@
 #import "SWError.h"
 #import "SWFrameDecoder.h"
 #import "SWGoBridge.h"
+#import "SWScreenStream.h"
 
-const NSTimeInterval SWScreenFirstFrameLimit = 5;
-
-static const NSTimeInterval SWScreenLinger = 1;
 static const NSInteger SWPacketHeaderSize = 13;
 
-@implementation SWScreenFeed {
+@implementation SWScreenCapture {
     dispatch_queue_t _queue;
     NSCondition *_state;
-    SWDeviceFeed *_feed;
+    SWGoScreenStream *_source;
     SWScreenGeometry _geometry;
-    NSInteger _users;
+    NSMutableArray<SWScreenStream *> *_streams;
     BOOL _opening;
-    dispatch_block_t _lingering;
+    NSString *_mode;
+    uint64_t _maximumBitrate;
     SWFrame *_latest;
     NSInteger _sequence;
     NSError *_failure;
-    NSMutableDictionary<NSNumber *, void (^)(SWFrame *)> *_frameListeners;
     NSMutableDictionary<NSNumber *, void (^)(SWAccessUnit *)> *_unitListeners;
     NSInteger _nextListener;
     SWDepacketizer *_depacketizer;
     SWFrameDecoder *_decoder;
 }
 
-+ (SWScreenFeed *)shared {
-    static SWScreenFeed *feed;
++ (SWScreenCapture *)shared {
+    static SWScreenCapture *capture;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
-        feed = [SWScreenFeed new];
+        capture = [SWScreenCapture new];
     });
-    return feed;
+    return capture;
 }
 
 - (instancetype)init {
@@ -46,11 +44,11 @@ static const NSInteger SWPacketHeaderSize = 13;
     if (self) {
         _queue = dispatch_queue_create("io.nekohasekai.swipt.graphics.screen", dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INTERACTIVE, 0));
         _state = [NSCondition new];
-        _frameListeners = [NSMutableDictionary dictionary];
+        _streams = [NSMutableArray array];
         _unitListeners = [NSMutableDictionary dictionary];
         _depacketizer = [SWDepacketizer new];
         _decoder = [SWFrameDecoder new];
-        __weak SWScreenFeed *weakSelf = self;
+        __weak SWScreenCapture *weakSelf = self;
         _decoder.onFrame = ^(CVPixelBufferRef image, SWAccessUnit *unit) {
             [weakSelf decoded:image unit:unit];
         };
@@ -58,19 +56,36 @@ static const NSInteger SWPacketHeaderSize = 13;
     return self;
 }
 
-- (BOOL)acquire:(SWScreenGeometry *)geometry error:(NSError **)error {
-    [_state lock];
-    _users += 1;
-    if (_lingering != nil) {
-        dispatch_block_cancel(_lingering);
-        _lingering = nil;
+- (void)mergedMode:(NSString **)mode maximumBitrate:(uint64_t *)maximumBitrate {
+    *mode = SWScreenModeCoreDevice;
+    *maximumBitrate = 0;
+    for (SWScreenStream *stream in _streams) {
+        if (![stream.mode isEqualToString:SWScreenModeCoreDevice]) {
+            *mode = SWScreenModeRemoteDesktop;
+            *maximumBitrate = MAX(*maximumBitrate, stream.maximumBitrate);
+        }
     }
+}
+
+- (BOOL)addStream:(SWScreenStream *)stream geometry:(SWScreenGeometry *)geometry error:(NSError **)error {
+    [_state lock];
+    [_streams addObject:stream];
     while (_opening) {
         [_state wait];
     }
-    if (_feed != nil) {
+    NSString *mode = nil;
+    uint64_t maximumBitrate = 0;
+    [self mergedMode:&mode maximumBitrate:&maximumBitrate];
+    if (_source != nil) {
+        SWGoScreenStream *source = _source;
         *geometry = _geometry;
+        BOOL changed = ![mode isEqualToString:_mode] || maximumBitrate != _maximumBitrate;
+        _mode = mode;
+        _maximumBitrate = maximumBitrate;
         [_state unlock];
+        if (changed) {
+            [source configureMode:mode maximumBitrate:maximumBitrate];
+        }
         return YES;
     }
     _opening = YES;
@@ -80,73 +95,76 @@ static const NSInteger SWPacketHeaderSize = 13;
     });
     [_state unlock];
     NSError *failure = nil;
-    SWDeviceFeed *opened = [SWDeviceFeed openWithError:&failure];
+    SWGoScreenStream *opened = [SWGoScreenStream openWithMode:mode maximumBitrate:maximumBitrate error:&failure];
     [_state lock];
     _opening = NO;
     [_state broadcast];
     if (opened == nil) {
-        _users -= 1;
+        [_streams removeObjectIdenticalTo:stream];
         [_state unlock];
         SWFailWith(error, failure);
         return NO;
     }
     _geometry = (SWScreenGeometry){.width = opened.width, .height = opened.height, .scale = opened.scale};
-    _feed = opened;
+    *geometry = _geometry;
+    _source = opened;
+    _mode = mode;
+    _maximumBitrate = maximumBitrate;
     _failure = nil;
     _latest = nil;
-    *geometry = _geometry;
+    NSString *merged = nil;
+    uint64_t mergedBitrate = 0;
+    [self mergedMode:&merged maximumBitrate:&mergedBitrate];
+    BOOL changed = ![merged isEqualToString:_mode] || mergedBitrate != _maximumBitrate;
+    _mode = merged;
+    _maximumBitrate = mergedBitrate;
     [_state unlock];
+    if (changed) {
+        [opened configureMode:merged maximumBitrate:mergedBitrate];
+    }
     return YES;
 }
 
-- (void)releaseFeed {
+- (void)removeStream:(SWScreenStream *)stream {
     [_state lock];
-    _users -= 1;
-    if (_users == 0) {
-        dispatch_block_t work = dispatch_block_create(0, ^{
-            [self closeIfIdle];
-        });
-        _lingering = work;
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(SWScreenLinger * NSEC_PER_SEC)), dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), work);
-    }
-    [_state unlock];
-}
-
-- (void)closeIfIdle {
-    [_state lock];
-    SWDeviceFeed *closing = nil;
-    if (_users == 0 && _feed != nil) {
-        closing = _feed;
-        _feed = nil;
+    [_streams removeObjectIdenticalTo:stream];
+    [_state broadcast];
+    SWGoScreenStream *closing = nil;
+    SWGoScreenStream *configuring = nil;
+    NSString *mode = nil;
+    uint64_t maximumBitrate = 0;
+    if (_streams.count == 0) {
+        closing = _source;
+        _source = nil;
         _latest = nil;
+    } else if (_source != nil) {
+        [self mergedMode:&mode maximumBitrate:&maximumBitrate];
+        if (![mode isEqualToString:_mode] || maximumBitrate != _maximumBitrate) {
+            configuring = _source;
+            _mode = mode;
+            _maximumBitrate = maximumBitrate;
+        }
     }
     [_state unlock];
     [closing close];
+    [configuring configureMode:mode maximumBitrate:maximumBitrate];
 }
 
 - (void)requestKeyFrame {
     [_state lock];
-    SWDeviceFeed *feed = _feed;
+    SWGoScreenStream *source = _source;
     [_state unlock];
-    [feed requestKeyFrame];
+    [source requestKeyFrame];
 }
 
-- (SWFrame *)latestFrameSequence:(NSInteger *)sequence {
+- (SWFrame *)frameAfter:(NSInteger)previous stream:(SWScreenStream *)stream until:(NSDate *)deadline token:(SWCancelToken *)token sequence:(NSInteger *)sequence error:(NSError **)error {
     [_state lock];
-    SWFrame *latest = _latest;
-    *sequence = _sequence;
-    [_state unlock];
-    return latest;
-}
-
-- (SWFrame *)frameAfter:(NSInteger)previous until:(NSDate *)deadline token:(SWCancelToken *)token sequence:(NSInteger *)sequence error:(NSError **)error {
-    [_state lock];
-    while (YES) {
+    while (!stream.closed) {
         if (_failure != nil) {
             SWFailWith(error, _failure);
             break;
         }
-        if (_feed == nil && !_opening) {
+        if (_source == nil && !_opening) {
             SWFail(error, SWErrorNameUnavailable, @"graphics: the screen stream stopped");
             break;
         }
@@ -170,15 +188,6 @@ static const NSInteger SWPacketHeaderSize = 13;
     return nil;
 }
 
-- (NSInteger)addFrameListener:(void (^)(SWFrame *))listener {
-    [_state lock];
-    _nextListener += 1;
-    NSInteger identifier = _nextListener;
-    _frameListeners[@(identifier)] = listener;
-    [_state unlock];
-    return identifier;
-}
-
 - (NSInteger)addUnitListener:(void (^)(SWAccessUnit *))listener {
     [_state lock];
     _nextListener += 1;
@@ -190,7 +199,6 @@ static const NSInteger SWPacketHeaderSize = 13;
 
 - (void)removeListener:(NSInteger)identifier {
     [_state lock];
-    [_frameListeners removeObjectForKey:@(identifier)];
     [_unitListeners removeObjectForKey:@(identifier)];
     [_state unlock];
 }
@@ -206,7 +214,7 @@ static const NSInteger SWPacketHeaderSize = 13;
 - (void)onEnd:(NSString *)failure {
     [_state lock];
     _failure = SWErrorFromFailure(failure);
-    _feed = nil;
+    _source = nil;
     _latest = nil;
     [_state broadcast];
     [_state unlock];
@@ -251,37 +259,15 @@ static const NSInteger SWPacketHeaderSize = 13;
 
 - (void)decoded:(CVPixelBufferRef)image unit:(SWAccessUnit *)unit {
     [_state lock];
-    if (_feed == nil) {
+    if (_source == nil) {
         [_state unlock];
         return;
     }
-    SWFrame *frame = [[SWFrame alloc] initWithPixelBuffer:image time:unit.arrival turns:unit.turns geometry:_geometry];
-    _latest = frame;
+    _latest = [[SWFrame alloc] initWithPixelBuffer:image time:unit.arrival turns:unit.turns geometry:_geometry];
     _sequence += 1;
     [_state broadcast];
-    NSArray<void (^)(SWFrame *)> *listeners = _frameListeners.allValues;
     [_state unlock];
-    for (void (^listener)(SWFrame *) in listeners) {
-        listener(frame);
-    }
 }
 
 @end
 
-SWFrame *SWScreenFirstFrame(SWScreenFeed *feed, SWCancelToken *token, NSInteger *sequence, NSError **error) {
-    SWFrame *latest = [feed latestFrameSequence:sequence];
-    if (latest != nil) {
-        return latest;
-    }
-    NSError *failure = nil;
-    SWFrame *next = [feed frameAfter:0 until:[NSDate dateWithTimeIntervalSinceNow:SWScreenFirstFrameLimit] token:token sequence:sequence error:&failure];
-    if (next != nil) {
-        return next;
-    }
-    if (failure != nil) {
-        SWFailWith(error, failure);
-    } else {
-        SWFail(error, SWErrorNameUnavailable, @"graphics: the screen sent no frame within %ld s; it may be off", (long)SWScreenFirstFrameLimit);
-    }
-    return nil;
-}
