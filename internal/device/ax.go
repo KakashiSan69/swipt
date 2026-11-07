@@ -53,6 +53,7 @@ type axWorker struct {
 
 	generation atomic.Uint64
 	client     *accessibility.RemoteClient
+	daemon     uint64
 	blamed     uint64
 }
 
@@ -144,6 +145,9 @@ func (w *axWorker) next() *axJob {
 			return job
 		}
 		w.access.Unlock()
+		if w.client != nil && w.client.Err() != nil && w.conn.ctx.Err() == nil {
+			w.ended()
+		}
 		select {
 		case <-w.conn.ctx.Done():
 			return nil
@@ -154,6 +158,11 @@ func (w *axWorker) next() *axJob {
 
 func (w *axWorker) run() {
 	defer close(w.done)
+	if !w.conn.connection.axClean() {
+		if err := w.restart("its state from before is not known to be clean"); err != nil {
+			w.logger.Debug(E.Cause(err, "restart axauditd"))
+		}
+	}
 	for {
 		job := w.next()
 		if job == nil {
@@ -193,8 +202,7 @@ func (w *axWorker) execute(job *axJob) (any, error) {
 	case errors.Is(err, accessibility.ErrStalled):
 		return nil, w.stalled(job, err)
 	case client.Err() != nil && w.conn.ctx.Err() == nil:
-		w.logger.Debug("the connection to the device's accessibility service ended: ", client.Err())
-		w.dropClient()
+		w.ended()
 		// The device reset this connection, with axauditd still running, right
 		// after the application in front was relaunched (iPhone18,2, iOS 27.3
 		// 24C5037i).
@@ -245,7 +253,7 @@ func (w *axWorker) open(ctx context.Context) (*accessibility.RemoteClient, error
 		if w.client.Err() == nil {
 			return w.client, nil
 		}
-		w.dropClient()
+		w.ended()
 	}
 	s := w.conn.connection
 	if err := s.stallsAllowed(); err != nil {
@@ -264,8 +272,38 @@ func (w *axWorker) open(ctx context.Context) (*accessibility.RemoteClient, error
 		return nil, err
 	}
 	w.client = client
-	go w.watchScreenViewing(client)
+	listed, cancel := context.WithTimeout(w.conn.ctx, restartLimit)
+	w.daemon, err = w.daemonPID(listed)
+	cancel()
+	if err != nil {
+		w.logger.Debug(E.Cause(err, "find axauditd"))
+	}
+	go w.watch(client)
 	return client, nil
+}
+
+// A remoteAXService connection that ended while its axauditd kept running
+// left that daemon generating the frontmost application's tree at each change
+// of the screen, for no client, until the daemon was killed; this was so after
+// Swipt was killed on the device and after swipt-server was killed on a Mac
+// (iPhone18,2, iOS 27.3 24C5037i).
+func (w *axWorker) ended() {
+	served := w.daemon
+	w.logger.Debug("the connection to the device's accessibility service ended: ", w.client.Err())
+	w.dropClient()
+	ctx, cancel := context.WithTimeout(w.conn.ctx, restartLimit)
+	defer cancel()
+	pid, err := w.daemonPID(ctx)
+	if err != nil {
+		w.logger.Debug(E.Cause(err, "find axauditd"))
+		return
+	}
+	if served != 0 && pid != served {
+		pid = 0
+	}
+	if err = w.kill(ctx, pid, "its connection ended while it kept running"); err != nil {
+		w.logger.Debug(E.Cause(err, "restart axauditd"))
+	}
 }
 
 func (w *axWorker) dropClient() {
@@ -389,16 +427,17 @@ func (w *axWorker) shown(named uint64) (pid uint64, subject, basis string, shown
 func (w *axWorker) restart(reason string) error {
 	ctx, cancel := context.WithTimeout(w.conn.ctx, restartLimit)
 	defer cancel()
-	processes, err := apps.Processes(ctx, w.conn.device)
+	pid, err := w.daemonPID(ctx)
 	if err != nil {
 		return err
 	}
-	daemon := common.Find(processes, func(it apps.Process) bool {
-		return strings.HasSuffix(it.Executable, "/AccessibilityAudit.framework/Support/axauditd")
-	})
-	if daemon.PID != 0 {
+	return w.kill(ctx, pid, reason)
+}
+
+func (w *axWorker) kill(ctx context.Context, pid uint64, reason string) error {
+	if pid != 0 {
 		w.logger.Debug("restarting axauditd, as ", reason)
-		if err = apps.Kill(ctx, w.conn.device, daemon.PID); err != nil {
+		if err := apps.Kill(ctx, w.conn.device, pid); err != nil {
 			return err
 		}
 	}
@@ -408,10 +447,24 @@ func (w *axWorker) restart(reason string) error {
 	return nil
 }
 
-func (w *axWorker) watchScreenViewing(client *accessibility.RemoteClient) {
+func (w *axWorker) daemonPID(ctx context.Context) (uint64, error) {
+	processes, err := apps.Processes(ctx, w.conn.device)
+	if err != nil {
+		return 0, err
+	}
+	return common.Find(processes, func(it apps.Process) bool {
+		return strings.HasSuffix(it.Executable, "/AccessibilityAudit.framework/Support/axauditd")
+	}).PID, nil
+}
+
+func (w *axWorker) watch(client *accessibility.RemoteClient) {
 	for {
 		select {
 		case <-client.Done():
+			select {
+			case w.wake <- struct{}{}:
+			default:
+			}
 			return
 		case <-client.ScreenViewingNotifications():
 		}

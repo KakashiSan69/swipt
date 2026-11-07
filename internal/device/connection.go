@@ -187,6 +187,14 @@ func (s *Connection) Start() error {
 	s.started = true
 	s.access.Unlock()
 	go s.run()
+	go func() {
+		_, release, err := s.acquire(s.ctx)
+		if err != nil {
+			s.logger.Debug(E.Cause(err, "connect to restart axauditd"))
+			return
+		}
+		release()
+	}()
 	return s.listen()
 }
 
