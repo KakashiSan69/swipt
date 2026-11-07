@@ -53,9 +53,14 @@ jobs:
           echo "library_hash=${{ hashFiles('go.mod', 'go.sum', 'api/*.go', 'api/package.json', 'libswipt/**', 'internal/**', '!internal/automation/runtime/**', '!internal/cmd/**', 'internal/cmd/build_libswipt/**', '!**/*_test.go') }}" >> "$GITHUB_OUTPUT"
       - name: Check API level
         run: |-
-          if git rev-parse -q --verify refs/tags/nightly > /dev/null; then
-            node .github/check_api_level.mjs nightly
+          source .github/github.sh
+          STABLE=$(retry gh api "repos/$GITHUB_REPOSITORY/releases?per_page=100" --jq '[.[] | select(.draft or .prerelease | not)][0].tag_name // empty')
+          if [ -n "$STABLE" ]; then
+            retry git fetch --depth=1 origin tag "$STABLE"
+            node .github/check_api_level.mjs "$STABLE"
           fi
+        env:
+          GH_TOKEN: ${{ github.token }}
   build_apple_library:
     name: Build Apple library
     if: needs.calculate_version.outputs.app_changed == 'true'
