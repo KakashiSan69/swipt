@@ -657,8 +657,7 @@ declare module "@swipt/api/screen" {
     ): Promise<(ScreenMatch & { readonly time: number }) | null>;
     export(
       options?: CallOptions & {
-        /** Omitted, the export goes to a new file in cacheDirectory. */
-        readonly file?: FileHandle | string;
+        readonly file?: FileHandle;
         readonly from?: number;
         readonly to?: number;
         readonly region?: Rect;
@@ -716,12 +715,11 @@ declare module "@swipt/api/screen" {
   ): Promise<RasterImage>;
   export function record(
     options?: CallOptions & {
-      /** Omitted, the recording goes to a new file in cacheDirectory. */
-      readonly file?: FileHandle | string;
+      readonly file?: FileHandle;
     },
   ): Promise<RecordingSession>;
   export function openRecording(
-    file: FileHandle | string,
+    file: FileHandle,
     options?: CallOptions,
   ): Promise<ScreenRecording>;
 }
@@ -834,7 +832,7 @@ declare module "@swipt/api/image" {
       options?: CallOptions & { readonly quality?: number },
     ): Promise<Uint8Array>;
     save(
-      file: FileHandle | string,
+      file: FileHandle,
       options?: CallOptions & {
         readonly format?: ImageFormat;
         readonly quality?: number;
@@ -882,7 +880,7 @@ declare module "@swipt/api/image" {
   }
 
   export function decode(
-    data: Uint8Array | FileHandle | string,
+    data: Uint8Array | FileHandle,
     options?: CallOptions & { readonly scale?: number },
   ): Promise<RasterImage>;
 }

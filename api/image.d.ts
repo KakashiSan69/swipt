@@ -105,7 +105,7 @@ export interface RasterImage {
     options?: CallOptions & { readonly quality?: number },
   ): Promise<Uint8Array>;
   save(
-    file: FileHandle | string,
+    file: FileHandle,
     options?: CallOptions & {
       readonly format?: ImageFormat;
       readonly quality?: number;
@@ -153,6 +153,6 @@ export interface RasterImage {
 }
 
 export declare function decode(
-  data: Uint8Array | FileHandle | string,
+  data: Uint8Array | FileHandle,
   options?: CallOptions & { readonly scale?: number },
 ): Promise<RasterImage>;

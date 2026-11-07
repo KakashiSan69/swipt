@@ -91,8 +91,7 @@ export interface ScreenRecording {
   ): Promise<(ScreenMatch & { readonly time: number }) | null>;
   export(
     options?: CallOptions & {
-      /** Omitted, the export goes to a new file in cacheDirectory. */
-      readonly file?: FileHandle | string;
+      readonly file?: FileHandle;
       readonly from?: number;
       readonly to?: number;
       readonly region?: Rect;
@@ -150,11 +149,10 @@ export declare function waitForStable(
 ): Promise<RasterImage>;
 export declare function record(
   options?: CallOptions & {
-    /** Omitted, the recording goes to a new file in cacheDirectory. */
-    readonly file?: FileHandle | string;
+    readonly file?: FileHandle;
   },
 ): Promise<RecordingSession>;
 export declare function openRecording(
-  file: FileHandle | string,
+  file: FileHandle,
   options?: CallOptions,
 ): Promise<ScreenRecording>;

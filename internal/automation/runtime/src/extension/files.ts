@@ -244,12 +244,7 @@ export const fileOf = (value: unknown, name: string): FileHandle => {
   if (value instanceof FileHandle) {
     return value;
   }
-  if (typeof value === "string") {
-    return dataDirectory().file(value);
-  }
-  throw new TypeError(
-    `${name} must be a FileHandle or a path in the data directory`,
-  );
+  throw new TypeError(`${name} must be a FileHandle`);
 };
 
 export const handleOfPath = (value: string): FileHandle => {
