@@ -4,6 +4,7 @@
   "\"source.url\" in package.json is not an absolute URL": "package.jsonஇல் உள்ள \"source.url\" முழுமையான URL அல்ல",
   "\"swiplet.id\" in package.json must be 1 to 128 lowercase letters, digits, dots, underscores and hyphens starting with a letter or a digit": "package.jsonஇல் உள்ள \"swiplet.id\" 1 முதல் 128 வரையிலான சிற்றெழுத்துகள், இலக்கங்கள், புள்ளிகள், அடிக்கோடுகள், ஹைஃபன்கள் கொண்டதாகவும் எழுத்து அல்லது இலக்கத்தில் தொடங்குவதாகவும் இருக்க வேண்டும்",
   "\"swiplet.localizedNames\" in package.json must map languages to names": "package.jsonஇல் உள்ள \"swiplet.localizedNames\" மொழிகளைப் பெயர்களுடன் மேப் செய்ய வேண்டும்",
+  "\"swiplet.minimumAPILevel\" in package.json must be an integer from 1 to {level}, the API level of @swipt/api": "package.jsonஇல் உள்ள \"swiplet.minimumAPILevel\" 1 முதல் @swipt/apiஇன் API நிலையான {level} வரையிலான முழு எண்ணாக இருக்க வேண்டும்",
   "\"swiplet.name\" in package.json must be a non-empty string": "package.jsonஇல் உள்ள \"swiplet.name\" காலியாக இல்லாத ஸ்டிரிங்காக இருக்க வேண்டும்",
   "\"swiplet.versionCode\" in package.json must be a positive integer": "package.jsonஇல் உள்ள \"swiplet.versionCode\" நேர்மறை முழு எண்ணாக இருக்க வேண்டும்",
   "\"{field}\" in package.json must be a string": "package.jsonஇல் உள்ள \"{field}\" ஸ்டிரிங்காக இருக்க வேண்டும்",

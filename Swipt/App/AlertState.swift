@@ -24,7 +24,15 @@ struct AlertState {
     }
 
     init(_ failure: String, error: (any Error)?) {
-        self.init(failure, errorMessage: error.map(Self.message) ?? "")
+        if let error = error as? any RecoverableError {
+            let options = error.recoveryOptions
+            let recoveries = options.indices.map { index in
+                Action(label: options[index], role: nil) { _ = error.attemptRecovery(optionIndex: index) }
+            }
+            self.init(title: failure, message: Self.message(of: error), actions: recoveries + [Action(label: String(localized: "OK"), role: .cancel, isDefault: true) {}])
+        } else {
+            self.init(failure, errorMessage: error.map(Self.message) ?? "")
+        }
     }
 
     private static func message(of error: any Error) -> String {

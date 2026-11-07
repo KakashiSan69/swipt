@@ -4,6 +4,7 @@
   "\"source.url\" in package.json is not an absolute URL": "package.json-tiedoston kenttä \"source.url\" ei ole absoluuttinen URL-osoite",
   "\"swiplet.id\" in package.json must be 1 to 128 lowercase letters, digits, dots, underscores and hyphens starting with a letter or a digit": "package.json-tiedoston kentän \"swiplet.id\" on oltava 1–128 merkkiä pitkä, sisällettävä vain pieniä kirjaimia, numeroita, pisteitä, alaviivoja ja yhdysviivoja sekä alettava kirjaimella tai numerolla",
   "\"swiplet.localizedNames\" in package.json must map languages to names": "package.json-tiedoston kentän \"swiplet.localizedNames\" on yhdistettävä kielet nimiin",
+  "\"swiplet.minimumAPILevel\" in package.json must be an integer from 1 to {level}, the API level of @swipt/api": "package.json-tiedoston kentän \"swiplet.minimumAPILevel\" on oltava kokonaisluku 1:stä @swipt/api-paketin API-tasoon ({level})",
   "\"swiplet.name\" in package.json must be a non-empty string": "package.json-tiedoston kentän \"swiplet.name\" on oltava ei-tyhjä merkkijono",
   "\"swiplet.versionCode\" in package.json must be a positive integer": "package.json-tiedoston kentän \"swiplet.versionCode\" on oltava positiivinen kokonaisluku",
   "\"{field}\" in package.json must be a string": "package.json-tiedoston kentän \"{field}\" on oltava merkkijono",

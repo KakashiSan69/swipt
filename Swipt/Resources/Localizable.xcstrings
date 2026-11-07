@@ -28697,6 +28697,310 @@
         }
       }
     },
+    "Learn More" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "معرفة المزيد"
+          }
+        },
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Научете повече"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "আরও জানুন"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Més informació"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Další informace"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Få mere at vide"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weitere Infos"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Μάθετε περισσότερα"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Más información"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Más información"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lisätietoja"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En savoir plus"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En savoir plus"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "વધુ જાણો"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "מידע נוסף"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "और जानें"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saznajte više"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "További információk"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pelajari Lebih Lanjut"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ulteriori informazioni"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "さらに詳しく"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Толығырақ"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "더 알아보기"
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sužinoti daugiau"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "കൂടുതലറിയുക"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अधिक जाणून घ्या"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ketahui Lebih Lanjut"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finn ut mer"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meer informatie"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ଅଧିକ ଜାଣନ୍ତୁ"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ਹੋਰ ਜਾਣੋ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Więcej informacji"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saiba Mais"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saber mais"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aflați mai multe"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Подробнее"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ďalšie informácie"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Več o tem"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Läs mer"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "மேலும் அறிக"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "మరింత తెలుసుకోండి"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เรียนรู้เพิ่มเติม"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daha Fazla Bilgi"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Докладніше"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مزید جانیں"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tìm hiểu thêm"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "了解更多"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "了解更多"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "瞭解更多"
+          }
+        }
+      }
+    },
     "Letters and numbers on a keyboard" : {
       "localizations" : {
         "ar" : {
@@ -55551,6 +55855,310 @@
         }
       }
     },
+    "This swiplet requires a newer version of Swipt." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يتطلب Swiplet هذا إصدارًا أحدث من Swipt."
+          }
+        },
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Този Swiplet изисква по-нова версия на Swipt."
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "এই Swiplet-এর জন্য Swipt-এর নতুন ভার্সন প্রয়োজন।"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aquest Swiplet requereix una versió més nova de l’app Swipt."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tento Swiplet vyžaduje novější verzi aplikace Swipt."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denne Swiplet kræver en nyere version af Swipt."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieses Swiplet erfordert eine neuere Version von Swipt."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Αυτό το Swiplet απαιτεί νεότερη έκδοση του Swipt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este Swiplet requiere una versión más reciente de Swipt."
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este Swiplet requiere una versión más reciente de Swipt."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tämä Swiplet vaatii Swiptin uudemman version."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce Swiplet nécessite une version plus récente de Swipt."
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce Swiplet nécessite une version plus récente de Swipt."
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "આ Swiplet માટે Swiptનું નવું વર્ઝન જરૂરી છે."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ה-Swiplet הזה דורש גרסה חדשה יותר של Swipt."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "इस Swiplet के लिए Swipt का नया वर्शन आवश्यक है।"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ovaj Swiplet zahtijeva noviju verziju aplikacije Swipt."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ez a Swiplet a Swipt újabb verzióját igényli."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet ini memerlukan versi Swipt yang lebih baru."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questo Swiplet richiede una versione più recente di Swipt."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このSwipletには新しいバージョンのSwiptが必要です。"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бұл Swiplet үшін Swipt қолданбасының жаңа нұсқасы қажет."
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ಈ Swipletಗೆ Swiptನ ಹೊಸ ಆವೃತ್ತಿ ಅಗತ್ಯವಿದೆ."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 Swiplet에는 새 버전의 Swipt가 필요합니다."
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Šiam „Swiplet” reikia naujesnės „Swipt” versijos."
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ഈ Swiplet-ന് Swipt-ന്റെ പുതിയ പതിപ്പ് ആവശ്യമാണ്."
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "या Swiplet साठी Swipt ची नवीन आवृत्ती आवश्यक आहे."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet ini memerlukan versi Swipt yang lebih baharu."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denne Swipleten krever en nyere versjon av Swipt."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deze Swiplet vereist een nieuwere versie van Swipt."
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ଏହି Swiplet ପାଇଁ Swipt ର ନୂଆ ସଂସ୍କରଣ ଆବଶ୍ୟକ।"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ਇਸ Swiplet ਲਈ Swipt ਦਾ ਨਵਾਂ ਵਰਜਨ ਲੋੜੀਂਦਾ ਹੈ।"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ten Swiplet wymaga nowszej wersji aplikacji Swipt."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este Swiplet requer uma versão mais recente do Swipt."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este Swiplet requer uma versão mais recente do Swipt."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acest Swiplet necesită o versiune mai nouă a aplicației Swipt."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для этого Swiplet требуется более новая версия Swipt."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tento Swiplet vyžaduje novšiu verziu apky Swipt."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta Swiplet zahteva novejšo različico aplikacije Swipt."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denna Swiplet kräver en nyare version av Swipt."
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "இந்த Swipletக்கு Swiptஇன் புதிய பதிப்பு தேவை."
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ఈ Swiplet కోసం Swipt కొత్త వెర్షన్ అవసరం."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet นี้ต้องใช้ Swipt เวอร์ชันใหม่กว่า"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu Swiplet için Swipt’in daha yeni bir sürümü gerekir."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для цього Swiplet потрібна новіша версія Swipt."
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اس Swiplet کے لیے Swipt کا نیا ورژن درکار ہے۔"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet này yêu cầu phiên bản Swipt mới hơn."
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此 Swiplet 需要較新版本的 Swipt。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此 Swiplet 需要更高版本的 Swipt。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此 Swiplet 需要較新版本的 Swipt。"
+          }
+        }
+      }
+    },
     "Tips" : {
       "localizations" : {
         "ar" : {
@@ -58919,6 +59527,310 @@
         }
       }
     },
+    "Updatable Swiplets" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "‏Swiplet القابلة للتحديث"
+          }
+        },
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet с актуализации"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "আপডেটযোগ্য Swiplet"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplets actualitzables"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplety k aktualizaci"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplets der kan opdateres"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualisierbare Swiplets"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet προς ενημέρωση"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplets actualizables"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplets actualizables"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Päivitettävät Swipletit"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplets à mettre à jour"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplets à mettre à jour"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "અપડેટ કરી શકાય તેવા Swiplet"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "‏Swiplet שניתן לעדכן"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अपडेट करने योग्य Swiplet"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swipleti za ažuriranje"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frissíthető Swipletek"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet yang Dapat Diperbarui"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet aggiornabili"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アップデート可能なSwiplet"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жаңартуға болатын Swiplet"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ಅಪ್‌ಡೇಟ್ ಮಾಡಬಹುದಾದ Swiplet"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "업데이트 가능한 Swiplet"
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„Swiplet” su naujiniais"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "അപ്ഡേറ്റ് ചെയ്യാവുന്ന Swiplet"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अपडेट करता येणारे Swiplet"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet yang Boleh Dikemas Kini"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplets som kan oppdateres"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bij te werken Swiplets"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ଅପଡେଟ୍ କରାଯାଇପାରୁଥିବା Swiplet"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ਅੱਪਡੇਟ ਕਰਨ ਯੋਗ Swiplet"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplety do uaktualnienia"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplets Atualizáveis"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplets atualizáveis"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet-uri actualizabile"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet с обновлениями"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplety na aktualizáciu"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swipleti za posodobitev"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplets som kan uppdateras"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "புதுப்பிக்கக்கூடிய Swipletகள்"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "అప్‌డేట్ చేయగల Swiplet"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet ที่อัปเดตได้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güncellenebilir Swiplet’ler"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet з оновленнями"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اپ ڈیٹ کے قابل Swiplet"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet có thể cập nhật"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "可更新的 Swiplet"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "可更新的 Swiplet"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "可更新的 Swiplet"
+          }
+        }
+      }
+    },
     "Update" : {
       "localizations" : {
         "ar" : {
@@ -59223,306 +60135,306 @@
         }
       }
     },
-    "Update Available" : {
+    "Update All" : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "يتوفر تحديث"
+            "value" : "تحديث الكل"
           }
         },
         "bg" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Налична е актуализация"
+            "value" : "Обнови всички"
           }
         },
         "bn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "আপডেট উপলভ্য"
+            "value" : "সব আপডেট করুন"
           }
         },
         "ca" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Actualització disponible"
+            "value" : "Actualitza-ho tot"
           }
         },
         "cs" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Je k dispozici aktualizace"
+            "value" : "Aktualizovat vše"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opdatering tilgængelig"
+            "value" : "Opdater alle"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Update verfügbar"
+            "value" : "Alle aktualisieren"
           }
         },
         "el" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Διατίθεται ενημέρωση"
+            "value" : "Ενημέρωση όλων"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Actualización disponible"
+            "value" : "Actualizar todo"
           }
         },
         "es-419" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Actualización disponible"
+            "value" : "Actualizar todo"
           }
         },
         "fi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Päivitys saatavilla"
+            "value" : "Päivitä kaikki"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mise à jour disponible"
+            "value" : "Tout mettre à jour"
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mise à jour disponible"
+            "value" : "Tout mettre à jour"
           }
         },
         "gu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "અપડેટ ઉપલબ્ધ છે"
+            "value" : "બધા અપડેટ કરો"
           }
         },
         "he" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "עדכון זמין"
+            "value" : "עדכון הכול"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "अपडेट उपलब्ध है"
+            "value" : "सभी अपडेट करें"
           }
         },
         "hr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dostupno je ažuriranje"
+            "value" : "Ažuriraj sve"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Frissítés érhető el"
+            "value" : "Összes frissítése"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pembaruan Tersedia"
+            "value" : "Perbarui Semua"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aggiornamento disponibile"
+            "value" : "Aggiorna tutto"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "アップデートあり"
+            "value" : "すべてをアップデート"
           }
         },
         "kk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Жаңарту қолжетімді"
+            "value" : "Барлығын жаңарту"
           }
         },
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ಅಪ್‌ಡೇಟ್ ಲಭ್ಯವಿದೆ"
+            "value" : "ಎಲ್ಲವನ್ನೂ ಅಪ್‌ಡೇಟ್ ಮಾಡಿ"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "업데이트 사용 가능"
+            "value" : "모두 업데이트"
           }
         },
         "lt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yra naujinys"
+            "value" : "Atnaujinti viską"
           }
         },
         "ml" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "അപ്ഡേറ്റ് ലഭ്യമാണ്"
+            "value" : "എല്ലാം അപ്ഡേറ്റ് ചെയ്യൂ"
           }
         },
         "mr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "अपडेट उपलब्ध"
+            "value" : "सर्व अपडेट करा"
           }
         },
         "ms" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kemas Kini Tersedia"
+            "value" : "Kemas Kini Semua"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oppdatering tilgjengelig"
+            "value" : "Oppdater alle"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Update beschikbaar"
+            "value" : "Werk alles bij"
           }
         },
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ଅପଡେଟ୍ ଉପଲବ୍ଧ"
+            "value" : "ସବୁ ଅପଡେଟ୍ କରନ୍ତୁ"
           }
         },
         "pa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ਅੱਪਡੇਟ ਉਪਲਬਧ ਹੈ"
+            "value" : "ਸਭ ਅੱਪਡੇਟ ਕਰੋ"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dostępne uaktualnienie"
+            "value" : "Uaktualnij wszystkie"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Atualização Disponível"
+            "value" : "Atualizar Tudo"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Atualização disponível"
+            "value" : "Atualizar tudo"
           }
         },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Actualizare disponibilă"
+            "value" : "Actualizează tot"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Доступно обновление"
+            "value" : "Обновить все"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dostupná aktualizácia"
+            "value" : "Aktualizovať všetko"
           }
         },
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Na voljo je posodobitev"
+            "value" : "Posodobi vse"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uppdatering tillgänglig"
+            "value" : "Uppdatera alla"
           }
         },
         "ta" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "புதுப்பிப்பு கிடைக்கிறது"
+            "value" : "அனைத்தையும் புதுப்பி"
           }
         },
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "అప్‌డేట్ అందుబాటులో ఉంది"
+            "value" : "అన్నింటినీ అప్‌డేట్ చేయండి"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "มีอัปเดต"
+            "value" : "อัปเดตทั้งหมด"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Güncelleme Mevcut"
+            "value" : "Tümünü Güncelle"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Доступне оновлення"
+            "value" : "Оновити все"
           }
         },
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "اپ ڈیٹ دستیاب ہے"
+            "value" : "سبھی اپ ڈیٹ کریں"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Có bản cập nhật"
+            "value" : "Cập nhật tất cả"
           }
         },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "有可用的更新項目"
+            "value" : "全部更新"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "有可用更新"
+            "value" : "全部更新"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "有可用的更新項目"
+            "value" : "全部更新"
           }
         }
       }
@@ -59831,306 +60743,306 @@
         }
       }
     },
-    "Updating…" : {
+    "Updates" : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "يجري التحديث…"
+            "value" : "التحديثات"
           }
         },
         "bg" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Актуализиране…"
+            "value" : "Актуализации"
           }
         },
         "bn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "আপডেট করা হচ্ছে…"
+            "value" : "আপডেট"
           }
         },
         "ca" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Actualitzant…"
+            "value" : "Actualitzacions"
           }
         },
         "cs" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aktualizování…"
+            "value" : "Aktualizace"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opdaterer…"
+            "value" : "Opdateringer"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aktualisieren …"
+            "value" : "Updates"
           }
         },
         "el" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ενημέρωση…"
+            "value" : "Ενημερώσεις"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Actualizando…"
+            "value" : "Actualizaciones"
           }
         },
         "es-419" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Actualizando…"
+            "value" : "Actualizaciones"
           }
         },
         "fi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Päivitetään…"
+            "value" : "Päivitykset"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mise à jour…"
+            "value" : "Mises à jour"
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mise à jour…"
+            "value" : "Mises à jour"
           }
         },
         "gu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "અપડેટ થઈ રહ્યું છે…"
+            "value" : "અપડેટ"
           }
         },
         "he" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "מעדכן…"
+            "value" : "עדכונים"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "अपडेट किया जा रहा है…"
+            "value" : "अपडेट"
           }
         },
         "hr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ažuriranje…"
+            "value" : "Ažuriranja"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Frissítés…"
+            "value" : "Frissítések"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Memperbarui…"
+            "value" : "Pembaruan"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aggiorno…"
+            "value" : "Aggiornamenti"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "アップデート中…"
+            "value" : "アップデート"
           }
         },
         "kk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Жаңартылуда…"
+            "value" : "Жаңартулар"
           }
         },
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ಅಪ್‌ಡೇಟ್ ಮಾಡಲಾಗುತ್ತಿದೆ…"
+            "value" : "ಅಪ್‌ಡೇಟ್‌ಗಳು"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "업데이트 중…"
+            "value" : "업데이트"
           }
         },
         "lt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Atnaujinama…"
+            "value" : "Naujiniai"
           }
         },
         "ml" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "അപ്ഡേറ്റ് ചെയ്യുന്നു…"
+            "value" : "അപ്ഡേറ്റുകൾ"
           }
         },
         "mr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "अपडेट केले जात आहे…"
+            "value" : "अपडेट"
           }
         },
         "ms" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mengemas kini…"
+            "value" : "Kemas Kini"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oppdaterer…"
+            "value" : "Oppdateringer"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bijwerken…"
+            "value" : "Updates"
           }
         },
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ଅପଡେଟ୍ କରାଯାଉଛି…"
+            "value" : "ଅପଡେଟ୍"
           }
         },
         "pa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ਅੱਪਡੇਟ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ…"
+            "value" : "ਅੱਪਡੇਟ"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uaktualniam…"
+            "value" : "Uaktualnienia"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Atualizando…"
+            "value" : "Atualizações"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A atualizar…"
+            "value" : "Atualizações"
           }
         },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Se actualizează…"
+            "value" : "Actualizări"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Обновление…"
+            "value" : "Обновления"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aktualizujem…"
+            "value" : "Aktualizácie"
           }
         },
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Posodabljanje …"
+            "value" : "Posodobitve"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uppdaterar…"
+            "value" : "Uppdateringar"
           }
         },
         "ta" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "புதுப்பிக்கப்படுகிறது…"
+            "value" : "புதுப்பிப்புகள்"
           }
         },
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "అప్‌డేట్ అవుతోంది…"
+            "value" : "అప్‌డేట్‌లు"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "กำลังอัปเดต…"
+            "value" : "อัปเดต"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Güncelleniyor…"
+            "value" : "Güncellemeler"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Оновлення…"
+            "value" : "Оновлення"
           }
         },
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "اپ ڈیٹ کیا جا رہا ہے…"
+            "value" : "اپ ڈیٹس"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đang cập nhật…"
+            "value" : "Bản cập nhật"
           }
         },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "正在更新…"
+            "value" : "更新項目"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "正在更新…"
+            "value" : "更新"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "正在更新…"
+            "value" : "更新項目"
           }
         }
       }

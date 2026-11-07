@@ -20,32 +20,34 @@ type ActionInfo struct {
 }
 
 type Manifest struct {
-	ID             string
-	Name           string
-	LocalizedNames map[string]string
-	Description    string
-	Version        string
-	VersionCode    int64
-	Icon           Icon
-	UpdateURL      string
-	Interface      bool
-	Service        bool
-	Actions        []ActionInfo
-	fields         map[string]json.RawMessage
+	ID              string
+	Name            string
+	LocalizedNames  map[string]string
+	Description     string
+	Version         string
+	VersionCode     int64
+	Icon            Icon
+	UpdateURL       string
+	MinimumAPILevel int64
+	Interface       bool
+	Service         bool
+	Actions         []ActionInfo
+	fields          map[string]json.RawMessage
 }
 
 type manifestFields struct {
-	ID             string            `json:"id"`
-	Name           string            `json:"name"`
-	LocalizedNames map[string]string `json:"localizedNames"`
-	Description    string            `json:"description"`
-	Version        string            `json:"version"`
-	VersionCode    int64             `json:"versionCode"`
-	Icon           Icon              `json:"icon"`
-	UpdateURL      string            `json:"updateURL"`
-	Interface      bool              `json:"interface"`
-	Service        bool              `json:"service"`
-	Actions        []ActionInfo      `json:"actions"`
+	ID              string            `json:"id"`
+	Name            string            `json:"name"`
+	LocalizedNames  map[string]string `json:"localizedNames"`
+	Description     string            `json:"description"`
+	Version         string            `json:"version"`
+	VersionCode     int64             `json:"versionCode"`
+	Icon            Icon              `json:"icon"`
+	UpdateURL       string            `json:"updateURL"`
+	MinimumAPILevel int64             `json:"minimumAPILevel"`
+	Interface       bool              `json:"interface"`
+	Service         bool              `json:"service"`
+	Actions         []ActionInfo      `json:"actions"`
 }
 
 func ParseManifest(data []byte) (Manifest, error) {
@@ -62,8 +64,8 @@ func ParseManifest(data []byte) (Manifest, error) {
 	}
 	return Manifest{
 		ID: known.ID, Name: known.Name, LocalizedNames: known.LocalizedNames, Description: known.Description, Version: known.Version,
-		VersionCode: known.VersionCode, Icon: known.Icon, UpdateURL: known.UpdateURL, Interface: known.Interface, Service: known.Service,
-		Actions: known.Actions, fields: fields,
+		VersionCode: known.VersionCode, Icon: known.Icon, UpdateURL: known.UpdateURL, MinimumAPILevel: known.MinimumAPILevel,
+		Interface: known.Interface, Service: known.Service, Actions: known.Actions, fields: fields,
 	}, nil
 }
 
@@ -92,6 +94,7 @@ func EncodeManifest(manifest Manifest) ([]byte, error) {
 		set(key, value, value != "")
 	}
 	set("versionCode", manifest.VersionCode, manifest.VersionCode > 0)
+	set("minimumAPILevel", manifest.MinimumAPILevel, manifest.MinimumAPILevel > 0)
 	set("localizedNames", manifest.LocalizedNames, len(manifest.LocalizedNames) > 0)
 	set("icon", manifest.Icon, manifest.Icon != DefaultIcon)
 	set("interface", true, manifest.Interface)

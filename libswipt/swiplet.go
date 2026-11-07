@@ -16,6 +16,8 @@ import (
 	"github.com/swipt-automation/swipt/internal/automation"
 )
 
+const UpdateGuide = automation.UpdateGuide
+
 var archiveMagic = []byte("PK\x03\x04")
 
 type SwipletIcon struct {
@@ -117,7 +119,26 @@ func (p *Platform) Swiplets() (*SwipletList, error) {
 	return list, nil
 }
 
-func (p *Platform) InstallSwiplet(file string) (string, error) {
+type SwipletInstall struct {
+	ID string
+
+	ErrorCode    int32
+	ErrorMessage string
+}
+
+func (p *Platform) InstallSwiplet(file string) *SwipletInstall {
+	id, err := p.installSwiplet(file)
+	switch {
+	case err == nil:
+		return &SwipletInstall{ID: id}
+	case errors.Is(err, automation.ErrOutdated):
+		return &SwipletInstall{ErrorCode: SwipletErrorOutdated, ErrorMessage: err.Error()}
+	default:
+		return &SwipletInstall{ErrorCode: SwipletErrorFailed, ErrorMessage: err.Error()}
+	}
+}
+
+func (p *Platform) installSwiplet(file string) (string, error) {
 	archive, err := os.Open(file)
 	if err != nil {
 		return "", err

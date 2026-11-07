@@ -4,6 +4,7 @@
   "\"source.url\" in package.json is not an absolute URL": "\"source.url\" ใน package.json ไม่ใช่ URL แบบสัมบูรณ์",
   "\"swiplet.id\" in package.json must be 1 to 128 lowercase letters, digits, dots, underscores and hyphens starting with a letter or a digit": "\"swiplet.id\" ใน package.json ต้องประกอบด้วยตัวอักษรพิมพ์เล็ก ตัวเลข จุด ขีดล่าง และขีดกลาง 1 ถึง 128 อักขระ และขึ้นต้นด้วยตัวอักษรหรือตัวเลข",
   "\"swiplet.localizedNames\" in package.json must map languages to names": "\"swiplet.localizedNames\" ใน package.json ต้องเป็นการแมปจากภาษาไปยังชื่อ",
+  "\"swiplet.minimumAPILevel\" in package.json must be an integer from 1 to {level}, the API level of @swipt/api": "\"swiplet.minimumAPILevel\" ใน package.json ต้องเป็นจำนวนเต็มตั้งแต่ 1 ถึง {level} ซึ่งเป็นระดับ API ของ @swipt/api",
   "\"swiplet.name\" in package.json must be a non-empty string": "\"swiplet.name\" ใน package.json ต้องเป็นสตริงที่ไม่ว่าง",
   "\"swiplet.versionCode\" in package.json must be a positive integer": "\"swiplet.versionCode\" ใน package.json ต้องเป็นจำนวนเต็มบวก",
   "\"{field}\" in package.json must be a string": "\"{field}\" ใน package.json ต้องเป็นสตริง",

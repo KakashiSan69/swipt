@@ -4,6 +4,7 @@ import SwiftUI
 @available(iOS 27, *)
 struct SwipletsView: View {
     @State private var isAddingSwiplet = false
+    @State private var isShowingUpdates = false
     @State private var swipletToDelete: String?
     @State private var swipletInfo: String?
     @State private var alert: AlertState?
@@ -30,6 +31,15 @@ struct SwipletsView: View {
                 SwipletInfoView(id: id)
             }
             .toolbar {
+                if !swiplets.updates.isEmpty {
+                    ToolbarItem(placement: .primaryAction) {
+                        Button {
+                            isShowingUpdates = true
+                        } label: {
+                            Label("Updates", systemImage: "arrow.down.circle")
+                        }
+                    }
+                }
                 ToolbarItem(placement: .primaryAction) {
                     Button {
                         isAddingSwiplet = true
@@ -41,6 +51,11 @@ struct SwipletsView: View {
             .sheet(isPresented: $isAddingSwiplet) {
                 NavigationStackCompat {
                     NewSwipletView()
+                }
+            }
+            .sheet(isPresented: $isShowingUpdates) {
+                NavigationStackCompat {
+                    SwipletUpdatesView()
                 }
             }
             .onAppear {
@@ -121,14 +136,7 @@ struct SwipletsView: View {
             } label: {
                 Label("Share", systemImage: "square.and.arrow.up")
             }
-            if let update = swiplets.updates[name] {
-                Button {
-                    apply(update)
-                } label: {
-                    Label("Update", systemImage: "arrow.up")
-                }
-                .disabled(swiplets.updating.contains(name))
-            } else if swiplets.updatable.contains(name) {
+            if swiplets.updates[name] == nil, swiplets.updatable.contains(name) {
                 Button {
                     checkForUpdate(name)
                 } label: {
@@ -146,19 +154,8 @@ struct SwipletsView: View {
     private func swipletLabel(_ name: String) -> some View {
         HStack(spacing: 12) {
             SwipletIconImage(icon: swiplets.icons[name] ?? .default, size: 40)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(verbatim: swiplets.titles[name] ?? name)
-                    .lineLimit(1)
-                if swiplets.updating.contains(name) {
-                    Text("Updating…")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                } else if swiplets.updates[name] != nil {
-                    Text("Update Available")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-            }
+            Text(verbatim: swiplets.titles[name] ?? name)
+                .lineLimit(1)
         }
     }
 
@@ -194,16 +191,6 @@ struct SwipletsView: View {
         }
     }
 
-    private func apply(_ update: SwipletUpdate) {
-        Task {
-            do {
-                try await swiplets.applyUpdate(update)
-            } catch {
-                alert = AlertState(String(localized: "Can’t Update the Swiplet"), error: error)
-            }
-        }
-    }
-
     private func checkForUpdate(_ name: String) {
         Task {
             do {
@@ -215,5 +202,94 @@ struct SwipletsView: View {
                 alert = AlertState(String(localized: "Couldn’t Check for Updates"), error: error)
             }
         }
+    }
+}
+
+@available(iOS 27, *)
+struct SwipletUpdatesView: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var alert: AlertState?
+
+    private let swiplets = SwipletStore.shared
+
+    var body: some View {
+        WithPerceptionTracking {
+            let pending = swiplets.ids.compactMap { swiplets.updates[$0] }
+            Form {
+                Section {
+                    Button("Update All") { apply(pending.map(\.id)) }
+                        .disabled(pending.contains { swiplets.updating.contains($0.id) })
+                }
+                Section("Updatable Swiplets") {
+                    ForEach(pending, id: \.id, content: row)
+                }
+            }
+            .navigationTitle("Updates")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    CloseButton { dismiss() }
+                }
+            }
+            .onChange(of: pending.isEmpty) {
+                if pending.isEmpty {
+                    dismiss()
+                }
+            }
+            .alert($alert)
+        }
+    }
+
+    private func row(_ update: SwipletUpdate) -> some View {
+        HStack(spacing: 12) {
+            SwipletIconImage(icon: swiplets.icons[update.id] ?? .default, size: 40)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(verbatim: swiplets.titles[update.id] ?? update.id)
+                    .lineLimit(1)
+                if !update.version.isEmpty {
+                    SwipletVersionChange(installed: swiplets.versions[update.id] ?? "", available: update.version)
+                }
+            }
+            Spacer()
+            if swiplets.updating.contains(update.id) {
+                ProgressView()
+            } else {
+                Button("Update") { apply([update.id]) }
+                    .buttonStyle(.bordered)
+                    .buttonBorderShape(.capsule)
+            }
+        }
+    }
+
+    private func apply(_ ids: [String]) {
+        Task {
+            do {
+                try await swiplets.applyUpdates(ids)
+            } catch {
+                alert = AlertState(String(localized: "Can’t Update the Swiplet"), error: error)
+            }
+        }
+    }
+}
+
+struct SwipletVersionChange: View {
+    let installed: String
+    let available: String
+
+    var body: some View {
+        Group {
+            if installed.isEmpty || installed == available {
+                Text(verbatim: available)
+            } else {
+                HStack(spacing: 4) {
+                    Text(verbatim: installed)
+                    Image(systemName: "arrow.forward")
+                        .imageScale(.small)
+                    Text(verbatim: available)
+                }
+            }
+        }
+        .font(.footnote)
+        .foregroundStyle(.secondary)
     }
 }

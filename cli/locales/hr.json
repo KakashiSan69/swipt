@@ -4,6 +4,7 @@
   "\"source.url\" in package.json is not an absolute URL": "\"source.url\" u datoteci package.json nije apsolutni URL",
   "\"swiplet.id\" in package.json must be 1 to 128 lowercase letters, digits, dots, underscores and hyphens starting with a letter or a digit": "\"swiplet.id\" u datoteci package.json mora sadržavati od 1 do 128 malih slova, znamenki, točaka, donjih crta i crtica te započinjati slovom ili znamenkom",
   "\"swiplet.localizedNames\" in package.json must map languages to names": "\"swiplet.localizedNames\" u datoteci package.json mora preslikavati jezike u nazive",
+  "\"swiplet.minimumAPILevel\" in package.json must be an integer from 1 to {level}, the API level of @swipt/api": "\"swiplet.minimumAPILevel\" u datoteci package.json mora biti cijeli broj od 1 do {level}, što je razina API-ja paketa @swipt/api",
   "\"swiplet.name\" in package.json must be a non-empty string": "\"swiplet.name\" u datoteci package.json mora biti niz znakova koji nije prazan",
   "\"swiplet.versionCode\" in package.json must be a positive integer": "\"swiplet.versionCode\" u datoteci package.json mora biti pozitivan cijeli broj",
   "\"{field}\" in package.json must be a string": "\"{field}\" u datoteci package.json mora biti niz znakova",

@@ -4,6 +4,7 @@
   "\"source.url\" in package.json is not an absolute URL": "a package.json \"source.url\" mezője nem abszolút URL",
   "\"swiplet.id\" in package.json must be 1 to 128 lowercase letters, digits, dots, underscores and hyphens starting with a letter or a digit": "a package.json \"swiplet.id\" mezője 1–128 kisbetűből, számjegyből, pontból, aláhúzásjelből és kötőjelből állhat, és betűvel vagy számjeggyel kell kezdődnie",
   "\"swiplet.localizedNames\" in package.json must map languages to names": "a package.json \"swiplet.localizedNames\" mezőjének a nyelveket kell a nevekhez rendelnie",
+  "\"swiplet.minimumAPILevel\" in package.json must be an integer from 1 to {level}, the API level of @swipt/api": "a package.json \"swiplet.minimumAPILevel\" mezőjének 1 és {level} (a(z) @swipt/api csomag API-szintje) közötti egész számnak kell lennie",
   "\"swiplet.name\" in package.json must be a non-empty string": "a package.json \"swiplet.name\" mezőjének nem üres karakterláncnak kell lennie",
   "\"swiplet.versionCode\" in package.json must be a positive integer": "a package.json \"swiplet.versionCode\" mezőjének pozitív egész számnak kell lennie",
   "\"{field}\" in package.json must be a string": "a package.json \"{field}\" mezőjének karakterláncnak kell lennie",

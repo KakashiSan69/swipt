@@ -31,6 +31,8 @@ func apiError(err error) error {
 		code = codes.NotFound
 	case errors.Is(err, automation.ErrNotAllowed):
 		code = codes.PermissionDenied
+	case errors.Is(err, automation.ErrOutdated):
+		code = codes.FailedPrecondition
 	}
 	return status.Error(code, automation.Message(err))
 }

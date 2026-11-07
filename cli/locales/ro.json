@@ -4,6 +4,7 @@
   "\"source.url\" in package.json is not an absolute URL": "\"source.url\" din package.json nu este un URL absolut",
   "\"swiplet.id\" in package.json must be 1 to 128 lowercase letters, digits, dots, underscores and hyphens starting with a letter or a digit": "\"swiplet.id\" din package.json trebuie să conțină între 1 și 128 de litere mici, cifre, puncte, caractere de subliniere și cratime și să înceapă cu o literă sau o cifră",
   "\"swiplet.localizedNames\" in package.json must map languages to names": "\"swiplet.localizedNames\" din package.json trebuie să asocieze limbile cu numele",
+  "\"swiplet.minimumAPILevel\" in package.json must be an integer from 1 to {level}, the API level of @swipt/api": "\"swiplet.minimumAPILevel\" din package.json trebuie să fie un număr întreg între 1 și {level}, nivelul API al pachetului @swipt/api",
   "\"swiplet.name\" in package.json must be a non-empty string": "\"swiplet.name\" din package.json trebuie să fie un șir de caractere care nu este gol",
   "\"swiplet.versionCode\" in package.json must be a positive integer": "\"swiplet.versionCode\" din package.json trebuie să fie un număr întreg pozitiv",
   "\"{field}\" in package.json must be a string": "\"{field}\" din package.json trebuie să fie un șir de caractere",

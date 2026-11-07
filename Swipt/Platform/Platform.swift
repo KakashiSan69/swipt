@@ -256,10 +256,15 @@ final class Platform {
     }
 
     nonisolated private static func install(_ file: URL, into platform: LibSwiptPlatform) throws -> String {
-        var error: NSError?
-        let id = platform.installSwiplet(file.path, error: &error)
-        if let error { throw error }
-        return id
+        let installed = platform.installSwiplet(file.path)!
+        switch installed.errorCode {
+        case LibSwiptSwipletErrorNone:
+            return installed.id_
+        case LibSwiptSwipletErrorOutdated:
+            throw SwiptOutdatedError()
+        default:
+            throw MessageError(installed.errorMessage)
+        }
     }
 
     func removeSwiplet(_ swiplet: String) async throws {

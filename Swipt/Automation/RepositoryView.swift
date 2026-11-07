@@ -60,9 +60,7 @@ struct RepositoryView: View {
                         .lineLimit(2)
                 }
                 if !swiplet.version.isEmpty {
-                    Text(verbatim: swiplet.version)
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
+                    SwipletVersionChange(installed: swiplets.hasNewer(swiplet) ? swiplets.versions[swiplet.id] ?? "" : "", available: swiplet.version)
                 }
             }
             Spacer()

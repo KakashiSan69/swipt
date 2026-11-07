@@ -4,6 +4,7 @@
   "\"source.url\" in package.json is not an absolute URL": "\"source.url\" v package.json nie je absolútna adresa URL",
   "\"swiplet.id\" in package.json must be 1 to 128 lowercase letters, digits, dots, underscores and hyphens starting with a letter or a digit": "\"swiplet.id\" v package.json musí obsahovať 1 až 128 malých písmen, číslic, bodiek, podčiarkovníkov a spojovníkov a začínať písmenom alebo číslicou",
   "\"swiplet.localizedNames\" in package.json must map languages to names": "\"swiplet.localizedNames\" v package.json musí priraďovať názvy k jazykom",
+  "\"swiplet.minimumAPILevel\" in package.json must be an integer from 1 to {level}, the API level of @swipt/api": "\"swiplet.minimumAPILevel\" v package.json musí byť celé číslo od 1 do {level}, čo je úroveň API balíka @swipt/api",
   "\"swiplet.name\" in package.json must be a non-empty string": "\"swiplet.name\" v package.json musí byť neprázdny reťazec",
   "\"swiplet.versionCode\" in package.json must be a positive integer": "\"swiplet.versionCode\" v package.json musí byť kladné celé číslo",
   "\"{field}\" in package.json must be a string": "\"{field}\" v package.json musí byť reťazec",

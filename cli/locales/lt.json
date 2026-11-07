@@ -4,6 +4,7 @@
   "\"source.url\" in package.json is not an absolute URL": "\"source.url\" faile package.json nėra absoliutus URL adresas",
   "\"swiplet.id\" in package.json must be 1 to 128 lowercase letters, digits, dots, underscores and hyphens starting with a letter or a digit": "\"swiplet.id\" faile package.json turi būti sudarytas iš 1–128 mažųjų raidžių, skaitmenų, taškų, pabraukimo ženklų ir brūkšnelių ir prasidėti raide arba skaitmeniu",
   "\"swiplet.localizedNames\" in package.json must map languages to names": "\"swiplet.localizedNames\" faile package.json turi susieti kalbas su pavadinimais",
+  "\"swiplet.minimumAPILevel\" in package.json must be an integer from 1 to {level}, the API level of @swipt/api": "\"swiplet.minimumAPILevel\" faile package.json turi būti sveikasis skaičius nuo 1 iki {level} (@swipt/api API lygis)",
   "\"swiplet.name\" in package.json must be a non-empty string": "\"swiplet.name\" faile package.json turi būti netuščia eilutė",
   "\"swiplet.versionCode\" in package.json must be a positive integer": "\"swiplet.versionCode\" faile package.json turi būti teigiamas sveikasis skaičius",
   "\"{field}\" in package.json must be a string": "\"{field}\" faile package.json turi būti eilutė",

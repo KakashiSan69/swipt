@@ -4,6 +4,7 @@
   "\"source.url\" in package.json is not an absolute URL": "package.jsonలోని \"source.url\" అబ్సల్యూట్ URL కాదు",
   "\"swiplet.id\" in package.json must be 1 to 128 lowercase letters, digits, dots, underscores and hyphens starting with a letter or a digit": "package.jsonలోని \"swiplet.id\" 1 నుండి 128 వరకు లోయర్‌కేస్ అక్షరాలు, అంకెలు, చుక్కలు, అండర్‌స్కోర్‌లు, హైఫన్‌లతో ఉండాలి, అక్షరం లేదా అంకెతో మొదలవ్వాలి",
   "\"swiplet.localizedNames\" in package.json must map languages to names": "package.jsonలోని \"swiplet.localizedNames\" భాషలను పేర్లకు మ్యాప్ చేయాలి",
+  "\"swiplet.minimumAPILevel\" in package.json must be an integer from 1 to {level}, the API level of @swipt/api": "package.jsonలోని \"swiplet.minimumAPILevel\" 1 నుండి @swipt/api API స్థాయి అయిన {level} వరకు ఉన్న పూర్ణాంకం అయి ఉండాలి",
   "\"swiplet.name\" in package.json must be a non-empty string": "package.jsonలోని \"swiplet.name\" ఖాళీ కాని స్ట్రింగ్ అయి ఉండాలి",
   "\"swiplet.versionCode\" in package.json must be a positive integer": "package.jsonలోని \"swiplet.versionCode\" ధన పూర్ణాంకం అయి ఉండాలి",
   "\"{field}\" in package.json must be a string": "package.jsonలోని \"{field}\" స్ట్రింగ్ అయి ఉండాలి",

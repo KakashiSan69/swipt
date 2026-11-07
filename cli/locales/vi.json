@@ -4,6 +4,7 @@
   "\"source.url\" in package.json is not an absolute URL": "\"source.url\" trong package.json không phải là URL tuyệt đối",
   "\"swiplet.id\" in package.json must be 1 to 128 lowercase letters, digits, dots, underscores and hyphens starting with a letter or a digit": "\"swiplet.id\" trong package.json phải gồm từ 1 đến 128 chữ cái thường, chữ số, dấu chấm, dấu gạch dưới và dấu gạch nối, bắt đầu bằng chữ cái hoặc chữ số",
   "\"swiplet.localizedNames\" in package.json must map languages to names": "\"swiplet.localizedNames\" trong package.json phải ánh xạ ngôn ngữ với tên",
+  "\"swiplet.minimumAPILevel\" in package.json must be an integer from 1 to {level}, the API level of @swipt/api": "\"swiplet.minimumAPILevel\" trong package.json phải là số nguyên từ 1 đến {level} (mức API của @swipt/api)",
   "\"swiplet.name\" in package.json must be a non-empty string": "\"swiplet.name\" trong package.json phải là chuỗi không trống",
   "\"swiplet.versionCode\" in package.json must be a positive integer": "\"swiplet.versionCode\" trong package.json phải là số nguyên dương",
   "\"{field}\" in package.json must be a string": "\"{field}\" trong package.json phải là chuỗi",

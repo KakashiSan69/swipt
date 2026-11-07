@@ -4,6 +4,7 @@
   "\"source.url\" in package.json is not an absolute URL": "package.json файлындағы \"source.url\" мәні абсолютті URL мекенжайы емес",
   "\"swiplet.id\" in package.json must be 1 to 128 lowercase letters, digits, dots, underscores and hyphens starting with a letter or a digit": "package.json файлындағы \"swiplet.id\" мәні кіші әріптерден, цифрлардан, нүктелерден, астын сызу белгілерінен және дефистерден тұратын 1–128 таңба болуы және әріппен не цифрмен басталуы керек",
   "\"swiplet.localizedNames\" in package.json must map languages to names": "package.json файлындағы \"swiplet.localizedNames\" өрісі тілдерді атауларға сәйкестендіруі керек",
+  "\"swiplet.minimumAPILevel\" in package.json must be an integer from 1 to {level}, the API level of @swipt/api": "package.json файлындағы \"swiplet.minimumAPILevel\" мәні 1-ден @swipt/api пакетінің API деңгейіне ({level}) дейінгі бүтін сан болуы керек",
   "\"swiplet.name\" in package.json must be a non-empty string": "package.json файлындағы \"swiplet.name\" мәні бос емес мәтін жолы болуы керек",
   "\"swiplet.versionCode\" in package.json must be a positive integer": "package.json файлындағы \"swiplet.versionCode\" мәні оң бүтін сан болуы керек",
   "\"{field}\" in package.json must be a string": "package.json файлындағы \"{field}\" мәні мәтін жолы болуы керек",

@@ -4,6 +4,7 @@
   "\"source.url\" in package.json is not an absolute URL": "\"source.url\" de package.json no és un URL absolut",
   "\"swiplet.id\" in package.json must be 1 to 128 lowercase letters, digits, dots, underscores and hyphens starting with a letter or a digit": "\"swiplet.id\" de package.json ha de tenir d’1 a 128 lletres minúscules, dígits, punts, guions baixos i guions, i començar amb una lletra o un dígit",
   "\"swiplet.localizedNames\" in package.json must map languages to names": "\"swiplet.localizedNames\" de package.json ha d’associar idiomes amb noms",
+  "\"swiplet.minimumAPILevel\" in package.json must be an integer from 1 to {level}, the API level of @swipt/api": "\"swiplet.minimumAPILevel\" de package.json ha de ser un enter d’1 a {level}, el nivell d’API de @swipt/api",
   "\"swiplet.name\" in package.json must be a non-empty string": "\"swiplet.name\" de package.json ha de ser una cadena no buida",
   "\"swiplet.versionCode\" in package.json must be a positive integer": "\"swiplet.versionCode\" de package.json ha de ser un enter positiu",
   "\"{field}\" in package.json must be a string": "\"{field}\" de package.json ha de ser una cadena",

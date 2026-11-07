@@ -295,14 +295,26 @@ final class SwipletStore {
     }
 
     @available(iOS 27, *)
-    func applyUpdate(_ update: SwipletUpdate) async throws {
-        updating.insert(update.id)
-        defer { updating.remove(update.id) }
-        _ = try await Platform.shared.installSwiplet(update.file)
-        try SwipletDatabase.setETag(update.etag, of: update.id)
-        Self.discard(update.file)
-        updates[update.id] = nil
-        reload()
+    func applyUpdates(_ ids: [String]) async throws {
+        let ids = ids.filter { !updating.contains($0) }
+        updating.formUnion(ids)
+        var failure: (any Error)?
+        for id in ids {
+            defer { updating.remove(id) }
+            guard let update = updates[id] else { continue }
+            do {
+                _ = try await Platform.shared.installSwiplet(update.file)
+                try SwipletDatabase.setETag(update.etag, of: id)
+                Self.discard(update.file)
+                updates[id] = nil
+                reload()
+            } catch {
+                failure = failure ?? error
+            }
+        }
+        if let failure {
+            throw failure
+        }
     }
 
     nonisolated private static let updateInterval: TimeInterval = 60 * 60
@@ -457,6 +469,23 @@ nonisolated struct SwipletPreview: Identifiable, Sendable {
     let title: String
     let version: String
     let icon: SwipletIcon
+}
+
+nonisolated struct SwiptOutdatedError: LocalizedError, RecoverableError {
+    var errorDescription: String? {
+        String(localized: "This swiplet requires a newer version of Swipt.")
+    }
+
+    var recoveryOptions: [String] {
+        [String(localized: "Learn More")]
+    }
+
+    func attemptRecovery(optionIndex: Int) -> Bool {
+        Task { @MainActor in
+            _ = await UIApplication.shared.open(URL(string: LibSwiptUpdateGuide)!)
+        }
+        return true
+    }
 }
 
 nonisolated struct Repository: Identifiable, Sendable {

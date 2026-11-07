@@ -50,7 +50,12 @@ jobs:
           echo "packages_changed=$PACKAGES_CHANGED" >> "$GITHUB_OUTPUT"
           echo "build_number=$((PREVIOUS + 1))"
           echo "build_number=$((PREVIOUS + 1))" >> "$GITHUB_OUTPUT"
-          echo "library_hash=${{ hashFiles('go.mod', 'go.sum', 'libswipt/**', 'internal/**', '!internal/automation/runtime/**', '!internal/cmd/**', 'internal/cmd/build_libswipt/**', '!**/*_test.go') }}" >> "$GITHUB_OUTPUT"
+          echo "library_hash=${{ hashFiles('go.mod', 'go.sum', 'api/*.go', 'api/package.json', 'libswipt/**', 'internal/**', '!internal/automation/runtime/**', '!internal/cmd/**', 'internal/cmd/build_libswipt/**', '!**/*_test.go') }}" >> "$GITHUB_OUTPUT"
+      - name: Check API level
+        run: |-
+          if git rev-parse -q --verify refs/tags/nightly > /dev/null; then
+            node .github/check_api_level.mjs nightly
+          fi
   build_apple_library:
     name: Build Apple library
     if: needs.calculate_version.outputs.app_changed == 'true'

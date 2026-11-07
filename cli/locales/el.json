@@ -4,6 +4,7 @@
   "\"source.url\" in package.json is not an absolute URL": "Το \"source.url\" στο package.json δεν είναι απόλυτη διεύθυνση URL",
   "\"swiplet.id\" in package.json must be 1 to 128 lowercase letters, digits, dots, underscores and hyphens starting with a letter or a digit": "Το \"swiplet.id\" στο package.json πρέπει να αποτελείται από 1 έως 128 πεζά γράμματα, ψηφία, τελείες, κάτω παύλες και ενωτικά και να ξεκινά με γράμμα ή ψηφίο",
   "\"swiplet.localizedNames\" in package.json must map languages to names": "Το \"swiplet.localizedNames\" στο package.json πρέπει να αντιστοιχίζει γλώσσες σε ονόματα",
+  "\"swiplet.minimumAPILevel\" in package.json must be an integer from 1 to {level}, the API level of @swipt/api": "Το \"swiplet.minimumAPILevel\" στο package.json πρέπει να είναι ακέραιος από 1 έως {level}, το επίπεδο API του @swipt/api",
   "\"swiplet.name\" in package.json must be a non-empty string": "Το \"swiplet.name\" στο package.json πρέπει να είναι μη κενή συμβολοσειρά",
   "\"swiplet.versionCode\" in package.json must be a positive integer": "Το \"swiplet.versionCode\" στο package.json πρέπει να είναι θετικός ακέραιος",
   "\"{field}\" in package.json must be a string": "Το \"{field}\" στο package.json πρέπει να είναι συμβολοσειρά",

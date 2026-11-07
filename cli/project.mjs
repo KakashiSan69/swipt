@@ -125,6 +125,29 @@ export function loadProject(root) {
       tr('"swiplet.versionCode" in package.json must be a positive integer'),
     );
   }
+  const { apiLevel } = JSON.parse(
+    fs.readFileSync(
+      require.resolve("@swipt/api/package.json", {
+        paths: [root, import.meta.dirname],
+      }),
+      "utf8",
+    ),
+  );
+  if (
+    config.minimumAPILevel !== undefined &&
+    !(
+      Number.isInteger(config.minimumAPILevel) &&
+      config.minimumAPILevel >= 1 &&
+      config.minimumAPILevel <= apiLevel
+    )
+  ) {
+    throw new Error(
+      tr(
+        '"swiplet.minimumAPILevel" in package.json must be an integer from 1 to {level}, the API level of @swipt/api',
+        { level: apiLevel },
+      ),
+    );
+  }
   const entry = (name) =>
     config[name] === undefined ? undefined : path.resolve(root, config[name]);
   return {
@@ -132,6 +155,7 @@ export function loadProject(root) {
     manifest,
     config,
     localizedNames,
+    apiLevel,
     app: entry("app"),
     extension: entry("extension"),
   };
@@ -531,6 +555,7 @@ function swipletManifest(project, output) {
     ...(config.versionCode ? { versionCode: config.versionCode } : {}),
     ...(config.icon ? { icon: config.icon } : {}),
     ...(config.updateURL ? { updateURL: config.updateURL } : {}),
+    minimumAPILevel: config.minimumAPILevel ?? project.apiLevel,
     ...(output.app ? { interface: true } : {}),
     ...(service ? { service } : {}),
     ...(actions.length > 0 ? { actions } : {}),

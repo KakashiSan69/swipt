@@ -15,6 +15,7 @@ import (
 	"time"
 
 	E "github.com/sagernet/sing/common/exceptions"
+	"github.com/swipt-automation/swipt/api"
 	"github.com/swipt-automation/swipt/internal/device"
 	"github.com/swipt-automation/swipt/internal/log"
 )
@@ -27,10 +28,13 @@ const (
 	CallerAPI       Caller = "api"
 )
 
+const UpdateGuide = "https://swipt.io/"
+
 var (
 	ErrNotFound   = E.New("not found")
 	ErrNotAllowed = E.New("not allowed")
 	ErrInvalid    = device.ErrInvalid
+	ErrOutdated   = E.New("Swipt is outdated")
 
 	errClosed  = E.New("the host closed")
 	errRemoved = E.New("the swiplet was removed")
@@ -230,6 +234,10 @@ func (h *Host) Install(archive io.ReaderAt, size int64) (Swiplet, error) {
 	contents, err := ReadArchive(reader)
 	if err != nil {
 		return Swiplet{}, err
+	}
+	if contents.Manifest.MinimumAPILevel > api.Level {
+		return Swiplet{}, E.Extend(ErrOutdated, "the swiplet requires API level ", contents.Manifest.MinimumAPILevel,
+			", and this Swipt implements API level ", api.Level, "; see ", UpdateGuide, " to update it")
 	}
 	id := contents.Manifest.ID
 	err = h.install(contents)

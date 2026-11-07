@@ -4,6 +4,7 @@
   "\"source.url\" in package.json is not an absolute URL": "package.json मधील \"source.url\" ही ॲब्सोल्यूट URL नाही",
   "\"swiplet.id\" in package.json must be 1 to 128 lowercase letters, digits, dots, underscores and hyphens starting with a letter or a digit": "package.json मधील \"swiplet.id\" मध्ये 1 ते 128 लोअरकेस अक्षरे, अंक, बिंदू, अंडरस्कोर आणि हायफन असणे आणि त्याची सुरुवात अक्षराने किंवा अंकाने होणे आवश्यक आहे",
   "\"swiplet.localizedNames\" in package.json must map languages to names": "package.json मधील \"swiplet.localizedNames\" ने भाषा आणि नावे मॅप करणे आवश्यक आहे",
+  "\"swiplet.minimumAPILevel\" in package.json must be an integer from 1 to {level}, the API level of @swipt/api": "package.json मधील \"swiplet.minimumAPILevel\" हा 1 ते {level} (@swipt/api चा API स्तर) यांमधील पूर्णांक असणे आवश्यक आहे",
   "\"swiplet.name\" in package.json must be a non-empty string": "package.json मधील \"swiplet.name\" ही रिकामी नसलेली स्ट्रिंग असणे आवश्यक आहे",
   "\"swiplet.versionCode\" in package.json must be a positive integer": "package.json मधील \"swiplet.versionCode\" हा धन पूर्णांक असणे आवश्यक आहे",
   "\"{field}\" in package.json must be a string": "package.json मधील \"{field}\" ही स्ट्रिंग असणे आवश्यक आहे",

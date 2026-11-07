@@ -4,6 +4,7 @@
   "\"source.url\" in package.json is not an absolute URL": "package.json 中的 \"source.url\" 不是絕對 URL",
   "\"swiplet.id\" in package.json must be 1 to 128 lowercase letters, digits, dots, underscores and hyphens starting with a letter or a digit": "package.json 中的 \"swiplet.id\" 必須由 1 至 128 個小寫字母、數字、句點、底線和連字號組成，並以字母或數字開頭",
   "\"swiplet.localizedNames\" in package.json must map languages to names": "package.json 中的 \"swiplet.localizedNames\" 必須是語言到名稱的對應",
+  "\"swiplet.minimumAPILevel\" in package.json must be an integer from 1 to {level}, the API level of @swipt/api": "package.json 中的 \"swiplet.minimumAPILevel\" 必須是 1 至 {level}（@swipt/api 的 API 等級）之間的整數",
   "\"swiplet.name\" in package.json must be a non-empty string": "package.json 中的 \"swiplet.name\" 必須是非空字串",
   "\"swiplet.versionCode\" in package.json must be a positive integer": "package.json 中的 \"swiplet.versionCode\" 必須是正整數",
   "\"{field}\" in package.json must be a string": "package.json 中的 \"{field}\" 必須是字串",

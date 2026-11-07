@@ -4,6 +4,7 @@
   "\"source.url\" in package.json is not an absolute URL": "\"source.url\" في package.json ليس عنوان URL مطلقًا",
   "\"swiplet.id\" in package.json must be 1 to 128 lowercase letters, digits, dots, underscores and hyphens starting with a letter or a digit": "يجب أن يتكون \"swiplet.id\" في package.json من ١ إلى ١٢٨ من الأحرف الصغيرة والأرقام والنقاط والشرطات السفلية والواصلات، وأن يبدأ بحرف أو رقم",
   "\"swiplet.localizedNames\" in package.json must map languages to names": "يجب أن يربط \"swiplet.localizedNames\" في package.json اللغات بالأسماء",
+  "\"swiplet.minimumAPILevel\" in package.json must be an integer from 1 to {level}, the API level of @swipt/api": "يجب أن يكون \"swiplet.minimumAPILevel\" في package.json عددًا صحيحًا موجبًا لا يتجاوز {level}، وهو مستوى API للحزمة @swipt/api",
   "\"swiplet.name\" in package.json must be a non-empty string": "يجب أن يكون \"swiplet.name\" في package.json سلسلة نصية غير فارغة",
   "\"swiplet.versionCode\" in package.json must be a positive integer": "يجب أن يكون \"swiplet.versionCode\" في package.json عددًا صحيحًا موجبًا",
   "\"{field}\" in package.json must be a string": "يجب أن يكون \"{field}\" في package.json سلسلة نصية",

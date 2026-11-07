@@ -4,6 +4,7 @@
   "\"source.url\" in package.json is not an absolute URL": "‏\"source.url\" ב-package.json אינו כתובת URL מוחלטת",
   "\"swiplet.id\" in package.json must be 1 to 128 lowercase letters, digits, dots, underscores and hyphens starting with a letter or a digit": "‏\"swiplet.id\" ב-package.json חייב להכיל 1 עד 128 אותיות קטנות, ספרות, נקודות, קווים תחתונים ומקפים, ולהתחיל באות או בספרה",
   "\"swiplet.localizedNames\" in package.json must map languages to names": "‏\"swiplet.localizedNames\" ב-package.json חייב למפות שפות לשמות",
+  "\"swiplet.minimumAPILevel\" in package.json must be an integer from 1 to {level}, the API level of @swipt/api": "‏\"swiplet.minimumAPILevel\" ב-package.json חייב להיות מספר שלם מ-1 עד {level}, רמת ה-API של @swipt/api",
   "\"swiplet.name\" in package.json must be a non-empty string": "‏\"swiplet.name\" ב-package.json חייב להיות מחרוזת לא ריקה",
   "\"swiplet.versionCode\" in package.json must be a positive integer": "‏\"swiplet.versionCode\" ב-package.json חייב להיות מספר שלם חיובי",
   "\"{field}\" in package.json must be a string": "‏\"{field}\" ב-package.json חייב להיות מחרוזת",

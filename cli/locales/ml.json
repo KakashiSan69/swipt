@@ -4,6 +4,7 @@
   "\"source.url\" in package.json is not an absolute URL": "package.json-ലെ \"source.url\" ഒരു കേവല URL അല്ല",
   "\"swiplet.id\" in package.json must be 1 to 128 lowercase letters, digits, dots, underscores and hyphens starting with a letter or a digit": "package.json-ലെ \"swiplet.id\" 1 മുതൽ 128 വരെ ചെറിയക്ഷരങ്ങൾ, അക്കങ്ങൾ, ഡോട്ടുകൾ, അണ്ടർസ്കോറുകൾ, ഹൈഫനുകൾ എന്നിവ ചേർന്നതും അക്ഷരത്തിലോ അക്കത്തിലോ ആരംഭിക്കുന്നതും ആയിരിക്കണം",
   "\"swiplet.localizedNames\" in package.json must map languages to names": "package.json-ലെ \"swiplet.localizedNames\" ഭാഷകളെ പേരുകളിലേക്ക് മാപ്പ് ചെയ്യണം",
+  "\"swiplet.minimumAPILevel\" in package.json must be an integer from 1 to {level}, the API level of @swipt/api": "package.json-ലെ \"swiplet.minimumAPILevel\" 1 മുതൽ @swipt/api-യുടെ API ലെവലായ {level} വരെയുള്ള ഒരു പൂർണ്ണസംഖ്യ ആയിരിക്കണം",
   "\"swiplet.name\" in package.json must be a non-empty string": "package.json-ലെ \"swiplet.name\" ശൂന്യമല്ലാത്ത സ്ട്രിങ് ആയിരിക്കണം",
   "\"swiplet.versionCode\" in package.json must be a positive integer": "package.json-ലെ \"swiplet.versionCode\" ഒരു പോസിറ്റീവ് പൂർണ്ണസംഖ്യ ആയിരിക്കണം",
   "\"{field}\" in package.json must be a string": "package.json-ലെ \"{field}\" ഒരു സ്ട്രിങ് ആയിരിക്കണം",
