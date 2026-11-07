@@ -20,6 +20,7 @@ var (
 	ErrNotFound     = E.New("not found")
 	ErrLocked       = E.New("the device is locked")
 	ErrStalled      = E.New("the device's accessibility service stopped answering")
+	ErrNotAnswering = E.New("not answering")
 	ErrTimeout      = E.New("timed out")
 )
 

@@ -54,6 +54,7 @@ export interface AccessibilityElement {
   readonly secure?: true;
   readonly selection?: [location: number, length: number];
   readonly actions?: readonly string[];
+  readonly truncated?: true;
   readonly children: readonly AccessibilityElement[];
   readonly parent?: AccessibilityElement;
   find(selector: AccessibilitySelector): AccessibilityElement | null;
@@ -65,6 +66,7 @@ export interface AccessibilitySnapshot {
   readonly time: number;
   readonly root: AccessibilityElement;
   readonly system?: AccessibilityElement;
+  readonly truncated?: true;
   find(selector: AccessibilitySelector): AccessibilityElement | null;
   findAll(selector: AccessibilitySelector): AccessibilityElement[];
 }
@@ -88,7 +90,8 @@ type Flag =
   | "partial"
   | "offScreen"
   | "inert"
-  | "remote";
+  | "remote"
+  | "truncated";
 
 export type AccessibilitySelector =
   | ({
@@ -103,12 +106,17 @@ export type AccessibilitySelector =
     })
   | ((element: AccessibilityElement) => boolean);
 
-export interface SnapshotOptions extends CallOptions {
+export interface ReadOptions extends CallOptions {
+  readonly depth?: number;
+}
+
+export interface SnapshotOptions extends ReadOptions {
   readonly scope?: "frontApp" | "screen";
+  readonly within?: AccessibilityElement;
   readonly full?: boolean;
 }
 
-export interface FindOptions extends CallOptions {
+export interface FindOptions extends ReadOptions {
   /** Omitted or 0 reads once; a positive number or Infinity reads until a match, and answers null at the limit. */
   readonly timeoutMs?: number;
   /** Reads again as soon as a read ends. Without it, a read waits for the device's next screen push, which comes 0.75 s after a change at the soonest and not at all for a change that adds or removes no element. */

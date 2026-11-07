@@ -1,4 +1,5 @@
 import { invoke } from "./async";
+import { errorFrom } from "./errors";
 import {
   AccessibilityElement,
   encode,
@@ -10,18 +11,48 @@ import {
 } from "./elements";
 import { act, check, optionsOf, signalOf, type Options } from "./options";
 
+const depthLimit = 56;
+
+const depthOf = (depth: unknown): number | undefined => {
+  if (depth === undefined) {
+    return undefined;
+  }
+  if (typeof depth !== "number" || Number.isNaN(depth)) {
+    throw new TypeError("depth must be a number");
+  }
+  if (Number.isFinite(depth) && !Number.isInteger(depth)) {
+    throw new TypeError("depth must be an integer");
+  }
+  if ((depth as number) < 0 || (depth as number) > depthLimit) {
+    throw new RangeError(`depth must be from 0 to ${depthLimit}`);
+  }
+  return depth as number;
+};
+
 const view = (options: unknown) => {
-  const { scope = "frontApp", full = false } = optionsOf(options, [
-    "scope",
-    "full",
-  ]);
-  if (scope !== "frontApp" && scope !== "screen") {
+  const {
+    scope,
+    within,
+    full = false,
+    depth,
+  } = optionsOf(options, ["scope", "within", "full", "depth"]);
+  if (scope !== undefined && scope !== "frontApp" && scope !== "screen") {
     throw new TypeError("scope must be frontApp or screen");
   }
   if (typeof full !== "boolean") {
     throw new TypeError("full must be a boolean");
   }
-  return { scope, full };
+  if (within === undefined) {
+    return { scope: scope ?? "frontApp", full, depth: depthOf(depth) };
+  }
+  if (scope !== undefined) {
+    throw new TypeError("scope and within are exclusive");
+  }
+  return {
+    within: elementOf(within, "within"),
+    full,
+    depth: depthOf(depth),
+  };
 };
 
 const selectorsOf = (selector: unknown): Selector[] => {
@@ -64,6 +95,7 @@ const elementOf = (element: unknown, operation: string): string => {
 interface Found {
   snapshot: RawSnapshot | null;
   seen: number;
+  failure?: string;
 }
 
 export const snapshot = async (options?: Options) =>
@@ -82,7 +114,9 @@ export const find = async (
     timeoutMs,
     poll = false,
     pollTimeoutMs,
-  } = optionsOf(options, ["timeoutMs", "poll", "pollTimeoutMs"]);
+    depth,
+  } = optionsOf(options, ["timeoutMs", "poll", "pollTimeoutMs", "depth"]);
+  const read = { depth: depthOf(depth) };
   const timeout = limitOf(timeoutMs, "timeoutMs");
   if (typeof poll !== "boolean") {
     throw new TypeError("poll must be a boolean");
@@ -100,7 +134,7 @@ export const find = async (
   const deadline = started + timeout;
   const pollUntil = poll ? started + pollLimit : -Infinity;
   for (;;) {
-    const found = await invoke<Found>("accessibility.find", [encoded], {
+    const found = await invoke<Found>("accessibility.find", [encoded, read], {
       signal,
     });
     if (found.snapshot !== null) {
@@ -114,6 +148,9 @@ export const find = async (
     }
     const now = Date.now();
     if (now >= deadline) {
+      if (found.failure !== undefined) {
+        throw errorFrom(JSON.parse(found.failure));
+      }
       return null;
     }
     if (now < pollUntil) {

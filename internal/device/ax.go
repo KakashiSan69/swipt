@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"slices"
+	"strconv"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -52,6 +53,7 @@ type axWorker struct {
 
 	generation atomic.Uint64
 	client     *accessibility.RemoteClient
+	blamed     uint64
 }
 
 type silence struct {
@@ -187,6 +189,7 @@ func (w *axWorker) execute(job *axJob) (any, error) {
 	silent, isSilent := errors.AsType[*accessibility.SilentFrontmostError](err)
 	switch {
 	case err == nil:
+		w.blamed = 0
 	case errors.Is(err, accessibility.ErrStalled):
 		return nil, w.stalled(job, err)
 	case client.Err() != nil && w.conn.ctx.Err() == nil:
@@ -295,7 +298,21 @@ func (w *axWorker) closeClient() {
 // ended the wait, and dropped every object ID it had handed out
 // (iPhone18,2, iOS 27.2 24B115).
 func (w *axWorker) stalled(job *axJob, stall error) error {
-	w.logger.Warn("the device's accessibility service stopped answering: ", stall)
+	var named uint64
+	reason := stall.Error()
+	if stalled, isNamed := errors.AsType[*accessibility.StallError](stall); isNamed {
+		named, reason = stalled.PID, stalled.Reason
+	}
+	pid, subject, basis, shown := w.shown(named)
+	if shown {
+		w.blamed = pid
+		detail := subject + " has not answered the accessibility service yet: " + reason + "; " + basis + ", so the service is left running"
+		w.logger.Warn(detail)
+		return E.Extend(ErrNotAnswering, detail)
+	}
+	w.blamed = 0
+	waited := "it waited on " + subject + "; " + basis
+	w.logger.Warn("the device's accessibility service stopped answering: ", reason, "; ", waited, ", so it is restarted")
 	if w.client != nil {
 		_ = w.client.CloseCause(stall)
 		w.client = nil
@@ -304,12 +321,69 @@ func (w *axWorker) stalled(job *axJob, stall error) error {
 	w.conn.connection.setAXClean(false)
 	performed := ""
 	if job.action {
-		performed = "the action may have been performed; "
+		performed = "; the action may have been performed"
 	}
 	if err := w.restart("it stopped answering"); err != nil {
-		return E.Extend(ErrStalled, performed, "restarting it failed: ", err)
+		return E.Extend(ErrStalled, reason, "; ", waited, performed, "; restarting it failed: ", err)
 	}
-	return E.Extend(ErrStalled, performed, "it was restarted, and the elements read before are gone; read the screen again")
+	return E.Extend(ErrStalled, reason, "; ", waited, performed, "; it was restarted, and the elements read before are gone; read the screen again")
+}
+
+func (w *axWorker) shown(named uint64) (pid uint64, subject, basis string, shown bool) {
+	front := w.conn.front
+	front.access.Lock()
+	current := front.current
+	front.access.Unlock()
+	ctx, cancel := context.WithTimeout(w.conn.ctx, restartLimit)
+	defer cancel()
+	executables := make(map[uint64]string)
+	processes, err := apps.Processes(ctx, w.conn.device)
+	if err != nil {
+		w.logger.Debug(E.Cause(err, "list the processes to name a stalled one"))
+	}
+	for _, process := range processes {
+		executables[process.PID] = process.Executable
+	}
+	describe := func(pid uint64) string {
+		text := "process " + strconv.FormatUint(pid, 10)
+		if executable := executables[pid]; executable != "" {
+			text += " " + executable
+		}
+		bundleID := front.bundleOf(pid)
+		if bundleID == "" && pid == current.pid {
+			bundleID = current.bundleID
+		}
+		if bundleID != "" {
+			return bundleID + " (" + text + ")"
+		}
+		return text
+	}
+	pid = named
+	via := ""
+	switch {
+	case named != 0:
+	case w.blamed != 0:
+		pid, via = w.blamed, "the request names no process, and "+describe(w.blamed)+" was in front when the service first stopped answering; "
+	case current.pid != 0:
+		pid, via = current.pid, "the request names no process, so it waits on the application in front; "
+	default:
+		return 0, "the application in front (not known yet)", "the request names no process, so it waits on the application in front, which is on the screen", true
+	}
+	subject = describe(pid)
+	switch {
+	case pid == current.pid:
+		return pid, subject, via + "it is the application in front", true
+	case pid == w.conn.springboard.Load(), strings.HasSuffix(executables[pid], "/SpringBoard.app/SpringBoard"):
+		return pid, subject, via + "it is SpringBoard, which is on the screen", true
+	}
+	running, err := front.foregroundProcesses(ctx, []uint64{pid})
+	switch {
+	case err != nil:
+		return pid, subject, via + "its foreground state could not be read: " + err.Error(), true
+	case len(running) > 0:
+		return pid, subject, via + "the device runs it in the foreground", true
+	}
+	return pid, subject, via + "the device does not run it in the foreground", false
 }
 
 func (w *axWorker) restart(reason string) error {
@@ -383,6 +457,5 @@ func (s *Connection) stallsAllowed() error {
 		return nil
 	}
 	return E.Cause1(ErrUnavailable, E.New("the device's accessibility service stopped answering ", len(s.stalls), " times in ", stallWindow,
-		" and was restarted each time; the application in front may not be answering it. It is tried again ",
-		time.Until(s.stalls[0].Add(stallWindow)).Round(time.Second), " from now"))
+		" and was restarted each time; it is tried again ", time.Until(s.stalls[0].Add(stallWindow)).Round(time.Second), " from now"))
 }

@@ -6,6 +6,8 @@ import (
 	"math"
 	"slices"
 	"time"
+
+	E "github.com/sagernet/sing/common/exceptions"
 )
 
 type Screen struct {
@@ -18,7 +20,7 @@ type Screen struct {
 }
 
 const (
-	remoteProbeDepth     = 3
+	remoteProbeDepth     = 2
 	webSearchResultLimit = 10000
 )
 
@@ -46,7 +48,7 @@ func untilAnswered(read func() (*Screen, error)) (*Screen, error) {
 	}
 }
 
-func (c *RemoteClient) ReadScreen(ctx context.Context, springboard uint64, overlay func(front Element) bool) (*Screen, error) {
+func (c *RemoteClient) ReadScreen(ctx context.Context, springboard uint64, depth int64, overlay func(front Element) bool) (*Screen, error) {
 	return untilAnswered(func() (*Screen, error) {
 		var rounds []time.Duration
 		run := func(batch *Batch) error {
@@ -70,12 +72,12 @@ func (c *RemoteClient) ReadScreen(ctx context.Context, springboard uint64, overl
 		app := front.Value
 		second := &Batch{}
 		bundle := second.BundleID(app)
-		full := second.Snapshot(app, SnapshotOptions{})
-		modal := second.Snapshot(app, SnapshotOptions{Attributes: []int64{nativeClassName}, HonorModal: true})
+		full := second.Snapshot(app, SnapshotOptions{Depth: depth})
+		modal := second.Snapshot(app, SnapshotOptions{Attributes: []int64{nativeClassName}, Depth: depth, HonorModal: true})
 		focused := second.Focused(app)
 		var systemSnapshot *Result[*Snapshot]
 		if system.Value.Ref.PID != app.Ref.PID && (overlay == nil || overlay(app)) {
-			systemSnapshot = second.Snapshot(system.Value, SnapshotOptions{})
+			systemSnapshot = second.Snapshot(system.Value, SnapshotOptions{Depth: depth})
 		}
 		if err := run(second); err != nil {
 			return nil, err
@@ -103,7 +105,7 @@ func (c *RemoteClient) ReadScreen(ctx context.Context, springboard uint64, overl
 			screen.System = systemSnapshot.Value.Root
 			snapshots = append(snapshots, systemSnapshot.Value)
 		}
-		err := c.expand(run, snapshots, springboard)
+		err := c.expand(run, snapshots, springboard, depth)
 		screen.Rounds = rounds
 		return screen, err
 	})
@@ -137,12 +139,17 @@ func SnapshotAttributes(fields []string) []int64 {
 
 type ApplicationOptions struct {
 	PID        uint64
+	Root       *Element
+	Clip       *LayoutFrame
+	Depth      int64
 	Attributes []int64
 	Modal      bool
 	Focused    bool
 	Expand     bool
 	Wanted     func(bundleID string) bool
 }
+
+var ErrGone = E.New("accessibility: the element is gone")
 
 // An app that read the pasteboard while launching answered no snapshot until
 // its paste prompt was answered, while the frontmost application was already
@@ -151,17 +158,24 @@ func (c *RemoteClient) ReadApplication(ctx context.Context, options ApplicationO
 	read := func() (*Screen, error) {
 		first := &Batch{}
 		var app *Result[Element]
-		if options.PID == 0 {
+		switch {
+		case options.Root != nil:
+			app = first.Application(options.Root.Ref.PID)
+		case options.PID == 0:
 			app = first.Frontmost()
-		} else {
+		default:
 			app = first.Application(options.PID)
 		}
 		if err := c.Run(ctx, first); err != nil {
 			return nil, err
 		}
 		if err := app.Err("read the application"); err != nil {
+			if options.Root != nil {
+				return nil, E.Extend(ErrGone, "read the screen again; its process ", options.Root.Ref.PID, " has no application: ", err)
+			}
 			return nil, err
 		}
+		named := options.PID != 0 || options.Root != nil
 		var bundle *Result[string]
 		if options.Wanted != nil {
 			check := &Batch{}
@@ -170,7 +184,7 @@ func (c *RemoteClient) ReadApplication(ctx context.Context, options ApplicationO
 				return nil, err
 			}
 			if err := bundle.Err("read the application's bundle ID"); err != nil {
-				return nil, c.silent(ctx, app.Value, options.PID != 0, err)
+				return nil, c.silent(ctx, app.Value, named, err)
 			}
 			if !options.Wanted(bundle.Value) {
 				return &Screen{BundleID: bundle.Value, App: app.Value}, nil
@@ -180,14 +194,18 @@ func (c *RemoteClient) ReadApplication(ctx context.Context, options ApplicationO
 		if options.Expand && len(attributes) > 0 && !slices.Contains(attributes, nativeClassName) {
 			attributes = append(slices.Clone(attributes), nativeClassName)
 		}
+		root := app.Value
+		if options.Root != nil {
+			root = *options.Root
+		}
 		second := &Batch{}
 		if bundle == nil {
 			bundle = second.BundleID(app.Value)
 		}
-		full := second.Snapshot(app.Value, SnapshotOptions{Attributes: attributes})
+		full := second.Snapshot(root, SnapshotOptions{Attributes: attributes, Depth: options.Depth, Clip: options.Clip})
 		var modal *Result[*Snapshot]
 		if options.Modal {
-			modal = second.Snapshot(app.Value, SnapshotOptions{Attributes: []int64{nativeClassName}, HonorModal: true})
+			modal = second.Snapshot(root, SnapshotOptions{Attributes: []int64{nativeClassName}, Depth: options.Depth, HonorModal: true})
 		}
 		var focused *Result[Element]
 		if options.Focused {
@@ -197,10 +215,19 @@ func (c *RemoteClient) ReadApplication(ctx context.Context, options ApplicationO
 			return nil, err
 		}
 		if err := bundle.Err("read the application's bundle ID"); err != nil {
-			return nil, c.silent(ctx, app.Value, options.PID != 0, err)
+			return nil, c.silent(ctx, app.Value, named, err)
 		}
-		if err := full.Err("snapshot the application"); err != nil {
-			return nil, c.silent(ctx, app.Value, options.PID != 0, err)
+		if options.Root != nil {
+			switch {
+			case full.Code != 0:
+				return nil, E.Extend(ErrGone, "read the screen again; the snapshot of it, element ", options.Root.Ref.PID, ":", options.Root.Ref.ObjectID,
+					", failed: ", full.Err("snapshot the element"))
+			case full.Value.Root.Ref != options.Root.Ref:
+				return nil, E.Extend(ErrGone, "read the screen again; the snapshot of it, element ", options.Root.Ref.PID, ":", options.Root.Ref.ObjectID,
+					", answered element ", full.Value.Root.Ref.PID, ":", full.Value.Root.Ref.ObjectID)
+			}
+		} else if err := full.Err("snapshot the application"); err != nil {
+			return nil, c.silent(ctx, app.Value, named, err)
 		}
 		screen := &Screen{BundleID: bundle.Value, App: app.Value, Root: full.Value.Root}
 		if modal != nil {
@@ -215,13 +242,13 @@ func (c *RemoteClient) ReadApplication(ctx context.Context, options ApplicationO
 		}
 		if options.Expand {
 			run := func(batch *Batch) error { return c.Run(ctx, batch) }
-			if err := c.expand(run, []*Snapshot{full.Value}, 0); err != nil {
+			if err := c.expand(run, []*Snapshot{full.Value}, 0, options.Depth); err != nil {
 				return nil, err
 			}
 		}
 		return screen, nil
 	}
-	if options.PID != 0 {
+	if options.PID != 0 || options.Root != nil {
 		return read()
 	}
 	return untilAnswered(read)
@@ -272,7 +299,7 @@ type remoteProbe struct {
 // reading its 5 remote elements took 1.4 s and added nothing to the controls
 // its own snapshot held (iPad17,1, iPadOS 27.2 24B115), and while another
 // application is in front, one hosts that application's scene.
-func (c *RemoteClient) expand(run func(*Batch) error, snapshots []*Snapshot, springboard uint64) error {
+func (c *RemoteClient) expand(run func(*Batch) error, snapshots []*Snapshot, springboard uint64, depth int64) error {
 	probes := &Batch{}
 	var remotes []remoteProbe
 	for _, snapshot := range snapshots {
@@ -281,7 +308,7 @@ func (c *RemoteClient) expand(run func(*Batch) error, snapshots []*Snapshot, spr
 		}
 		for _, node := range snapshot.Remote {
 			if !node.Inert {
-				remotes = append(remotes, remoteProbe{node, probes.Snapshot(node.Element, SnapshotOptions{Attributes: []int64{nativeClassName}, MaxDepth: remoteProbeDepth})})
+				remotes = append(remotes, remoteProbe{node, probes.Snapshot(node.Element, SnapshotOptions{Attributes: []int64{nativeClassName}, Depth: remoteProbeDepth})})
 			}
 		}
 	}
@@ -303,7 +330,7 @@ func (c *RemoteClient) expand(run func(*Batch) error, snapshots []*Snapshot, spr
 			webs = append(webs, &webRead{host: probe.node, area: area.Element, search: contents.Search(area.Element, webSearch)})
 			continue
 		}
-		attachments = append(attachments, attachment{probe.node, contents.Snapshot(probe.node.Element, SnapshotOptions{})})
+		attachments = append(attachments, attachment{probe.node, contents.Snapshot(probe.node.Element, SnapshotOptions{Depth: depth})})
 	}
 	if err := run(contents); err != nil {
 		return err

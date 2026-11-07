@@ -340,9 +340,11 @@ export async function list({ signal }) {
   const probes = new Map(
     Object.values(stored).map((url) => [url, probe(url, deadline)]),
   );
-  await discover(signal, stored);
+  const locked = (await discover(signal, stored)).filter(
+    (it) => it.authenticates && storedName(stored, it.name) === undefined,
+  );
   const names = Object.keys(stored).sort((a, b) => a.localeCompare(b));
-  if (names.length === 0) {
+  if (names.length === 0 && locked.length === 0) {
     console.error(
       tr(
         'no device publishes Swipt on the local network; turn on Swipt › Developer › Local Network, or connect one with "swipt device add URL"',
@@ -359,17 +361,23 @@ export async function list({ signal }) {
   );
   console.log(
     columns(
-      probed.map(({ name, cells }) => [
-        name,
-        parseURL(stored[name]).url,
-        ...cells,
-      ]),
+      [
+        ...probed.map(({ name, cells }) => [
+          name,
+          parseURL(stored[name]).url,
+          ...cells,
+        ]),
+        ...locked.map((it) => [it.name, it.url, tr("requires a token")]),
+      ].sort((a, b) => a[0].localeCompare(b[0])),
     ),
   );
   for (const { name, failure } of probed) {
     if (failure !== undefined) {
       console.error(`${name}: ${failure}`);
     }
+  }
+  for (const it of locked) {
+    console.error(requiresToken(it));
   }
 }
 

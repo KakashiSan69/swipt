@@ -12,6 +12,7 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/sagernet/sing/common"
 	E "github.com/sagernet/sing/common/exceptions"
 	"github.com/sagernet/sing/common/logger"
 	"github.com/swipt-automation/swipt/internal/coredevice/accessibility"
@@ -268,21 +269,23 @@ func (s axSpace) remote(element accessibility.Element) bool {
 }
 
 type PhoneNode struct {
-	AX       accessibility.Element
-	Frame    Rect
-	Visible  Rect
-	Point    Point
-	Covered  bool
-	Inert    bool
-	Remote   bool
-	Web      bool
-	Focused  bool
-	Clip     Rect
-	Children []*PhoneNode
-	Parent   *PhoneNode
+	AX        accessibility.Element
+	Frame     Rect
+	Visible   Rect
+	Point     Point
+	Covered   bool
+	Inert     bool
+	Remote    bool
+	Web       bool
+	Focused   bool
+	Truncated bool
+	Clip      Rect
+	Children  []*PhoneNode
+	Parent    *PhoneNode
 
-	model *PhoneModel
-	space axSpace
+	model  *PhoneModel
+	space  axSpace
+	axClip accessibility.LayoutFrame
 }
 
 func (n *PhoneNode) HasFrame() bool {
@@ -303,12 +306,15 @@ func (n *PhoneNode) Contains(other *PhoneNode) bool {
 }
 
 type PhoneModel struct {
-	BundleID string
-	Root     *PhoneNode
-	System   *PhoneNode
+	BundleID  string
+	Root      *PhoneNode
+	System    *PhoneNode
+	Truncated []*PhoneNode
 
+	app        accessibility.Element
 	nodes      map[accessibility.ElementRef]*PhoneNode
 	generation uint64
+	read       SnapshotOptions
 }
 
 func (m *PhoneModel) Node(ref accessibility.ElementRef) *PhoneNode {
@@ -332,9 +338,16 @@ const (
 	statusBarAutomationType = 25
 )
 
-func modelOf(geometry phoneGeometry, screen *accessibility.Screen) *PhoneModel {
-	model := &PhoneModel{BundleID: screen.BundleID, nodes: make(map[accessibility.ElementRef]*PhoneNode)}
-	model.Root = model.convert(spaceOf(geometry, screen.Root.Element), screen.Root, nil, screen.Focused)
+func modelOf(geometry phoneGeometry, screen *accessibility.Screen, base *PhoneNode) *PhoneModel {
+	model := &PhoneModel{BundleID: screen.BundleID, app: screen.App, nodes: make(map[accessibility.ElementRef]*PhoneNode)}
+	space := spaceOf(geometry, screen.Root.Element)
+	if base != nil {
+		space = base.space
+	}
+	model.Root = model.convert(space, screen.Root, nil, screen.Focused)
+	if base != nil && base.Inert {
+		walkNodes(model.Root, func(node *PhoneNode) { node.Inert = true })
+	}
 	if screen.System != nil {
 		model.System = model.convert(spaceOf(geometry, screen.System.Element), screen.System, nil, nil)
 	}
@@ -397,8 +410,14 @@ func (m *PhoneModel) convert(space axSpace, node *accessibility.TreeNode, parent
 	if node.Type == windowAutomationType && node.Frame != nil {
 		space = space.window(node.Frame)
 	}
-	out := &PhoneNode{AX: node.Element, Inert: node.Inert, Web: node.Web, Parent: parent, Remote: space.remote(node.Element), model: m, space: space}
+	out := &PhoneNode{
+		AX: node.Element, Inert: node.Inert, Web: node.Web, Truncated: node.Truncated, Parent: parent, Remote: space.remote(node.Element),
+		model: m, space: space, axClip: node.Clip,
+	}
 	m.nodes[node.Ref] = out
+	if out.Truncated {
+		m.Truncated = append(m.Truncated, out)
+	}
 	if out.HasFrame() {
 		out.Frame = space.rect(*node.Frame)
 		out.Clip = space.rect(node.Clip)
@@ -418,30 +437,43 @@ func (m *PhoneModel) convert(space axSpace, node *accessibility.TreeNode, parent
 }
 
 type SnapshotOptions struct {
-	Front bool
-	Raw   bool
+	Front  bool
+	Raw    bool
+	Depth  int64
+	Within string
 }
 
 func (o SnapshotOptions) key() string {
-	if o.Front {
-		return "front"
+	depth := strconv.FormatInt(o.Depth, 10)
+	switch {
+	case o.Within != "":
+		return "within:" + o.Within + ":" + depth
+	case o.Front:
+		return "front:" + depth
 	}
-	return "screen"
+	return "screen:" + depth
 }
 
 func (p *Phone) read(ctx context.Context, c *conn, options SnapshotOptions) (*PhoneModel, error) {
+	options.Raw = false
 	geometry, err := c.readGeometry(ctx)
 	if err != nil {
 		return nil, err
 	}
+	var base *PhoneNode
 	var springboard uint64
-	if !options.Front {
+	switch {
+	case options.Within != "":
+		if base, err = p.element(c, options.Within); err != nil {
+			return nil, err
+		}
+	case !options.Front:
 		if springboard, err = c.springboardPID(ctx); err != nil {
 			return nil, err
 		}
 	}
 	value, err := c.ax.read(ctx, options.key(), func(ctx context.Context, client *accessibility.RemoteClient) (any, error) {
-		return p.readScreen(ctx, c, client, geometry, springboard, options)
+		return p.readScreen(ctx, c, client, geometry, springboard, base, options)
 	})
 	if err != nil {
 		return nil, err
@@ -451,14 +483,19 @@ func (p *Phone) read(ctx context.Context, c *conn, options SnapshotOptions) (*Ph
 	return model, nil
 }
 
-func (p *Phone) readScreen(ctx context.Context, c *conn, client *accessibility.RemoteClient, geometry phoneGeometry, springboard uint64, options SnapshotOptions) (*PhoneModel, error) {
+func (p *Phone) readScreen(ctx context.Context, c *conn, client *accessibility.RemoteClient, geometry phoneGeometry, springboard uint64, base *PhoneNode, options SnapshotOptions) (*PhoneModel, error) {
 	started := time.Now()
 	var screen *accessibility.Screen
 	var err error
-	if options.Front {
-		screen, err = client.ReadApplication(ctx, accessibility.ApplicationOptions{Focused: true, Expand: true})
-	} else {
-		screen, err = client.ReadScreen(ctx, springboard, nil)
+	switch {
+	case base != nil:
+		screen, err = client.ReadApplication(ctx, accessibility.ApplicationOptions{
+			Root: &base.AX, Clip: &base.axClip, Depth: options.Depth, Modal: true, Focused: true, Expand: true,
+		})
+	case options.Front:
+		screen, err = client.ReadApplication(ctx, accessibility.ApplicationOptions{Depth: options.Depth, Focused: true, Expand: true})
+	default:
+		screen, err = client.ReadScreen(ctx, springboard, options.Depth, nil)
 		if errors.Is(err, accessibility.ErrNoApplication) {
 			c.springboard.Store(0)
 		}
@@ -466,13 +503,23 @@ func (p *Phone) readScreen(ctx context.Context, c *conn, client *accessibility.R
 	if err != nil {
 		return nil, err
 	}
-	return p.model(c, geometry, screen, started, true), nil
+	return p.model(c, geometry, screen, started, base, options, base == nil), nil
 }
 
-func (p *Phone) model(c *conn, geometry phoneGeometry, screen *accessibility.Screen, started time.Time, front bool) *PhoneModel {
-	model := modelOf(geometry, screen)
+func (p *Phone) model(c *conn, geometry phoneGeometry, screen *accessibility.Screen, started time.Time, base *PhoneNode, read SnapshotOptions, front bool) *PhoneModel {
+	model := modelOf(geometry, screen, base)
 	model.generation = c.ax.current()
-	p.logger.Debug("read ", len(model.nodes), " nodes of ", model.BundleID, " in ", time.Since(started), ", rounds ", fmt.Sprint(screen.Rounds))
+	model.read = read
+	root := "the application"
+	if base != nil {
+		root = "element " + refText(base.AX.Ref)
+	}
+	p.logger.Debug("read ", len(model.nodes), " nodes of ", model.BundleID, " from ", root, " to depth ", read.Depth, " in ", time.Since(started),
+		", rounds ", fmt.Sprint(screen.Rounds))
+	if len(model.Truncated) > 0 {
+		p.logger.Info("the read of ", model.BundleID, " from ", root, " stopped at depth ", read.Depth, " above the children of ", len(model.Truncated), " elements: ",
+			strings.Join(common.Map(model.Truncated, func(node *PhoneNode) string { return refText(node.AX.Ref) + " " + describeElement(node.AX) }), ", "))
+	}
 	c.ax.answered(screen.App.Ref.PID)
 	if front {
 		c.front.observed(frontApplication{pid: screen.App.Ref.PID, bundleID: screen.BundleID, at: started, via: "tree"})
@@ -481,6 +528,9 @@ func (p *Phone) model(c *conn, geometry phoneGeometry, screen *accessibility.Scr
 }
 
 func (p *Phone) Snapshot(ctx context.Context, options SnapshotOptions) (*View, error) {
+	if err := checkDepth(options.Depth); err != nil {
+		return nil, err
+	}
 	c, ctx, done, err := p.begin(ctx)
 	if err != nil {
 		return nil, err
@@ -491,8 +541,15 @@ func (p *Phone) Snapshot(ctx context.Context, options SnapshotOptions) (*View, e
 	if err != nil {
 		return nil, err
 	}
-	p.connection.trace(started, "snapshot.read", strconv.Itoa(len(model.nodes))+" nodes of "+model.BundleID, time.Since(started))
+	p.connection.trace(started, "snapshot.read", strconv.Itoa(len(model.nodes))+" nodes of "+model.BundleID+", "+strconv.Itoa(len(model.Truncated))+" cut off", time.Since(started))
 	return NewView(model, options.Raw), nil
+}
+
+func checkDepth(depth int64) error {
+	if depth < 0 || depth > accessibility.MaxDepth {
+		return E.Extend(ErrInvalid, "depth must be an integer from 0 to ", accessibility.MaxDepth, ", the most one read of the device carries")
+	}
+	return nil
 }
 
 type PhoneInfo struct {

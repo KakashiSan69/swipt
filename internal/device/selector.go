@@ -17,7 +17,7 @@ import (
 
 var (
 	stringFields   = []string{"role", "class", "label", "value", "identifier", "placeholder", "hint", "url", "app"}
-	flagFields     = []string{"selected", "focused", "disabled", "secure", "partial", "offScreen", "inert", "remote"}
+	flagFields     = []string{"selected", "focused", "disabled", "secure", "partial", "offScreen", "inert", "remote", "truncated"}
 	relationFields = []string{"within", "parent", "has", "not"}
 	selectorFields = slices.Concat(stringFields, []string{"traits"}, flagFields, []string{"expanded"}, relationFields, []string{"index"})
 )
@@ -287,6 +287,15 @@ func (s *Selector) App() string {
 	for _, field := range s.fields {
 		if field.name == "app" && !field.text.regular {
 			return field.text.text
+		}
+	}
+	return ""
+}
+
+func (s *Selector) Within() string {
+	for _, field := range s.fields {
+		if field.name == "within" && field.element != "" {
+			return field.element
 		}
 	}
 	return ""

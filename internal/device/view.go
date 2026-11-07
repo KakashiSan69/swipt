@@ -121,6 +121,7 @@ type ViewElement struct {
 	Secure      bool           `json:"secure,omitempty"`
 	Selection   *[2]uint64     `json:"selection,omitempty"`
 	Actions     []string       `json:"actions,omitempty"`
+	Truncated   bool           `json:"truncated,omitempty"`
 	Children    []*ViewElement `json:"children,omitempty"`
 
 	node   *PhoneNode
@@ -129,10 +130,11 @@ type ViewElement struct {
 }
 
 type View struct {
-	App    string       `json:"app"`
-	Time   int64        `json:"time"`
-	Root   *ViewElement `json:"root"`
-	System *ViewElement `json:"system,omitempty"`
+	App       string       `json:"app"`
+	Time      int64        `json:"time"`
+	Root      *ViewElement `json:"root"`
+	System    *ViewElement `json:"system,omitempty"`
+	Truncated bool         `json:"truncated,omitempty"`
 
 	refs     map[string]*ViewElement
 	model    *PhoneModel
@@ -160,11 +162,14 @@ func parseRef(text string) (accessibility.ElementRef, error) {
 func NewView(model *PhoneModel, raw bool) *View {
 	shapeRoot := func(root *PhoneNode, system bool) *ViewElement {
 		if raw {
-			return rawElement(root, 0)
+			return rawElement(root)
 		}
-		return shape(root, 0, system)[0]
+		return shape(root, system)[0]
 	}
-	view := &View{App: model.BundleID, Time: time.Now().UnixMilli(), Root: shapeRoot(model.Root, false), refs: make(map[string]*ViewElement), model: model, raw: raw}
+	view := &View{
+		App: model.BundleID, Time: time.Now().UnixMilli(), Truncated: len(model.Truncated) > 0, Root: shapeRoot(model.Root, false),
+		refs: make(map[string]*ViewElement), model: model, raw: raw,
+	}
 	if !raw {
 		tidy(view.Root, nil)
 	}
@@ -239,11 +244,11 @@ func tidy(item *ViewElement, inherited []string) {
 	}
 }
 
-func describe(node *PhoneNode, depth int) *ViewElement {
+func describe(node *PhoneNode) *ViewElement {
 	ax := node.AX
 	out := &ViewElement{
 		Label: ax.Label, Value: ax.Value, Identifier: ax.Identifier, Placeholder: ax.Placeholder, Hint: ax.Help, URL: ax.URL,
-		Remote: node.Remote, Inert: node.Inert, Disabled: !ax.Enabled, Focused: node.Focused, Selected: ax.Selected,
+		Remote: node.Remote, Inert: node.Inert, Truncated: node.Truncated, Disabled: !ax.Enabled, Focused: node.Focused, Selected: ax.Selected,
 		Expanded: ax.Expanded, Secure: ax.Secure(),
 		Actions: common.Uniq(common.Map(ax.Actions, func(action accessibility.CustomAction) string { return action.Name })),
 		node:    node,
@@ -253,7 +258,7 @@ func describe(node *PhoneNode, depth int) *ViewElement {
 			out.Traits = append(out.Traits, name)
 		}
 	}
-	out.Role = role(ax, depth, out.Traits)
+	out.Role = role(ax, node.Parent == nil && (node.model.read.Within == "" || ax.Application()), out.Traits)
 	if ax.Selection != nil {
 		out.Selection = &[2]uint64{ax.Selection.Location, ax.Selection.Length}
 	}
@@ -286,8 +291,8 @@ func describe(node *PhoneNode, depth int) *ViewElement {
 // the StaticText automation type, as in Settings and SwiftUI forms, or with
 // automation type 0, as a UIKit table's section header (iPhone18,2, iOS 27.2
 // 24B115).
-func role(ax accessibility.Element, depth int, elementTraits []string) string {
-	if depth == 0 {
+func role(ax accessibility.Element, application bool, elementTraits []string) string {
+	if application {
 		return "application"
 	}
 	name := "other"
@@ -319,30 +324,34 @@ func role(ax accessibility.Element, depth int, elementTraits []string) string {
 	return name
 }
 
-func rawElement(node *PhoneNode, depth int) *ViewElement {
-	out := describe(node, depth)
+func rawElement(node *PhoneNode) *ViewElement {
+	out := describe(node)
 	out.Class = node.AX.Class
 	for _, child := range node.Children {
-		out.Children = append(out.Children, rawElement(child, depth+1))
+		out.Children = append(out.Children, rawElement(child))
 	}
 	return out
 }
 
-func shape(node *PhoneNode, depth int, system bool) []*ViewElement {
-	out := describe(node, depth)
+func shape(node *PhoneNode, system bool) []*ViewElement {
+	out := describe(node)
 	ax := node.AX
+	root := node.Parent == nil
+	if out.Truncated {
+		return []*ViewElement{out}
+	}
 	if elementType(ax.Type) == typeKeyboard && node.HasFrame() && !node.Shown() {
 		return nil
 	}
 	var children []*ViewElement
 	for _, child := range node.Children {
-		children = append(children, shape(child, depth+1, system)...)
+		children = append(children, shape(child, system)...)
 	}
 	// A table lists its cells in a scroll view of its own, beside its section
 	// headers (iPhone18,2 and iPad17,1, iOS and iPadOS 27.2 24B115).
 	if slices.Contains(scrollingRoles, out.Role) {
 		children = common.FlatMap(children, func(child *ViewElement) []*ViewElement {
-			if child.Role != "scrollView" || child.Label != "" || child.node.AX.AccessibilityElement || adds(child, out) {
+			if child.Role != "scrollView" || child.Label != "" || child.node.AX.AccessibilityElement || child.Truncated || adds(child, out) {
 				return []*ViewElement{child}
 			}
 			return child.Children
@@ -350,10 +359,10 @@ func shape(node *PhoneNode, depth int, system bool) []*ViewElement {
 	}
 	if ax.AccessibilityElement {
 		children = slices.DeleteFunc(children, func(child *ViewElement) bool {
-			return !child.node.AX.AccessibilityElement && len(child.Children) == 0 && !child.Focused
+			return !child.node.AX.AccessibilityElement && len(child.Children) == 0 && !child.Focused && !child.Truncated
 		})
 	}
-	if len(children) == 1 {
+	if len(children) == 1 && !children[0].Truncated && !root {
 		child := children[0]
 		switch {
 		case out.Label != "" && child.Role != out.Role && (sameText(child.Label, out.Label) || child.Label == "" && sameText(child.Value, out.Label)) &&
@@ -375,10 +384,10 @@ func shape(node *PhoneNode, depth int, system bool) []*ViewElement {
 	}
 	out.Children = children
 	ax = out.node.AX
-	if len(children) == 0 && out.node.HasFrame() && (ax.Frame.Width == 0 || ax.Frame.Height == 0) {
+	if len(children) == 0 && out.node.HasFrame() && (ax.Frame.Width == 0 || ax.Frame.Height == 0) && !root {
 		return nil
 	}
-	if ax.AccessibilityElement || depth == 0 {
+	if ax.AccessibilityElement || root {
 		return []*ViewElement{out}
 	}
 	// SpringBoard shows every application in a card of its switcher, labeled
@@ -386,7 +395,8 @@ func shape(node *PhoneNode, depth int, system bool) []*ViewElement {
 	// 27.2 24B115).
 	labeled := (out.Label != "" || out.Identifier != "" && out.Role != "image" || out.Value != "") &&
 		!(system && slices.Contains(genericRoles, out.Role))
-	container := !slices.Contains(contentRoles, out.Role) && !isControl(out.Role) || !labeled && len(children) > 0
+	content := slices.Contains(contentRoles, out.Role) || labeled && len(children) == 0 && slices.Contains(genericRoles, out.Role)
+	container := !content && !isControl(out.Role) || !labeled && len(children) > 0
 	switch {
 	case len(children) == 0 && (container || !labeled && !isControl(out.Role)):
 		return nil
@@ -450,6 +460,7 @@ var lineFlags = []struct {
 	{"offScreen", func(it *ViewElement) bool { return it.OffScreen }},
 	{"inert", func(it *ViewElement) bool { return it.Inert }},
 	{"remote", func(it *ViewElement) bool { return it.Remote }},
+	{"truncated", func(it *ViewElement) bool { return it.Truncated }},
 }
 
 func quote(text string) string {

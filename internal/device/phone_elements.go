@@ -12,9 +12,18 @@ import (
 	"github.com/swipt-automation/swipt/internal/coredevice/accessibility"
 )
 
-func (p *Phone) Find(ctx context.Context, selectors []*Selector) (*View, uint64, error) {
+func (p *Phone) Find(ctx context.Context, selectors []*Selector, depth int64) (*View, uint64, error) {
 	if len(selectors) == 0 {
 		return nil, 0, E.Extend(ErrInvalid, "find needs a selector")
+	}
+	if err := checkDepth(depth); err != nil {
+		return nil, 0, err
+	}
+	within := selectors[0].Within()
+	for _, selector := range selectors[1:] {
+		if selector.Within() != within {
+			within = ""
+		}
 	}
 	var fields, named []string
 	scripted, unnamed := false, false
@@ -28,7 +37,7 @@ func (p *Phone) Find(ctx context.Context, selectors []*Selector) (*View, uint64,
 			named = append(named, app)
 		}
 	}
-	options := accessibility.ApplicationOptions{Modal: slices.Contains(fields, "inert"), Focused: slices.Contains(fields, "focused")}
+	options := accessibility.ApplicationOptions{Depth: depth, Modal: slices.Contains(fields, "inert"), Focused: slices.Contains(fields, "focused")}
 	if !scripted {
 		options.Attributes = accessibility.SnapshotAttributes(fields)
 	}
@@ -43,6 +52,13 @@ func (p *Phone) Find(ctx context.Context, selectors []*Selector) (*View, uint64,
 		return nil, 0, err
 	}
 	geometryTook := time.Since(began)
+	var base *PhoneNode
+	if within != "" {
+		if base, err = p.element(c, within); err != nil {
+			return nil, 0, err
+		}
+		options.Root, options.Clip = &base.AX, &base.axClip
+	}
 	seen := c.events.screen.Load()
 	key := "find:" + strings.Join(named, ",")
 	switch {
@@ -55,7 +71,8 @@ func (p *Phone) Find(ctx context.Context, selectors []*Selector) (*View, uint64,
 	default:
 		key = "find"
 	}
-	key += ":" + strconv.FormatUint(options.PID, 10) + ":" + strconv.FormatBool(options.Modal) + ":" + strconv.FormatBool(options.Focused) + ":" + fmt.Sprint(options.Attributes)
+	key += ":" + strconv.FormatUint(options.PID, 10) + ":" + within + ":" + strconv.FormatInt(depth, 10) + ":" + strconv.FormatBool(options.Modal) + ":" +
+		strconv.FormatBool(options.Focused) + ":" + fmt.Sprint(options.Attributes)
 	queued := time.Now()
 	value, err := c.ax.read(ctx, key, func(ctx context.Context, client *accessibility.RemoteClient) (any, error) {
 		started := time.Now()
@@ -70,15 +87,17 @@ func (p *Phone) Find(ctx context.Context, selectors []*Selector) (*View, uint64,
 		}
 		if screen.Root == nil {
 			p.connection.trace(started, "find.skipped", waits+", "+screen.BundleID+" pid "+strconv.FormatUint(screen.App.Ref.PID, 10)+" is in front", time.Since(started))
-			c.front.observed(frontApplication{pid: screen.App.Ref.PID, bundleID: screen.BundleID, at: started, via: "find"})
+			if base == nil {
+				c.front.observed(frontApplication{pid: screen.App.Ref.PID, bundleID: screen.BundleID, at: started, via: "find"})
+			}
 			return (*PhoneModel)(nil), nil
 		}
-		model := p.model(c, geometry, screen, started, options.PID == 0)
-		p.connection.trace(started, "find.read", waits+", "+strconv.Itoa(len(model.nodes))+" nodes of "+screen.BundleID+", "+strconv.FormatUint(c.events.screen.Load()-seen, 10)+" screen changes since", time.Since(started))
+		model := p.model(c, geometry, screen, started, base, SnapshotOptions{Depth: depth, Within: within}, options.PID == 0 && base == nil)
+		p.connection.trace(started, "find.read", waits+", "+strconv.Itoa(len(model.nodes))+" nodes of "+screen.BundleID+", "+strconv.Itoa(len(model.Truncated))+" cut off, "+strconv.FormatUint(c.events.screen.Load()-seen, 10)+" screen changes since", time.Since(started))
 		return model, nil
 	})
 	if err != nil {
-		return nil, 0, err
+		return nil, seen, err
 	}
 	model := value.(*PhoneModel)
 	if model == nil {

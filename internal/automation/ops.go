@@ -172,7 +172,7 @@ func screenAction(act func(ctx context.Context, phone *device.Phone, call *opera
 	}
 }
 
-var terseErrors = []error{ErrInvalid, ErrNotFound, ErrNotAllowed, errNetwork, device.ErrNotFound, device.ErrTimeout}
+var terseErrors = []error{ErrInvalid, ErrNotFound, ErrNotAllowed, errNetwork, device.ErrNotFound, device.ErrTimeout, device.ErrNotAnswering}
 
 func Message(err error) string {
 	message := err.Error()
@@ -199,7 +199,7 @@ func FailureOf(err error) string {
 	switch {
 	case isScripted && scripted.Name != "":
 		out.Name = scripted.Name
-	case E.IsMulti(err, device.ErrDisconnected, device.ErrUnavailable, device.ErrLocked, device.ErrStalled, accessibility.ErrStalled):
+	case E.IsMulti(err, device.ErrDisconnected, device.ErrUnavailable, device.ErrLocked, device.ErrStalled, device.ErrNotAnswering, accessibility.ErrStalled):
 		out.Name = "UnavailableError"
 	case E.IsMulti(err, context.DeadlineExceeded, device.ErrTimeout):
 		out.Name = "TimeoutError"
@@ -207,7 +207,7 @@ func FailureOf(err error) string {
 		out.Name = "AbortError"
 	case E.IsMulti(err, ErrInvalid, errNetwork):
 		out.Name = "TypeError"
-	case E.IsMulti(err, ErrNotFound, device.ErrNotFound):
+	case E.IsMulti(err, ErrNotFound, device.ErrNotFound, accessibility.ErrGone):
 		out.Name = "NotFoundError"
 	case errors.Is(err, ErrNotAllowed):
 		out.Name = "NotAllowedError"
@@ -565,8 +565,17 @@ func deviceSetLocation(ctx context.Context, call *operation) (any, error) {
 }
 
 type snapshotOptions struct {
-	Scope string `json:"scope"`
-	Full  bool   `json:"full"`
+	Scope  string `json:"scope"`
+	Full   bool   `json:"full"`
+	Depth  *int64 `json:"depth"`
+	Within string `json:"within"`
+}
+
+func depthOf(depth *int64) int64 {
+	if depth == nil {
+		return accessibility.DefaultDepth
+	}
+	return *depth
 }
 
 func uiSnapshot(ctx context.Context, call *operation) (any, error) {
@@ -574,23 +583,31 @@ func uiSnapshot(ctx context.Context, call *operation) (any, error) {
 	if err := call.decode(0, &strict{&options}); err != nil {
 		return nil, err
 	}
-	if options.Scope != "" && options.Scope != "frontApp" && options.Scope != "screen" {
+	switch {
+	case options.Scope != "" && options.Scope != "frontApp" && options.Scope != "screen":
 		return nil, E.Cause1(ErrInvalid, E.New("scope must be frontApp or screen"))
+	case options.Scope != "" && options.Within != "":
+		return nil, E.Cause1(ErrInvalid, E.New("scope and within are exclusive"))
 	}
 	phone, err := call.screen(ctx)
 	if err != nil {
 		return nil, err
 	}
-	view, err := phone.Snapshot(ctx, device.SnapshotOptions{Front: options.Scope != "screen", Raw: options.Full})
+	view, err := phone.Snapshot(ctx, device.SnapshotOptions{Front: options.Scope != "screen", Raw: options.Full, Depth: depthOf(options.Depth), Within: options.Within})
 	if err != nil {
 		return nil, err
 	}
 	return call.engine.snapshots.keep(view), nil
 }
 
+type findOptions struct {
+	Depth *int64 `json:"depth"`
+}
+
 func uiFind(ctx context.Context, call *operation) (any, error) {
 	var encoded []json.RawMessage
-	if err := call.decode(1, &encoded); err != nil {
+	var options findOptions
+	if err := call.decode(1, &encoded, &strict{&options}); err != nil {
 		return nil, err
 	}
 	selectors := make([]*device.Selector, 0, len(encoded))
@@ -605,7 +622,10 @@ func uiFind(ctx context.Context, call *operation) (any, error) {
 	if err != nil {
 		return nil, err
 	}
-	view, seen, err := phone.Find(ctx, selectors)
+	view, seen, err := phone.Find(ctx, selectors, depthOf(options.Depth))
+	if errors.Is(err, device.ErrNotAnswering) {
+		return map[string]any{"snapshot": nil, "seen": seen, "failure": FailureOf(err)}, nil
+	}
 	if err != nil {
 		return nil, err
 	}

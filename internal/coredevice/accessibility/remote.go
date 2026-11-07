@@ -9,6 +9,7 @@ import (
 	"time"
 
 	E "github.com/sagernet/sing/common/exceptions"
+	F "github.com/sagernet/sing/common/format"
 	"github.com/swipt-automation/swipt/internal/coredevice"
 	"github.com/swipt-automation/swipt/internal/coredevice/dtx"
 )
@@ -18,6 +19,19 @@ import (
 // AccessibilityAudit 0x253f9c670; 24B5110a axauditd 0x1000115b8, 0x10000cbc0;
 // iPhone18,2, iOS 27.2 24B115).
 var ErrStalled = E.New("accessibility: the device stopped answering")
+
+type StallError struct {
+	PID    uint64
+	Reason string
+}
+
+func (e *StallError) Error() string {
+	return ErrStalled.Error() + ": " + e.Reason
+}
+
+func (e *StallError) Unwrap() error {
+	return ErrStalled
+}
 
 // axauditd accepts connections on its main queue (24B5110a axauditd
 // 0x10000cc78..0x10000cc90), which also serves the requests of every
@@ -99,6 +113,7 @@ type RemoteClient struct {
 	mu                      sync.Mutex
 	stateMu                 sync.Mutex
 	pending                 []*pendingRead
+	drained                 chan struct{}
 	batchRawElementDisabled bool
 	screenViewing           []translationObject
 	screenViewingPending    chan struct{}
@@ -150,7 +165,7 @@ func DialRemote(ctx, owner context.Context, device *coredevice.Device, pushed fu
 	_, err = dtxConn.Invoke(handshake, 0, "deviceAPIVersion")
 	cancelHandshake()
 	if errors.Is(err, context.DeadlineExceeded) && operation.Err() == nil {
-		return nil, E.Extend(ErrStalled, "no answer to deviceAPIVersion within ", handshakeWait)
+		return nil, &StallError{Reason: "no answer to deviceAPIVersion within " + handshakeWait.String()}
 	}
 	if cause := context.Cause(operation); cause != nil {
 		return nil, cause
@@ -536,6 +551,10 @@ func (c *RemoteClient) exchange(ctx context.Context, requests []remoteRequest) (
 	defer cancel(nil)
 	stop := context.AfterFunc(c.ctx, func() { cancel(context.Cause(c.ctx)) })
 	defer stop()
+	wait := exchangeWait(requests)
+	if err := c.drain(ctx, wait); err != nil {
+		return nil, err
+	}
 	reads := make([]*pendingRead, 0, len(requests))
 	for _, request := range requests {
 		var translation any
@@ -553,7 +572,13 @@ func (c *RemoteClient) exchange(ctx context.Context, requests []remoteRequest) (
 		if err != nil {
 			return nil, err
 		}
-		read := &pendingRead{kind: request.kind, attribute: request.attribute, response: make(chan remoteResponse, 1)}
+		read := &pendingRead{kind: request.kind, attribute: request.attribute, sent: time.Now(), response: make(chan remoteResponse, 1)}
+		if request.object != nil {
+			read.pid = request.object.pid
+		}
+		if params, isMap := request.params.(map[string]any); isMap && request.attribute == attributeNative {
+			read.native, _ = unsigned(params["parameter"])
+		}
 		reads = append(reads, read)
 		c.stateMu.Lock()
 		c.pending = append(c.pending, read)
@@ -566,7 +591,6 @@ func (c *RemoteClient) exchange(ctx context.Context, requests []remoteRequest) (
 			return nil, err
 		}
 	}
-	wait := exchangeWait(requests)
 	stalled := time.NewTimer(wait)
 	defer stalled.Stop()
 	responses := make([]remoteResponse, len(reads))
@@ -576,10 +600,40 @@ func (c *RemoteClient) exchange(ctx context.Context, requests []remoteRequest) (
 		case <-ctx.Done():
 			return nil, context.Cause(ctx)
 		case <-stalled.C:
-			return nil, E.Extend(ErrStalled, "no answer to ", len(reads)-index, " of ", len(reads), " requests within ", wait)
+			c.stateMu.Lock()
+			queued := len(c.pending)
+			c.stateMu.Unlock()
+			return nil, &StallError{PID: read.pid, Reason: F.ToString("no answer to ", len(reads)-index, " of ", len(reads), " requests within ", wait,
+				"; the first unanswered is ", read.describe(), "; ", queued, " requests of this connection are unanswered")}
 		}
 	}
 	return responses, nil
+}
+
+func (c *RemoteClient) drain(ctx context.Context, wait time.Duration) error {
+	c.stateMu.Lock()
+	if len(c.pending) == 0 {
+		c.stateMu.Unlock()
+		return nil
+	}
+	head := c.pending[0]
+	queued := len(c.pending)
+	if c.drained == nil {
+		c.drained = make(chan struct{})
+	}
+	drained := c.drained
+	c.stateMu.Unlock()
+	timer := time.NewTimer(wait)
+	defer timer.Stop()
+	select {
+	case <-drained:
+		return nil
+	case <-ctx.Done():
+		return context.Cause(ctx)
+	case <-timer.C:
+		return &StallError{PID: head.pid, Reason: F.ToString("the ", queued, " requests an earlier read left unanswered got no answer within ", wait,
+			" more; the first of them is ", head.describe())}
+	}
 }
 
 // A round of requests took 20 to 190 ms plus about 3 ms for each request, 909
@@ -610,7 +664,24 @@ func (r remoteRequest) heavy() bool {
 type pendingRead struct {
 	kind      uint64
 	attribute uint64
+	native    uint64
+	pid       uint64
+	sent      time.Time
 	response  chan remoteResponse
+}
+
+func (r *pendingRead) describe() string {
+	text := F.ToString("request type ", r.kind)
+	if r.kind == requestAttribute {
+		text += F.ToString(" for attribute ", r.attribute)
+	}
+	if r.native != 0 {
+		text += F.ToString(" of native attribute ", r.native)
+	}
+	if r.pid != 0 {
+		text += F.ToString(" to process ", r.pid)
+	}
+	return text + ", sent " + time.Since(r.sent).Round(time.Millisecond).String() + " ago"
 }
 
 func (c *RemoteClient) readLoop() {
@@ -673,6 +744,10 @@ func (c *RemoteClient) receive(event dtx.Event) error {
 					" came for request type ", head.kind, " and attribute ", head.attribute)
 			}
 			c.pending = c.pending[1:]
+			if len(c.pending) == 0 && c.drained != nil {
+				close(c.drained)
+				c.drained = nil
+			}
 			c.stateMu.Unlock()
 			head.response <- remoteResponse{value: response["resultData"], code: code}
 		}

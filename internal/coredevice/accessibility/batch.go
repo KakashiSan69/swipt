@@ -132,8 +132,9 @@ func (b *Batch) Focused(app Element) *Result[Element] {
 
 type SnapshotOptions struct {
 	Attributes []int64
-	MaxDepth   int64
+	Depth      int64
 	HonorModal bool
+	Clip       *LayoutFrame
 }
 
 func (b *Batch) Snapshot(root Element, options SnapshotOptions) *Result[*Snapshot] {
@@ -141,12 +142,8 @@ func (b *Batch) Snapshot(root Element, options SnapshotOptions) *Result[*Snapsho
 	if len(options.Attributes) > 0 {
 		attributes = common.Map(options.Attributes, func(it int64) any { return it })
 	}
-	depth := options.MaxDepth
-	if depth == 0 {
-		depth = math.MaxInt32
-	}
 	parameter := map[string]any{
-		"attributes": attributes, "maxDepth": depth, "maxChildren": int64(math.MaxInt32), "maxArrayCount": int64(math.MaxInt32),
+		"attributes": attributes, "maxDepth": requestDepth(options.Depth), "maxChildren": int64(math.MaxInt32), "maxArrayCount": int64(math.MaxInt32),
 		"traverseFromParentsToChildren": true, "snapshotKeyHonorModalViews": options.HonorModal,
 	}
 	result := &Result[*Snapshot]{}
@@ -160,7 +157,7 @@ func (b *Batch) Snapshot(root Element, options SnapshotOptions) *Result[*Snapsho
 				result.Code = errorNoElement
 				return nil
 			}
-			snapshot, err := buildSnapshot(response.value)
+			snapshot, err := buildSnapshot(response.value, options.Depth, options.Clip)
 			if err != nil {
 				return err
 			}
@@ -207,6 +204,21 @@ func (b *Batch) Attributes(element Element) *Result[Element] {
 					}
 					return nil
 				})
+			}
+			return nil
+		})
+	return result
+}
+
+func (b *Batch) Parent(element Element) *Result[Element] {
+	result := &Result[Element]{}
+	b.add(remoteRequest{kind: requestAttribute, object: &element.object, attribute: attributeNative, params: map[string]any{"parameter": int64(nativeParent)}},
+		func(response remoteResponse, _ *Batch) error {
+			result.Code = response.code
+			if parent, ok := parseTranslation(response.value); ok {
+				result.Value = parent.element()
+			} else if result.Code == 0 {
+				result.Code = errorNoElement
 			}
 			return nil
 		})

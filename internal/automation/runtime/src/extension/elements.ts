@@ -22,6 +22,7 @@ export interface RawSnapshot {
   time: number;
   root: Raw;
   system?: Raw;
+  truncated?: true;
 }
 
 const refs = new WeakMap<AccessibilityElement, string>();
@@ -73,6 +74,7 @@ export class AccessibilityElement implements AccessibilityElementInterface {
   declare readonly secure?: true;
   declare readonly selection?: [location: number, length: number];
   declare readonly actions?: readonly string[];
+  declare readonly truncated?: true;
   declare readonly children: readonly AccessibilityElement[];
   declare readonly parent?: AccessibilityElement;
 
@@ -98,6 +100,7 @@ export class AccessibilitySnapshot implements AccessibilitySnapshotInterface {
   declare readonly time: number;
   declare readonly root: AccessibilityElement;
   declare readonly system?: AccessibilityElement;
+  declare readonly truncated?: true;
 
   find(selector: Selector): AccessibilityElement | null {
     return search(this, "", selector, "one")[0] ?? null;
@@ -155,6 +158,9 @@ export function snapshotOf(raw: RawSnapshot): AccessibilitySnapshot {
   if (raw.system !== undefined) {
     Object.assign(snapshot, { system: wrap(raw.system, undefined, snapshot) });
   }
+  if (raw.truncated) {
+    Object.assign(snapshot, { truncated: true });
+  }
   return Object.freeze(snapshot);
 }
 
@@ -204,6 +210,9 @@ export const line = (element: AccessibilityElement): string => {
   }
   if (element.actions !== undefined) {
     parts.push(`actions=${JSON.stringify(element.actions)}`);
+  }
+  if (element.truncated) {
+    parts.push("truncated");
   }
   return parts.join(" ");
 };

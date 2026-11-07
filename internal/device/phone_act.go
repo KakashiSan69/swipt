@@ -27,7 +27,7 @@ const launchLimit = 3500 * time.Millisecond
 // device reports the change within 150 ms (iPad17,1, iPadOS 27.2 24B115).
 const focusLimit = 500 * time.Millisecond
 
-func (p *Phone) readApplication(ctx context.Context, c *conn, client *accessibility.RemoteClient, geometry phoneGeometry, options accessibility.ApplicationOptions) (*PhoneModel, error) {
+func (p *Phone) readApplication(ctx context.Context, c *conn, client *accessibility.RemoteClient, geometry phoneGeometry, options accessibility.ApplicationOptions, base *PhoneNode) (*PhoneModel, error) {
 	started := time.Now()
 	screen, err := client.ReadApplication(ctx, options)
 	if err != nil {
@@ -36,7 +36,11 @@ func (p *Phone) readApplication(ctx context.Context, c *conn, client *accessibil
 		}
 		return nil, err
 	}
-	return p.model(c, geometry, screen, started, options.PID == 0), nil
+	read := SnapshotOptions{Depth: options.Depth}
+	if base != nil {
+		read.Within = refText(base.AX.Ref)
+	}
+	return p.model(c, geometry, screen, started, base, read, options.PID == 0 && base == nil), nil
 }
 
 type axSession struct {
@@ -52,6 +56,7 @@ type axSession struct {
 	settled   time.Time
 	animating bool
 	stale     bool
+	reread    SnapshotOptions
 }
 
 func (s *axSession) tap(ctx context.Context, at Point, count int, hold time.Duration) error {
@@ -183,7 +188,7 @@ func (s *axSession) setText(ctx context.Context, target *PhoneNode, at Point, te
 // Tapping a text field can bring another entry in its place, as Safari's
 // address bar gives way to its editing field (iPhone18,2, iOS 27.2 24B115).
 func (s *axSession) focus(ctx context.Context, target *PhoneNode, at Point) (*PhoneNode, error) {
-	app := target.model.Root.AX
+	app := target.model.app
 	before, err := s.focused(ctx, app)
 	if err != nil {
 		return nil, err
@@ -216,9 +221,17 @@ func (s *axSession) focus(ctx context.Context, target *PhoneNode, at Point) (*Ph
 	if *focused == target.AX.Ref {
 		return target, nil
 	}
-	model, err := s.phone.readApplication(ctx, s.conn, s.client, s.geometry, accessibility.ApplicationOptions{
-		PID: app.Ref.PID, Attributes: accessibility.SnapshotAttributes([]string{"label", "identifier", "value"}),
-	})
+	options := accessibility.ApplicationOptions{
+		PID: app.Ref.PID, Depth: target.model.read.Depth, Attributes: accessibility.SnapshotAttributes([]string{"label", "identifier", "value"}),
+	}
+	var base *PhoneNode
+	if within := target.model.read.Within; within != "" {
+		if base, err = s.phone.element(s.conn, within); err != nil {
+			return nil, err
+		}
+		options.Root, options.Clip = &base.AX, &base.axClip
+	}
+	model, err := s.phone.readApplication(ctx, s.conn, s.client, s.geometry, options, base)
 	if err != nil {
 		return nil, err
 	}

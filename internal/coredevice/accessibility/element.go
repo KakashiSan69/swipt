@@ -171,10 +171,15 @@ type Element struct {
 
 type TreeNode struct {
 	Element
-	Children []*TreeNode
-	Clip     LayoutFrame
-	Inert    bool
-	Web      bool
+	Children  []*TreeNode
+	Clip      LayoutFrame
+	Inert     bool
+	Web       bool
+	Truncated bool
+}
+
+func (e Element) Application() bool {
+	return e.object.application
 }
 
 func (t translationObject) ref() ElementRef {

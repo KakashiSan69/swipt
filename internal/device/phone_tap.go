@@ -2,6 +2,7 @@ package device
 
 import (
 	"context"
+	"errors"
 	"math"
 	"strconv"
 	"time"
@@ -88,6 +89,9 @@ func (p *Phone) aimed(ctx context.Context, ref string, timeout time.Duration, na
 			s.target.Point = at
 			return act(ctx, s, node, at)
 		})
+		if errors.Is(err, ErrNotAnswering) {
+			pending, err = err.Error(), nil
+		}
 		if err != nil || pending == "" {
 			detail := s.target.String() + ", attempt " + strconv.Itoa(attempt)
 			if waited != "" {
@@ -112,7 +116,7 @@ func (p *Phone) aimed(ctx context.Context, ref string, timeout time.Duration, na
 			return s.target, err
 		}
 		if s.stale {
-			if _, err = p.read(ctx, c, SnapshotOptions{}); err != nil {
+			if _, err = p.read(ctx, c, s.reread); err != nil {
 				return s.target, err
 			}
 		}
@@ -128,6 +132,7 @@ func (s *axSession) aim(ctx context.Context, target *PhoneNode) (Point, string, 
 	name := describeElement(target.AX)
 	s.target = Aim{Element: name, Point: target.Point, Secure: target.AX.Secure()}
 	s.animating, s.stale = false, false
+	s.reread = SnapshotOptions{Depth: target.model.read.Depth, Within: target.model.read.Within}
 	if !target.HasFrame() {
 		return Point{}, "", E.New(name, " has no position on the screen; perform one of its actions instead")
 	}
@@ -162,15 +167,23 @@ func (s *axSession) aim(ctx context.Context, target *PhoneNode) (Point, string, 
 	case previous != nil && !nearFrame(attributes.Value.Frame, previous):
 		return Point{}, name + " is moving", nil
 	}
-	name = describeElement(attributes.Value)
+	if fresh := attributes.Value; fresh.Label != "" || fresh.Identifier != "" || fresh.Value != "" {
+		name = describeElement(fresh)
+	}
 	s.target.Element, s.target.Secure = name, attributes.Value.Secure()
 	if animating.Code == 0 && animating.Value && time.Now().Before(s.settled) {
 		s.animating = true
 		return Point{}, name + " is animating", nil
 	}
 	if fresh := attributes.Value.Frame; fresh != nil {
-		if rect := target.space.rect(*fresh); !rect.Empty() && !rect.Contains(at) {
-			at = rect.Center()
+		rect := target.space.rect(*fresh)
+		shown := rect.Intersect(Rect{Width: s.geometry.Width, Height: s.geometry.Height})
+		if !rect.Empty() && shown.Empty() {
+			s.stale = true
+			return Point{}, name + " is off the screen, at " + pointText(Point{rect.X, rect.Y}) + " sized " + pointText(Point{rect.Width, rect.Height}), nil
+		}
+		if !rect.Empty() && !rect.Contains(at) {
+			at = shown.Center()
 			again := &accessibility.Batch{}
 			hit = again.HitTest(s.geometry.digitizer(at))
 			if err := s.client.Run(ctx, again); err != nil {
@@ -181,25 +194,71 @@ func (s *axSession) aim(ctx context.Context, target *PhoneNode) (Point, string, 
 	if hit.Code != 0 {
 		return Point{}, "the device does not tell which element is at " + pointText(at), nil
 	}
+	var reached accessibility.Element
 	node := target.model.Node(hit.Value.Ref)
 	switch {
-	case hit.Value.Ref == target.AX.Ref, node != nil && (target.Contains(node) || hit.Value.AccessibilityElement && node.Contains(target)):
+	case hit.Value.Ref == target.AX.Ref, node != nil && (target.Contains(node) || node.AX.AccessibilityElement && node.Contains(target)):
 		return at, "", nil
-	case node == nil:
-		read := &accessibility.Batch{}
-		element := read.Attributes(hit.Value)
-		if err := s.client.Run(ctx, read); err != nil {
+	case node != nil:
+		reached = node.AX
+	default:
+		inside, known, err := s.inside(ctx, target, hit.Value)
+		if err != nil {
 			return Point{}, "", err
 		}
-		if element.Code == 0 && sameWindow(target, element.Value) {
+		if inside {
 			return at, "", nil
 		}
-		hit.Value = element.Value
+		read := &accessibility.Batch{}
+		element := read.Attributes(hit.Value)
+		if err = s.client.Run(ctx, read); err != nil {
+			return Point{}, "", err
+		}
+		if !known && target.model.read.Within == "" && element.Code == 0 && sameWindow(target, element.Value) {
+			return at, "", nil
+		}
+		reached = element.Value
 	}
 	if target.Inert {
 		return Point{}, name + " is behind a modal view, as a sheet or an alert", nil
 	}
-	return Point{}, "a tap at " + pointText(at) + " would reach " + describeElement(hit.Value) + ", not " + name, nil
+	reason := "a tap at " + pointText(at) + " would reach " + describeElement(reached) + " of " + s.process(ctx, reached.Ref.PID) + ", not " + name +
+		" of " + s.process(ctx, target.AX.Ref.PID)
+	if reached.Ref.PID == target.AX.Ref.PID {
+		reason += "; input.tap at the element's point taps there regardless"
+	}
+	return Point{}, reason, nil
+}
+
+func (s *axSession) process(ctx context.Context, pid uint64) string {
+	text := "process " + strconv.FormatUint(pid, 10)
+	bundleID := s.conn.front.bundleOf(pid)
+	if springboard, err := s.conn.springboardPID(ctx); bundleID == "" && err == nil && pid == springboard {
+		bundleID = springboardBundleID
+	}
+	if bundleID == "" {
+		return text
+	}
+	return bundleID + " (" + text + ")"
+}
+
+func (s *axSession) inside(ctx context.Context, target *PhoneNode, hit accessibility.Element) (inside, known bool, err error) {
+	current := hit
+	for range accessibility.MaxDepth + 1 {
+		if node := target.model.Node(current.Ref); node != nil {
+			return target.Contains(node) || node.AX.AccessibilityElement && node.Contains(target), true, nil
+		}
+		batch := &accessibility.Batch{}
+		parent := batch.Parent(current)
+		if err = s.client.Run(ctx, batch); err != nil {
+			return false, false, err
+		}
+		if parent.Code != 0 || parent.Value.Application() {
+			return false, false, nil
+		}
+		current = parent.Value
+	}
+	return false, false, nil
 }
 
 func sameWindow(target *PhoneNode, hit accessibility.Element) bool {
