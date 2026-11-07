@@ -718,3 +718,9 @@ async function main() {
 }
 
 await main();
+await Promise.all(
+  [process.stdout, process.stderr].map(
+    (stream) => new Promise((resolve) => stream.write("", resolve)),
+  ),
+);
+process.exit();

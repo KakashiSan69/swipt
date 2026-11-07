@@ -1,10 +1,12 @@
 import dgram from "node:dgram";
+import { on } from "node:events";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
 
 import Bonjour from "bonjour-service";
+import multicastDNS from "multicast-dns";
 
 import { Code, RpcError, UsageError, open } from "./client.mjs";
 import { tr } from "./i18n.mjs";
@@ -314,9 +316,46 @@ function connectionText(connection) {
   return text;
 }
 
+async function onLocalNetwork(host, signal) {
+  const mdns = multicastDNS({
+    socket: dgram.createSocket("udp4"),
+    bind: false,
+  });
+  const query = () =>
+    mdns.query([
+      { name: host, type: "A" },
+      { name: host, type: "AAAA" },
+    ]);
+  const requery = setInterval(query, browseRequery);
+  query();
+  try {
+    for await (const [response] of on(mdns, "response", { signal })) {
+      if (response.answers.some((it) => sameName(it.name, host))) {
+        return true;
+      }
+    }
+  } catch (error) {
+    if (!signal.aborted) {
+      throw error;
+    }
+  } finally {
+    clearInterval(requery);
+    mdns.destroy();
+  }
+  return false;
+}
+
 async function probe(url, signal) {
   try {
-    const info = await open(parseURL(url)).system.getInfo({}, { signal });
+    const device = parseURL(url);
+    const { hostname } = new URL(device.url);
+    if (
+      hostname.endsWith(".local") &&
+      !(await onLocalNetwork(hostname, signal))
+    ) {
+      return { cells: [tr("offline")] };
+    }
+    const info = await open(device).system.getInfo({}, { signal });
     return {
       cells: [
         `${info.appVersion} (${info.appBuild})`,
