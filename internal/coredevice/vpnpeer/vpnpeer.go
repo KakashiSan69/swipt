@@ -28,9 +28,9 @@ type tunnel struct {
 	peers        []netip.Addr
 }
 
-// SideStore minimuxer takes utun interfaces that have IPv4 but no IPv6
-// addresses, sorted by name, then tries route gateways, route destinations
-// and point-to-point peers, in that order (minimuxer 12be70d,
+// SideStore minimuxer takes utun interfaces that have IPv4 addresses, sorted
+// by name, then tries route gateways, route destinations and point-to-point
+// peers, in that order (minimuxer 12be70d,
 // Sources/Services/DeviceConnectionManager.swift:206-214, 260-283).
 func candidates(allowLocal bool) ([]netip.Addr, error) {
 	if allowLocal {

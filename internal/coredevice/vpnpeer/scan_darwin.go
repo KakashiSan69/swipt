@@ -27,7 +27,7 @@ func scan() ([]tunnel, []netip.Addr, error) {
 		if err != nil {
 			continue
 		}
-		var hasIPv4, hasIPv6 bool
+		var hasIPv4 bool
 		for _, address := range addresses {
 			network, isNetwork := address.(*net.IPNet)
 			if !isNetwork {
@@ -41,11 +41,9 @@ func scan() ([]tunnel, []netip.Addr, error) {
 			local = append(local, ip)
 			if ip.Is4() {
 				hasIPv4 = true
-			} else {
-				hasIPv6 = true
 			}
 		}
-		if iface.Flags&net.FlagUp == 0 || !strings.HasPrefix(iface.Name, "utun") || !hasIPv4 || hasIPv6 {
+		if iface.Flags&net.FlagUp == 0 || !strings.HasPrefix(iface.Name, "utun") || !hasIPv4 {
 			continue
 		}
 		indexes[iface.Index] = len(tunnels)
