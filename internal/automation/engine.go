@@ -168,6 +168,8 @@ type engine struct {
 	blobSequence     int
 	resources        map[string]*resource
 	resourceSequence int
+	interrupts       map[string]func(error)
+	jars             map[string]*cookieStore
 }
 
 func (h *Host) Call(ctx context.Context, request CallRequest) (json.RawMessage, error) {
@@ -271,6 +273,7 @@ func (h *Host) newEngine(swiplet Swiplet, dialog Dialog, logger log.ContextLogge
 		context: jsc.New(), snapshots: newSnapshotStore(), completions: make(chan completion, completionBacklog), wake: make(chan struct{}, 1),
 		executions: make(map[string]*execution), ops: make(map[string]*pendingOperation), results: make(map[string]completion),
 		subscriptions: make(map[string]*subscription), blobs: make(map[string][]byte), resources: make(map[string]*resource),
+		interrupts: make(map[string]func(error)),
 		sources: sync.OnceValue(func() *sourcemap.Consumer {
 			data, err := os.ReadFile(filepath.Join(swiplet.Directory, SourceFolder, ExtensionMap))
 			if errors.Is(err, fs.ErrNotExist) {

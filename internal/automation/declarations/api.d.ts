@@ -1014,6 +1014,55 @@ declare module "@swipt/api/localization" {
   ): string[];
 }
 
+declare module "@swipt/api/http" {
+  import type { FileHandle } from "@swipt/api/file-system";
+
+  export interface Cookie {
+    readonly name: string;
+    readonly value: string;
+    readonly domain: string;
+    readonly hostOnly: boolean;
+    readonly path: string;
+    readonly expires: number | null;
+    readonly secure: boolean;
+    readonly httpOnly: boolean;
+    readonly sameSite: "strict" | "lax" | "none" | null;
+  }
+
+  export class CookieJar {
+    constructor(file?: FileHandle);
+    getAll(url?: string | URL): Promise<Cookie[]>;
+    set(url: string | URL, setCookie: string): Promise<void>;
+    clear(): Promise<void>;
+  }
+
+  export interface ClientOptions {
+    readonly cookies?: CookieJar;
+    readonly headers?: Headers | Record<string, string> | [string, string][];
+    readonly proxy?: string;
+    readonly tls?: {
+      readonly ca?: string | readonly string[];
+      readonly rejectUnauthorized?: boolean;
+    };
+  }
+
+  export class Client {
+    constructor(options?: ClientOptions);
+    readonly fetch: (
+      input: string | URL | Request,
+      init?: RequestInit,
+    ) => Promise<Response>;
+    readonly webSocket: (
+      url: string | URL,
+      protocols?: string | string[],
+    ) => WebSocket;
+    readonly eventSource: (
+      url: string | URL,
+      init?: EventSourceInit,
+    ) => EventSource;
+  }
+}
+
 declare module "expo-sqlite" {
   export type SQLiteBindValue =
     string | number | boolean | bigint | null | Uint8Array;
@@ -2506,6 +2555,287 @@ declare namespace Web {
   type BigInteger = Uint8Array;
   type ReadableStreamController<T> =
     ReadableStreamDefaultController<T> | ReadableByteStreamController;
+  interface Headers {
+    append(name: string, value: string): void;
+    delete(name: string): void;
+    get(name: string): string | null;
+    getSetCookie(): string[];
+    has(name: string): boolean;
+    set(name: string, value: string): void;
+    forEach(
+      callbackfn: (value: string, key: string, parent: Headers) => void,
+      thisArg?: any,
+    ): void;
+    [Symbol.iterator](): HeadersIterator<[string, string]>;
+    entries(): HeadersIterator<[string, string]>;
+    keys(): HeadersIterator<string>;
+    values(): HeadersIterator<string>;
+  }
+  var Headers: {
+    prototype: Headers;
+    new (init?: HeadersInit): Headers;
+  };
+  interface Body {
+    readonly body: ReadableStream<Uint8Array> | null;
+    readonly bodyUsed: boolean;
+    arrayBuffer(): Promise<ArrayBuffer>;
+    blob(): Promise<Blob>;
+    bytes(): Promise<Uint8Array>;
+    formData(): Promise<FormData>;
+    json(): Promise<any>;
+    text(): Promise<string>;
+    textStream(): ReadableStream<string>;
+  }
+  interface Request extends Body {
+    readonly cache: RequestCache;
+    readonly credentials: RequestCredentials;
+    readonly destination: RequestDestination;
+    readonly headers: Headers;
+    readonly integrity: string;
+    readonly keepalive: boolean;
+    readonly method: string;
+    readonly mode: RequestMode;
+    readonly redirect: RequestRedirect;
+    readonly referrer: string;
+    readonly referrerPolicy: ReferrerPolicy;
+    readonly signal: AbortSignal;
+    readonly url: string;
+    clone(): Request;
+  }
+  var Request: {
+    prototype: Request;
+    new (input: RequestInfo | URL, init?: RequestInit): Request;
+  };
+  interface Response extends Body {
+    readonly headers: Headers;
+    readonly ok: boolean;
+    readonly redirected: boolean;
+    readonly status: number;
+    readonly statusText: string;
+    readonly type: ResponseType;
+    readonly url: string;
+    clone(): Response;
+  }
+  var Response: {
+    prototype: Response;
+    new (body?: BodyInit | null, init?: ResponseInit): Response;
+    error(): Response;
+    json(data: any, init?: ResponseInit): Response;
+    redirect(url: string | URL, status?: number): Response;
+  };
+  function fetch(
+    input: RequestInfo | URL,
+    init?: RequestInit,
+  ): Promise<Response>;
+  interface MessageEvent<T = any> extends Event {
+    readonly data: T;
+    readonly lastEventId: string;
+    readonly origin: string;
+    readonly ports: ReadonlyArray<object>;
+    readonly source: object | null;
+    initMessageEvent(
+      type: string,
+      bubbles?: boolean,
+      cancelable?: boolean,
+      data?: any,
+      origin?: string,
+      lastEventId?: string,
+      source?: object | null,
+      ports?: object[],
+    ): void;
+  }
+  var MessageEvent: {
+    prototype: MessageEvent;
+    new <T>(type: string, eventInitDict?: MessageEventInit<T>): MessageEvent<T>;
+  };
+  interface CloseEvent extends Event {
+    readonly code: number;
+    readonly reason: string;
+    readonly wasClean: boolean;
+  }
+  var CloseEvent: {
+    prototype: CloseEvent;
+    new (type: string, eventInitDict?: CloseEventInit): CloseEvent;
+  };
+  interface WebSocket extends EventTarget {
+    binaryType: BinaryType;
+    readonly bufferedAmount: number;
+    readonly extensions: string;
+    onclose: ((this: WebSocket, ev: CloseEvent) => any) | null;
+    onerror: ((this: WebSocket, ev: Event) => any) | null;
+    onmessage: ((this: WebSocket, ev: MessageEvent) => any) | null;
+    onopen: ((this: WebSocket, ev: Event) => any) | null;
+    readonly protocol: string;
+    readonly readyState: 0 | 1 | 2 | 3;
+    readonly url: string;
+    close(code?: number, reason?: string): void;
+    send(data: BufferSource | Blob | string): void;
+    readonly CONNECTING: 0;
+    readonly OPEN: 1;
+    readonly CLOSING: 2;
+    readonly CLOSED: 3;
+    addEventListener<K extends keyof WebSocketEventMap>(
+      type: K,
+      listener: (this: WebSocket, ev: WebSocketEventMap[K]) => any,
+      options?: boolean | AddEventListenerOptions,
+    ): void;
+    addEventListener(
+      type: string,
+      listener: EventListenerOrEventListenerObject,
+      options?: boolean | AddEventListenerOptions,
+    ): void;
+    removeEventListener<K extends keyof WebSocketEventMap>(
+      type: K,
+      listener: (this: WebSocket, ev: WebSocketEventMap[K]) => any,
+      options?: boolean | EventListenerOptions,
+    ): void;
+    removeEventListener(
+      type: string,
+      listener: EventListenerOrEventListenerObject,
+      options?: boolean | EventListenerOptions,
+    ): void;
+  }
+  var WebSocket: {
+    prototype: WebSocket;
+    new (url: string | URL, protocols?: string | string[]): WebSocket;
+    readonly CONNECTING: 0;
+    readonly OPEN: 1;
+    readonly CLOSING: 2;
+    readonly CLOSED: 3;
+  };
+  interface EventSource extends EventTarget {
+    onerror: ((this: EventSource, ev: Event) => any) | null;
+    onmessage: ((this: EventSource, ev: MessageEvent) => any) | null;
+    onopen: ((this: EventSource, ev: Event) => any) | null;
+    readonly readyState: number;
+    readonly url: string;
+    readonly withCredentials: boolean;
+    close(): void;
+    readonly CONNECTING: 0;
+    readonly OPEN: 1;
+    readonly CLOSED: 2;
+    addEventListener<K extends keyof EventSourceEventMap>(
+      type: K,
+      listener: (this: EventSource, ev: EventSourceEventMap[K]) => any,
+      options?: boolean | AddEventListenerOptions,
+    ): void;
+    addEventListener(
+      type: string,
+      listener: (this: EventSource, event: MessageEvent) => any,
+      options?: boolean | AddEventListenerOptions,
+    ): void;
+    addEventListener(
+      type: string,
+      listener: EventListenerOrEventListenerObject,
+      options?: boolean | AddEventListenerOptions,
+    ): void;
+    removeEventListener<K extends keyof EventSourceEventMap>(
+      type: K,
+      listener: (this: EventSource, ev: EventSourceEventMap[K]) => any,
+      options?: boolean | EventListenerOptions,
+    ): void;
+    removeEventListener(
+      type: string,
+      listener: (this: EventSource, event: MessageEvent) => any,
+      options?: boolean | EventListenerOptions,
+    ): void;
+    removeEventListener(
+      type: string,
+      listener: EventListenerOrEventListenerObject,
+      options?: boolean | EventListenerOptions,
+    ): void;
+  }
+  var EventSource: {
+    prototype: EventSource;
+    new (url: string | URL, eventSourceInitDict?: EventSourceInit): EventSource;
+    readonly CONNECTING: 0;
+    readonly OPEN: 1;
+    readonly CLOSED: 2;
+  };
+  type HeadersInit = [string, string][] | Record<string, string> | Headers;
+  interface HeadersIterator<T> extends IteratorObject<
+    T,
+    BuiltinIteratorReturn,
+    unknown
+  > {
+    [Symbol.iterator](): HeadersIterator<T>;
+  }
+  type BodyInit =
+    ReadableStream | Blob | BufferSource | FormData | URLSearchParams | string;
+  type RequestInfo = Request | string;
+  type ReferrerPolicy =
+    | ""
+    | "no-referrer"
+    | "no-referrer-when-downgrade"
+    | "origin"
+    | "origin-when-cross-origin"
+    | "same-origin"
+    | "strict-origin"
+    | "strict-origin-when-cross-origin"
+    | "unsafe-url";
+  type RequestCache =
+    | "default"
+    | "force-cache"
+    | "no-cache"
+    | "no-store"
+    | "only-if-cached"
+    | "reload";
+  type RequestCredentials = "include" | "omit" | "same-origin";
+  type RequestDestination = "";
+  type RequestMode = "cors" | "navigate" | "no-cors" | "same-origin";
+  type RequestPriority = "auto" | "high" | "low";
+  type RequestRedirect = "error" | "follow" | "manual";
+  type ResponseType =
+    "basic" | "cors" | "default" | "error" | "opaque" | "opaqueredirect";
+  type BinaryType = "arraybuffer" | "blob";
+  interface RequestInit {
+    body?: BodyInit | null;
+    cache?: RequestCache;
+    credentials?: RequestCredentials;
+    duplex?: "half";
+    headers?: HeadersInit;
+    integrity?: string;
+    keepalive?: boolean;
+    method?: string;
+    mode?: RequestMode;
+    priority?: RequestPriority;
+    redirect?: RequestRedirect;
+    referrer?: string;
+    referrerPolicy?: ReferrerPolicy;
+    signal?: AbortSignal | null;
+    window?: null;
+  }
+  interface ResponseInit {
+    headers?: HeadersInit;
+    status?: number;
+    statusText?: string;
+  }
+  interface MessageEventInit<T = any> extends EventInit {
+    data?: T;
+    lastEventId?: string;
+    origin?: string;
+    ports?: object[];
+    source?: object | null;
+  }
+  interface CloseEventInit extends EventInit {
+    code?: number;
+    reason?: string;
+    wasClean?: boolean;
+  }
+  interface EventSourceInit {
+    withCredentials?: boolean;
+  }
+  interface WebSocketEventMap {
+    close: CloseEvent;
+    error: Event;
+    message: MessageEvent;
+    open: Event;
+  }
+  interface EventSourceEventMap {
+    error: Event;
+    message: MessageEvent;
+    open: Event;
+  }
 }
 
 interface AbortController extends Web.Fallback<Web.AbortController> {}
@@ -2573,6 +2903,33 @@ interface File extends Web.Fallback<Web.File> {}
 declare var File: Web.FallbackValue<"File", typeof Web.File>;
 interface FormData extends Web.Fallback<Web.FormData> {}
 declare var FormData: Web.FallbackValue<"FormData", typeof Web.FormData>;
+interface Headers extends Web.Fallback<Web.Headers> {}
+declare var Headers: Web.FallbackValue<"Headers", typeof Web.Headers>;
+interface Request extends Web.Fallback<Web.Request> {}
+declare var Request: Web.FallbackValue<"Request", typeof Web.Request>;
+interface Response extends Web.Fallback<Web.Response> {}
+declare var Response: Web.FallbackValue<"Response", typeof Web.Response>;
+interface RequestInit extends Web.Fallback<Web.RequestInit> {}
+interface ResponseInit extends Web.Fallback<Web.ResponseInit> {}
+interface EventSourceInit extends Web.Fallback<Web.EventSourceInit> {}
+declare function fetch(
+  input: string | URL | Request,
+  init?: RequestInit,
+): Promise<Response>;
+interface MessageEvent<T = any> extends Web.Fallback<Web.MessageEvent<T>> {}
+declare var MessageEvent: Web.FallbackValue<
+  "MessageEvent",
+  typeof Web.MessageEvent
+>;
+interface CloseEvent extends Web.Fallback<Web.CloseEvent> {}
+declare var CloseEvent: Web.FallbackValue<"CloseEvent", typeof Web.CloseEvent>;
+interface WebSocket extends Web.Fallback<Web.WebSocket> {}
+declare var WebSocket: Web.FallbackValue<"WebSocket", typeof Web.WebSocket>;
+interface EventSource extends Web.Fallback<Web.EventSource> {}
+declare var EventSource: Web.FallbackValue<
+  "EventSource",
+  typeof Web.EventSource
+>;
 interface ReadableStream<R = any> extends Web.Fallback<Web.ReadableStream<R>> {}
 declare var ReadableStream: Web.FallbackValue<
   "ReadableStream",

@@ -17,7 +17,7 @@ import { bytesOf, TextDecoder, TextEncoder } from "./encoding";
 import { native } from "./native";
 import { bytesStream, type ReadableStream, TextDecoderStream } from "./streams";
 
-let blobBytes: (blob: Blob) => Uint8Array;
+export let blobBytes: (blob: Blob) => Uint8Array;
 
 const mediaType = (text: string): string =>
   /[^ -~]/.test(text) ? "" : text.toLowerCase();
@@ -184,11 +184,13 @@ export const File = defineInterface(
 );
 export type File = InstanceType<typeof File>;
 
-const objectURLs = new Set<string>();
+const objectURLs = new Map<string, Blob>();
+
+export const objectURL = (url: string): Blob | undefined => objectURLs.get(url);
 
 export function createObjectURL(blob: Blob): string {
   const url = `blob:null/${crypto.randomUUID()}`;
-  objectURLs.add(url);
+  objectURLs.set(url, blob);
   native.publishObjectURL?.(url, blobBytes(blob));
   return url;
 }

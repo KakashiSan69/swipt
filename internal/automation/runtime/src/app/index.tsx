@@ -101,6 +101,8 @@ const web = require("./web") as {
     assetsURI: string,
     cacheURI: string,
   ): Record<string, unknown>;
+  Client: unknown;
+  CookieJar: unknown;
 };
 web.installWeb(host, format);
 Object.defineProperty(globalThis, "sleep", {
@@ -348,6 +350,11 @@ function load(props: Props): { Swiplet: ComponentType; close(): void } {
       exportsOf("@swipt/api/app-intents", { ...appIntents }),
     "@swipt/api/localization": () =>
       exportsOf("@swipt/api/localization", { preferredLocalizations }),
+    "@swipt/api/http": () =>
+      exportsOf("@swipt/api/http", {
+        Client: web.Client,
+        CookieJar: web.CookieJar,
+      }),
     "@swipt/api/maps": () =>
       exportsOf("@swipt/api/maps", {
         searchPlaces: (query: string, options: { signal?: AbortSignal } = {}) =>

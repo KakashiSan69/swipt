@@ -14,7 +14,8 @@ import (
 )
 
 var webOperations = []string{
-	"stream.read", "stream.write", "stream.close", "stream.pipe",
+	"stream.read", "stream.readAll", "stream.write", "stream.close", "stream.pipe", "stream.create",
+	"fetch", "cookies.get", "cookies.set", "cookies.clear", "websocket.connect", "websocket.read", "websocket.send", "websocket.close",
 	"fs.stat", "fs.list", "fs.read", "fs.write", "fs.writer", "fs.mkdir", "fs.remove", "fs.copy", "fs.move",
 	"crypto.encrypt", "crypto.decrypt", "crypto.sign", "crypto.verify", "crypto.derive", "crypto.generate", "crypto.import", "crypto.export",
 }

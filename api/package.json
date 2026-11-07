@@ -54,6 +54,10 @@
       "types": "./maps.d.ts",
       "default": "./maps.mjs"
     },
+    "./http": {
+      "types": "./http.d.ts",
+      "default": "./http.mjs"
+    },
     "./package.json": "./package.json"
   },
   "files": [

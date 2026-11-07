@@ -11,11 +11,15 @@ import { DOMException, QuotaExceededError } from "./errors";
 import {
   AbortController,
   AbortSignal,
+  CloseEvent,
   CustomEvent,
   ErrorEvent,
   Event,
   EventTarget,
+  MessageEvent,
 } from "./events";
+import { EventSource } from "./eventsource";
+import { Headers, Request, Response } from "./fetch";
 import { FormData } from "./form";
 import { native } from "./native";
 import {
@@ -39,6 +43,7 @@ import {
   WritableStreamDefaultWriter,
 } from "./streams";
 import { inspectURL, URL, URLSearchParams } from "./url";
+import { WebSocket } from "./websocket";
 
 const timing = createPerformance({
   now: () => native.now(),
@@ -209,6 +214,9 @@ export const structuredClone = createStructuredClone(DOMException, [
     Crypto,
     SubtleCrypto,
     FormData,
+    Headers,
+    Request,
+    Response,
     TextEncoder,
     TextDecoder,
     URL,
@@ -263,6 +271,31 @@ inspectAs(
   (form) =>
     iterablePairs(FormData, form) as Iterable<readonly [string, unknown]>,
 );
+inspectAs(
+  Headers,
+  (headers) =>
+    iterablePairs(Headers, headers) as Iterable<readonly [string, unknown]>,
+);
+inspectAs(Request, ["method", "url", "headers", "body", "bodyUsed"]);
+inspectAs(Response, [
+  "status",
+  "statusText",
+  "url",
+  "redirected",
+  "headers",
+  "body",
+  "bodyUsed",
+]);
+inspectAs(MessageEvent, ["data", "origin", "lastEventId"]);
+inspectAs(CloseEvent, ["code", "reason", "wasClean"]);
+inspectAs(WebSocket, [
+  "url",
+  "readyState",
+  "protocol",
+  "extensions",
+  "binaryType",
+]);
+inspectAs(EventSource, ["url", "readyState", "withCredentials"]);
 inspectAs(URL, (url) => inspectURL(url));
 inspectAs(
   URLSearchParams,

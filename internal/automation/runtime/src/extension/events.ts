@@ -12,6 +12,7 @@ import {
   integer,
   isObject,
   nullable,
+  object,
   optional,
   sequence,
   setEventHandlerHooks,
@@ -377,6 +378,159 @@ export const ErrorEvent = defineInterface(
 );
 export type ErrorEvent = InstanceType<typeof ErrorEvent>;
 
+export interface MessageEventInit<T = unknown> extends EventInit {
+  data?: T;
+  lastEventId?: string;
+  origin?: string;
+  ports?: readonly object[];
+  source?: object | null;
+}
+
+const messageEventInit = dictionary<Required<MessageEventInit>>(
+  {
+    data: { convert: any, fallback: null },
+    lastEventId: { convert: domString, fallback: "" },
+    origin: { convert: usvString, fallback: "" },
+    ports: { convert: sequence(object), fallback: [] },
+    source: { convert: nullable(object), fallback: null },
+  },
+  eventInit,
+);
+
+export const MessageEvent = defineInterface(
+  class MessageEvent<T = unknown> extends Event {
+    #data: T;
+    #origin: string;
+    #lastEventId: string;
+    #source: object | null;
+    #ports: readonly object[];
+
+    static [brand](value: object) {
+      return #origin in value;
+    }
+
+    constructor(type: string, init?: MessageEventInit<T>) {
+      super(type, init);
+      const values = init as Required<MessageEventInit<T>>;
+      this.#data = values.data;
+      this.#origin = values.origin;
+      this.#lastEventId = values.lastEventId;
+      this.#source = values.source;
+      this.#ports = Object.freeze([...values.ports]);
+    }
+
+    get data(): T {
+      return this.#data;
+    }
+
+    get origin(): string {
+      return this.#origin;
+    }
+
+    get lastEventId(): string {
+      return this.#lastEventId;
+    }
+
+    get source(): object | null {
+      return this.#source;
+    }
+
+    get ports(): readonly object[] {
+      return this.#ports;
+    }
+
+    initMessageEvent(
+      type: string,
+      bubbles = false,
+      cancelable = false,
+      data: T = null as T,
+      origin = "",
+      lastEventId = "",
+      source: object | null = null,
+      ports: readonly object[] = [],
+    ): void {
+      if (initialize(this, type, bubbles, cancelable)) {
+        this.#data = data;
+        this.#origin = origin;
+        this.#lastEventId = lastEventId;
+        this.#source = source;
+        this.#ports = Object.freeze([...ports]);
+      }
+    }
+  },
+  {
+    construct: [domString, optional(messageEventInit)],
+    operations: {
+      initMessageEvent: [
+        domString,
+        optional(boolean, false),
+        optional(boolean, false),
+        optional(any, null),
+        optional(usvString, ""),
+        optional(domString, ""),
+        optional(nullable(object), null),
+        optional(sequence(object), []),
+      ],
+    },
+  },
+);
+export type MessageEvent = InstanceType<typeof MessageEvent>;
+
+export interface CloseEventInit extends EventInit {
+  code?: number;
+  reason?: string;
+  wasClean?: boolean;
+}
+
+export const CloseEvent = defineInterface(
+  class CloseEvent extends Event {
+    #wasClean: boolean;
+    #code: number;
+    #reason: string;
+
+    static [brand](value: object) {
+      return #wasClean in value;
+    }
+
+    constructor(type: string, init?: CloseEventInit) {
+      super(type, init);
+      ({
+        code: this.#code,
+        reason: this.#reason,
+        wasClean: this.#wasClean,
+      } = init as Required<CloseEventInit>);
+    }
+
+    get wasClean(): boolean {
+      return this.#wasClean;
+    }
+
+    get code(): number {
+      return this.#code;
+    }
+
+    get reason(): string {
+      return this.#reason;
+    }
+  },
+  {
+    construct: [
+      domString,
+      optional(
+        dictionary(
+          {
+            code: { convert: integer("unsigned short", "Clamp"), fallback: 0 },
+            reason: { convert: usvString, fallback: "" },
+            wasClean: { convert: boolean, fallback: false },
+          },
+          eventInit,
+        ),
+      ),
+    ],
+  },
+);
+export type CloseEvent = InstanceType<typeof CloseEvent>;
+
 let abortedOf: (signal: AbortSignal) => boolean;
 let addAbortAlgorithm: (
   signal: AbortSignal,
@@ -614,7 +768,7 @@ export const EventTarget = defineInterface(
 );
 export type EventTarget = InstanceType<typeof EventTarget>;
 
-const fire = (target: EventTarget, event: Event): boolean =>
+export const fire = (target: EventTarget, event: Event): boolean =>
   dispatch(target, event, true);
 
 const constructing = Symbol("AbortSignal");
@@ -827,6 +981,9 @@ export const AbortSignal = defineInterface(
   },
 );
 export type AbortSignal = InstanceType<typeof AbortSignal>;
+
+export const dependentSignal = (signals: readonly AbortSignal[]): AbortSignal =>
+  createDependent(signals);
 
 export const isAbortSignal = (value: unknown): value is AbortSignal =>
   implementsInterface(AbortSignal, value);

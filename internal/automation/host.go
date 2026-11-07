@@ -81,6 +81,9 @@ type Host struct {
 	databases databaseStore
 
 	appVersions sync.Map
+
+	transports   sync.Map
+	cookieAccess sync.Mutex
 }
 
 type Swiplet struct {

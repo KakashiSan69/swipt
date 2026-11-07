@@ -5,6 +5,7 @@ import { chunk } from "./chunks";
 import { DOMException, failureOf } from "./errors";
 import { AbortController } from "./events";
 import { assets, cacheDirectory, dataDirectory } from "./files";
+import { Client, CookieJar } from "./http";
 import { preferredLocalizations } from "./localization";
 import { native } from "./native";
 import { installLocalStorage, sqlite, sqliteStore } from "./sqlite";
@@ -144,6 +145,7 @@ interface Modules {
   "@swipt/api/image": typeof import("@swipt/api/image");
   "@swipt/api/app-intents": typeof import("@swipt/api/app-intents");
   "@swipt/api/localization": typeof import("@swipt/api/localization");
+  "@swipt/api/http": typeof import("@swipt/api/http");
   "expo-sqlite": typeof import("./types/expo-sqlite");
   "expo-sqlite/kv-store": typeof import("./types/expo-sqlite/kv-store");
   "expo-sqlite/localStorage/install": typeof import("./types/expo-sqlite/localStorage/install");
@@ -188,6 +190,7 @@ const moduleTable = {
     __esModule: true,
     preferredLocalizations,
   }),
+  "@swipt/api/http": () => ({ __esModule: true, Client, CookieJar }),
   "expo-sqlite": sqlite,
   "expo-sqlite/kv-store": sqliteStore,
   "expo-sqlite/localStorage/install": installLocalStorage,

@@ -21,11 +21,22 @@ import { DOMException, QuotaExceededError } from "./errors";
 import {
   AbortController,
   AbortSignal,
+  CloseEvent,
   CustomEvent,
   ErrorEvent,
   Event,
   EventTarget,
+  MessageEvent,
 } from "./events";
+import { EventSource } from "./eventsource";
+import {
+  fetch,
+  Headers,
+  Request,
+  requestInfo,
+  requestInit,
+  Response,
+} from "./fetch";
 import { FormData } from "./form";
 import { reportException } from "./format";
 import { native, type Native } from "./native";
@@ -61,6 +72,7 @@ import {
   WritableStreamDefaultWriter,
 } from "./streams";
 import { URL, URLSearchParams } from "./url";
+import { WebSocket } from "./websocket";
 
 type Polyfilled =
   | "ReadableStream"
@@ -115,6 +127,8 @@ export function installGlobalScope(console: Console): void {
     EventTarget,
     CustomEvent,
     ErrorEvent,
+    MessageEvent,
+    CloseEvent,
     DOMException,
     QuotaExceededError,
     TextEncoder,
@@ -127,6 +141,11 @@ export function installGlobalScope(console: Console): void {
     Blob,
     File,
     FormData,
+    Headers,
+    Request,
+    Response,
+    WebSocket,
+    EventSource,
     ReadableStream,
     ReadableStreamDefaultReader,
     ReadableStreamBYOBReader,
@@ -163,6 +182,7 @@ export function installGlobalScope(console: Console): void {
     setInterval: schedule(native.setInterval) as unknown as typeof setInterval,
     clearTimeout: (id?: number) => native.clearTimer(id!),
     clearInterval: (id?: number) => native.clearTimer(id!),
+    fetch,
   };
   const attributes = { crypto, performance, navigator };
   void ({
@@ -207,6 +227,7 @@ export function installGlobalScope(console: Console): void {
       setInterval: [operations.setInterval, timerArguments],
       clearTimeout: [operations.clearTimeout, clearArguments],
       clearInterval: [operations.clearInterval, clearArguments],
+      fetch: [fetch, [requestInfo, optional(requestInit)]],
     },
     attributes: {
       crypto: { value: crypto },

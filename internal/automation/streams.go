@@ -26,11 +26,13 @@ var (
 )
 
 type resource struct {
-	reader io.Reader
-	writer io.Writer
-	finish func(abort error) error
-	once   sync.Once
-	err    error
+	reader    io.Reader
+	writer    io.Writer
+	socket    *webSocket
+	finish    func(abort error) error
+	interrupt func(abort error)
+	once      sync.Once
+	err       error
 }
 
 func (r *resource) close(abort error) error {
@@ -44,6 +46,16 @@ func (e *engine) addResource(it *resource) string {
 	e.resourceSequence++
 	id := "r" + strconv.Itoa(e.resourceSequence)
 	e.resources[id] = it
+	if it.interrupt != nil {
+		e.interrupts[id] = it.interrupt
+		finish := it.finish
+		it.finish = func(abort error) error {
+			e.access.Lock()
+			delete(e.interrupts, id)
+			e.access.Unlock()
+			return finish(abort)
+		}
+	}
 	return id
 }
 
@@ -109,6 +121,13 @@ func (e *engine) releaseResource(id, reason string) {
 	}
 	if it, err := e.takeResource(id); err == nil {
 		go it.close(abort)
+		return
+	}
+	e.access.Lock()
+	interrupt := e.interrupts[id]
+	e.access.Unlock()
+	if interrupt != nil {
+		interrupt(abort)
 	}
 }
 
@@ -339,6 +358,31 @@ func streamRead(ctx context.Context, call *operation) (any, error) {
 		}
 		return nil, err
 	}
+}
+
+func streamReadAll(ctx context.Context, call *operation) (any, error) {
+	var id string
+	if err := call.decode(1, &id); err != nil {
+		return nil, err
+	}
+	it, err := call.engine.takeResource(id)
+	if err != nil {
+		return nil, err
+	}
+	defer context.AfterFunc(ctx, func() { _ = it.close(context.Cause(ctx)) })()
+	if it.reader == nil {
+		_ = it.close(errReleased)
+		return nil, E.Cause1(ErrInvalid, E.New("the stream ", strconv.Quote(id), " is not readable"))
+	}
+	data, err := io.ReadAll(it.reader)
+	if err != nil {
+		_ = it.close(err)
+		return nil, err
+	}
+	if err = it.close(nil); err != nil {
+		return nil, err
+	}
+	return jsc.Bytes(data), nil
 }
 
 func streamWrite(_ context.Context, call *operation) (any, error) {

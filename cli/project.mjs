@@ -34,6 +34,7 @@ const appModules = [
   "@swipt/api/file-system",
   "@swipt/api/localization",
   "@swipt/api/maps",
+  "@swipt/api/http",
   "@swipt/api/app-intents",
   "expo-sqlite",
   "expo-sqlite/kv-store",
@@ -50,6 +51,7 @@ const extensionModules = [
   "@swipt/api/image",
   "@swipt/api/app-intents",
   "@swipt/api/localization",
+  "@swipt/api/http",
   "expo-sqlite",
   "expo-sqlite/kv-store",
   "expo-sqlite/localStorage/install",
@@ -342,6 +344,14 @@ function describeExtension(source) {
     "@swipt/api/screen": loading("screen"),
     "@swipt/api/image": loading("image"),
     "@swipt/api/app-intents": loading("appIntents"),
+    "@swipt/api/http": {
+      Client: function Client() {
+        return loading("Client");
+      },
+      CookieJar: function CookieJar() {
+        return loading("CookieJar");
+      },
+    },
     "@swipt/api/localization": {
       preferredLocalizations: (localizations) =>
         localizations.includes("en") ? ["en"] : localizations.slice(0, 1),
@@ -411,9 +421,16 @@ function describeExtension(source) {
   };
   const ignored = () => 0;
   const webGlobals = [
+    "MessageEvent",
+    "CloseEvent",
     "ErrorEvent",
     "File",
     "FormData",
+    "Headers",
+    "Request",
+    "Response",
+    "WebSocket",
+    "EventSource",
     "ReadableStream",
     "ReadableStreamDefaultReader",
     "ReadableStreamBYOBReader",
@@ -458,6 +475,7 @@ function describeExtension(source) {
     DOMException,
     Blob,
     ...Object.fromEntries(webGlobals.map((name) => [name, globalThis[name]])),
+    fetch: loading("fetch"),
     setTimeout: ignored,
     setInterval: ignored,
     clearTimeout: ignored,

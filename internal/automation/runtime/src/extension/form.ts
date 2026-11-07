@@ -52,7 +52,7 @@ const entryOf = (
   return [name, new File([value], filename ?? "blob", options)];
 };
 
-let entryList: (form: object) => [string, Value][];
+export let entryList: (form: object) => [string, Value][];
 
 export const FormData = defineInterface(
   class FormData {

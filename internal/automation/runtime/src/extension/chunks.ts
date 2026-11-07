@@ -7,6 +7,7 @@ export interface Chunks {
   subtle: typeof import("./subtle");
   api: typeof import("./api");
   url: typeof import("./whatwg-url");
+  multipart: typeof import("./multipart");
 }
 
 const loaded = new Map<keyof Chunks, unknown>();

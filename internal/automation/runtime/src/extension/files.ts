@@ -40,6 +40,9 @@ const rootPath = (root: Root): string => rootPaths[root]().replace(/\/+$/, "");
 const at = (handle: FileHandle | DirectoryHandle): Location =>
   locations.get(handle)!;
 
+export const fileLocation = (handle: unknown): Location | undefined =>
+  handle instanceof FileHandle ? at(handle) : undefined;
+
 export const pathOf = (handle: FileHandle | DirectoryHandle): string => {
   const location = at(handle);
   return location.path === ""

@@ -8,6 +8,8 @@ import {
 } from "../extension/files";
 import { bind, type Native } from "../extension/native";
 import { installGlobalScope } from "../extension/scope";
+
+export { Client, CookieJar } from "../extension/http";
 import { createConsole } from "../shared/console";
 import { inspect } from "../shared/inspect";
 
@@ -42,6 +44,7 @@ const chunks: { [Name in keyof Chunks]: () => Chunks[Name] } = {
   sqlite: () => require("../shared/sqlite"),
   subtle: () => require("../extension/subtle"),
   url: () => require("../extension/whatwg-url"),
+  multipart: () => require("../extension/multipart"),
   api: () => {
     throw new Error("the device APIs are only available in the extension");
   },

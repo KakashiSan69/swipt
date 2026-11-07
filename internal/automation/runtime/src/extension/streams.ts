@@ -49,7 +49,9 @@ export {
 
 interface NativeSource {
   id: string | null;
+  taken?: string;
   started: boolean;
+  finish?: () => void;
   controller?: ReadableByteStreamController;
 }
 
@@ -107,8 +109,11 @@ export const chunkBytes = (chunk: unknown): Uint8Array => {
   throw new TypeError("the chunk is not an ArrayBuffer or a view of one");
 };
 
-export function nativeReadable(id: string): ReadableStream<Uint8Array> {
-  const source: NativeSource = { id, started: false };
+export function nativeReadable(
+  id: string,
+  finish?: () => void,
+): ReadableStream<Uint8Array> {
+  const source: NativeSource = { id, started: false, finish };
   const stream = new ReadableStream(
     {
       type: "bytes",
@@ -127,6 +132,7 @@ export function nativeReadable(id: string): ReadableStream<Uint8Array> {
         } catch (error) {
           if (source.id === current) {
             source.id = null;
+            source.finish?.();
             controller.error(error);
           }
           return;
@@ -136,6 +142,7 @@ export function nativeReadable(id: string): ReadableStream<Uint8Array> {
         }
         if (chunk === null) {
           source.id = null;
+          source.finish?.();
           controller.close();
           controller.byobRequest?.respond(0);
           return;
@@ -146,6 +153,7 @@ export function nativeReadable(id: string): ReadableStream<Uint8Array> {
         if (source.id !== null) {
           native.release(source.id, failureOf(reason));
           source.id = null;
+          source.finish?.();
         }
       },
     },
@@ -157,13 +165,19 @@ export function nativeReadable(id: string): ReadableStream<Uint8Array> {
 
 export function errorNative(stream: ReadableStream, reason: unknown): void {
   const source = sources.get(stream);
-  if (source?.id == null) {
+  const id = source?.id ?? source?.taken;
+  if (source === undefined || id == null) {
     return;
   }
-  native.release(source.id, failureOf(reason));
+  native.release(id, failureOf(reason));
   source.id = null;
+  source.taken = undefined;
+  source.finish?.();
   source.controller?.error(reason);
 }
+
+export const disturbed = (stream: ReadableStream): boolean =>
+  internalSlots(stream)._disturbed === true;
 
 export function takeNative(stream: ReadableStream): string | null {
   const source = sources.get(stream);
@@ -173,6 +187,7 @@ export function takeNative(stream: ReadableStream): string | null {
   stream.getReader();
   const id = source.id;
   source.id = null;
+  source.taken = id;
   return id;
 }
 
