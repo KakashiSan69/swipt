@@ -158,7 +158,7 @@ func (w *axWorker) next() *axJob {
 
 func (w *axWorker) run() {
 	defer close(w.done)
-	if !w.conn.connection.axClean() {
+	if !w.conn.connection.options.DeferAccessibilityRestart && !w.conn.connection.axClean() {
 		if err := w.restart("its state from before is not known to be clean"); err != nil {
 			w.logger.Debug(E.Cause(err, "restart axauditd"))
 		}

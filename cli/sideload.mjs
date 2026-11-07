@@ -1561,12 +1561,22 @@ async function trustAndOpen(context, device, id, given, updated, diskImage) {
               throw new Error(failure.message);
             }
           };
-          await run([id, "trust", unlock]);
-          update("");
-          await launchApp(device, id, [
+          const args = [
             setupArgument,
             ...(context.options["no-setup-api"] ? [] : [publishArgument]),
-          ]);
+          ];
+          await run([id, "unlock", unlock]);
+          update("");
+          try {
+            await launchApp(device, id, args);
+          } catch (error) {
+            if (!/trusted by the user/.test(error.message)) {
+              throw error;
+            }
+            await run([id, "trust", "", error.message]);
+            update("");
+            await launchApp(device, id, args);
+          }
           await run([id, "prompts"]);
         } finally {
           await server.stop();

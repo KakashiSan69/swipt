@@ -83,8 +83,9 @@ type Options struct {
 	// 24A446, NSStringFromBLSBacklightState 0x22582161c, table 0x268a47640); -1 unavailable.
 	BacklightState func() int32
 
-	DiskImageDirectory string
-	IdleTimeout        time.Duration
+	DiskImageDirectory        string
+	IdleTimeout               time.Duration
+	DeferAccessibilityRestart bool
 }
 
 type Settings struct {
@@ -189,14 +190,16 @@ func (s *Connection) Start() error {
 	s.started = true
 	s.access.Unlock()
 	go s.run()
-	go func() {
-		_, release, err := s.acquire(s.ctx)
-		if err != nil {
-			s.logger.Debug(E.Cause(err, "connect to restart axauditd"))
-			return
-		}
-		release()
-	}()
+	if !s.options.DeferAccessibilityRestart {
+		go func() {
+			_, release, err := s.acquire(s.ctx)
+			if err != nil {
+				s.logger.Debug(E.Cause(err, "connect to restart axauditd"))
+				return
+			}
+			release()
+		}()
+	}
 	return s.listen()
 }
 

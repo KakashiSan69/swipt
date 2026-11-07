@@ -37,8 +37,9 @@ const (
 )
 
 type DeviceOptions struct {
-	RemotePairingPort  int32
-	DiskImageDirectory string
+	RemotePairingPort         int32
+	DiskImageDirectory        string
+	DeferAccessibilityRestart bool
 }
 
 type DeviceSettings struct {
@@ -148,10 +149,11 @@ func newDevice(options *DeviceOptions, handler DeviceHandler, logFactory *log.Fa
 				allowLocal = false
 			}
 		},
-		Logger:             logFactory.Logger(),
-		Observer:           &deviceObserver{handler: handler},
-		DiskImageDirectory: options.DiskImageDirectory,
-		BacklightState:     handler.BacklightState,
+		Logger:                    logFactory.Logger(),
+		Observer:                  &deviceObserver{handler: handler},
+		DiskImageDirectory:        options.DiskImageDirectory,
+		DeferAccessibilityRestart: options.DeferAccessibilityRestart,
+		BacklightState:            handler.BacklightState,
 	})
 	return d
 }

@@ -84,6 +84,7 @@ final class Platform {
         options.appBuild = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? ""
         let deviceOptions = LibSwiptDeviceOptions()
         deviceOptions.diskImageDirectory = Bundle.main.url(forResource: "DeveloperDiskImage", withExtension: nil)?.path ?? ""
+        deviceOptions.deferAccessibilityRestart = AutomatedSetupView.isRequested
         let isAppActive = LockedState(initialState: false)
         self.isAppActive = isAppActive
         let events = PlatformEvents(

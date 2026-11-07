@@ -1,4 +1,4 @@
-const [encodedMessages, id, mode, unlock] = args;
+const [encodedMessages, id, mode, unlock, launchError] = args;
 const messages = JSON.parse(encodedMessages);
 const filled = (message, value) => message.replace(/\{\w+\}/, () => value);
 const name = "Swipt";
@@ -62,29 +62,24 @@ async function answerPrompt() {
   return alert !== null;
 }
 
-async function launch() {
-  try {
-    await device.launchApplication(id, { restart: true });
-    return null;
-  } catch (error) {
-    const until = Date.now() + 5_000;
-    do {
-      const alert = await sheet(Math.max(until - Date.now(), 0));
-      const buttons = alert?.findAll({ role: "button" }) ?? [];
-      if (buttons.length === 1) {
-        const developer = alert
-          .findAll({ role: "text" })
-          .map((text) => developerPattern.exec(text.label ?? "")?.[0])
-          .find((found) => found !== undefined);
-        await dismiss(alert, 0);
-        if (developer === undefined) {
-          throw new Error(`the alert names no developer: ${alert.label}`);
-        }
-        return developer;
+async function untrustedDeveloper() {
+  const until = Date.now() + 5_000;
+  do {
+    const alert = await sheet(Math.max(until - Date.now(), 0));
+    const buttons = alert?.findAll({ role: "button" }) ?? [];
+    if (buttons.length === 1) {
+      const developer = alert
+        .findAll({ role: "text" })
+        .map((text) => developerPattern.exec(text.label ?? "")?.[0])
+        .find((found) => found !== undefined);
+      await dismiss(alert, 0);
+      if (developer === undefined) {
+        throw new Error(`the alert names no developer: ${alert.label}`);
       }
-    } while (Date.now() < until);
-    throw error;
-  }
+      return developer;
+    }
+  } while (Date.now() < until);
+  throw new Error(launchError);
 }
 
 function developerRows(list, developer) {
@@ -228,21 +223,25 @@ async function finishSetup() {
 }
 
 async function main() {
-  if (mode === "prompts") {
-    await finishSetup();
-    return;
-  }
-  if (unlock === "passcode") {
-    console.debug(messages.unlocking);
-    await device.unlock();
-  } else if (unlock === "wait") {
-    await waitForUnlock();
-  }
-  await answerPrompt();
-  const developer = await launch();
-  if (developer !== null) {
-    await trust(developer);
-    console.log(filled(messages.trusted, developer));
+  switch (mode) {
+    case "unlock":
+      if (unlock === "passcode") {
+        console.debug(messages.unlocking);
+        await device.unlock();
+      } else if (unlock === "wait") {
+        await waitForUnlock();
+      }
+      await answerPrompt();
+      return;
+    case "trust": {
+      const developer = await untrustedDeveloper();
+      await trust(developer);
+      console.log(filled(messages.trusted, developer));
+      return;
+    }
+    case "prompts":
+      await finishSetup();
+      return;
   }
 }
 
