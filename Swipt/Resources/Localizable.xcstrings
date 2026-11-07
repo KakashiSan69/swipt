@@ -17085,6 +17085,310 @@
         }
       }
     },
+    "Couldn’t Restart the App" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "تعذرت إعادة تشغيل التطبيق"
+          }
+        },
+        "bg" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Неуспешно рестартиране на приложението"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "অ্যাপ রিস্টার্ট করা যায়নি"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "No s’ha pogut reiniciar l’app"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Aplikaci se nepodařilo restartovat"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Kunne ikke starte appen igen"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "App konnte nicht neu gestartet werden"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Δεν ήταν δυνατή η επανεκκίνηση της εφαρμογής"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "No se ha podido reiniciar la app"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "No se pudo reiniciar la app"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Apin uudelleenkäynnistäminen ei onnistunut"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Impossible de redémarrer l’app"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Impossible de redémarrer l’app"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ઍપને રીસ્ટાર્ટ કરી શકાયું નહીં"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "לא ניתן להפעיל מחדש את היישום"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ऐप रीस्टार्ट नहीं किया जा सका"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Nije moguće ponovno pokrenuti aplikaciju"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Nem sikerült újraindítani az appot"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Tidak Dapat Memulai Ulang App"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Impossibile riavviare l’app"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "アプリを再起動できませんでした"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Қолданбаны қайта іске қосу мүмкін болмады"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ಆ್ಯಪ್ ಅನ್ನು ಮರುಪ್ರಾರಂಭಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "앱을 재시작할 수 없음"
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Nepavyko iš naujo paleisti programos"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ആപ്പ് റീസ്റ്റാർട്ട് ചെയ്യാനായില്ല"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ॲप रीस्टार्ट करता आले नाही"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Tidak Dapat Memulakan Semula App"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Kunne ikke starte appen på nytt"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Kon app niet herstarten"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ଆପ୍ ରିଷ୍ଟାର୍ଟ୍ କରାଯାଇପାରିଲା ନାହିଁ"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ਐਪ ਨੂੰ ਮੁੜ-ਸ਼ੁਰੂ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Nie udało się ponownie uruchomić aplikacji"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Não foi possível reiniciar o app"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Não foi possível reiniciar a aplicação"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Nu s-a putut reporni aplicația"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Не удалось перезапустить приложение"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Apku sa nepodarilo reštartovať"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Aplikacije ni bilo mogoče znova zagnati"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Det gick inte att starta om appen"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ஆப்பை மீண்டும் தொடங்க முடியவில்லை"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "యాప్‌ను రీస్టార్ట్ చేయడం సాధ్యపడలేదు"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ไม่สามารถเริ่มแอปใหม่ได้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Uygulama Yeniden Başlatılamadı"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Не вдалося перезапустити програму"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ایپ ری اسٹارٹ نہیں کی جا سکی"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Không thể khởi động lại ứng dụng"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "無法重新啟動 App"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法重启 App"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "無法重新啟動 App"
+          }
+        }
+      }
+    },
     "Couldn’t Run in the Background" : {
       "localizations" : {
         "ar" : {
@@ -28693,6 +28997,310 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "語言"
+          }
+        }
+      }
+    },
+    "Later" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "لاحقًا"
+          }
+        },
+        "bg" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "По-късно"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "পরে"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Més tard"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Později"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Senere"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Später"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Αργότερα"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Más tarde"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Más tarde"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Myöhemmin"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Plus tard"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Plus tard"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "પછીથી"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "מאוחר יותר"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "बाद में"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Kasnije"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Később"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Nanti"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Più tardi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "あとで"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Кейінірек"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ನಂತರ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "나중에"
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Vėliau"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "പിന്നീട്"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "नंतर"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Kemudian"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Senere"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Later"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ପରେ"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ਬਾਅਦ ਵਿੱਚ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Później"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Mais Tarde"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Mais tarde"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Mai târziu"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Позже"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Neskôr"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Pozneje"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Senare"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "பிறகு"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "తర్వాత"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ภายหลัง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sonra"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Пізніше"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "بعد میں"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Để sau"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "稍後"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "稍后"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "稍後"
           }
         }
       }
@@ -43057,6 +43665,310 @@
         }
       }
     },
+    "Restart" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "إعادة التشغيل"
+          }
+        },
+        "bg" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Рестартирай"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "রিস্টার্ট করুন"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Reinicia"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Restartovat"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Start igen"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Neu starten"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Επανεκκίνηση"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Reiniciar"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Reiniciar"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Käynnistä uudelleen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Redémarrer"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Redémarrer"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "રીસ્ટાર્ટ કરો"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "הפעלה מחדש"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "रीस्टार्ट करें"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Ponovno pokreni"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Újraindítás"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Mulai Ulang"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Riavvia"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "再起動"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Қайта іске қосу"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ಮರುಪ್ರಾರಂಭಿಸಿ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "재시작"
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Paleisti iš naujo"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "റീസ്റ്റാർട്ട് ചെയ്യൂ"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "रीस्टार्ट करा"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Mula Semula"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Start på nytt"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Herstart"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ରିଷ୍ଟାର୍ଟ୍ କରନ୍ତୁ"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ਮੁੜ-ਸ਼ੁਰੂ ਕਰੋ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Uruchom ponownie"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Reiniciar"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Reiniciar"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Reporniți"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Перезапустить"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Reštartovať"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Znova zaženi"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Starta om"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "மீண்டும் தொடங்கு"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "రీస్టార్ట్ చేయండి"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "เริ่มใหม่"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Yeniden Başlat"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Перезапустити"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ری اسٹارٹ کریں"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Khởi động lại"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "重新啟動"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重启"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "重新啟動"
+          }
+        }
+      }
+    },
     "Restart Required" : {
       "localizations" : {
         "ar" : {
@@ -43350,7 +44262,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "需要重新启动"
+            "value" : "需要重启"
           }
         },
         "zh-Hant" : {
@@ -46099,6 +47011,310 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "設定"
+          }
+        }
+      }
+    },
+    "Settings…" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "الإعدادات…"
+          }
+        },
+        "bg" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Настройки…"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "সেটিংস…"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Configuració…"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Nastavení…"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Indstillinger…"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Einstellungen …"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Ρυθμίσεις…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Ajustes…"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Configuración…"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Asetukset…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Réglages…"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Réglages…"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "સેટિંગ્સ…"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "הגדרות…"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "सेटिंग…"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Postavke…"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Beállítások…"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Pengaturan…"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Impostazioni…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "設定…"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Реттеулер…"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ಸೆಟ್ಟಿಂಗ್ಸ್…"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "설정…"
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Nustatymai…"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ക്രമീകരണം…"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "सेटिंग…"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Seting…"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Innstillinger…"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Instellingen…"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ସେଟିଂସ୍…"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ਸੈਟਿੰਗਾਂ…"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Ustawienia…"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Ajustes…"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Definições…"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Configurări…"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Настройки…"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Nastavenia…"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Nastavitve …"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Inställningar…"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "அமைப்புகள்…"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "సెట్టింగ్స్…"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "การตั้งค่า…"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Ayarlar…"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Параметри…"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "سیٹنگ…"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Cài đặt…"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "設定⋯"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "设置…"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "設定⋯"
           }
         }
       }
@@ -54020,7 +55236,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "重新启动 App 后将使用新语言。"
+            "value" : "重启 App 后将使用新语言。"
           }
         },
         "zh-Hant" : {
