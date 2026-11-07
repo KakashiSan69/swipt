@@ -129,6 +129,63 @@ nonisolated final class CloudflareTunnelEvents: NSObject, LibSwiptCloudflareTunn
     }
 }
 
+nonisolated struct TailscaleStatus: Equatable, Sendable {
+    enum State: Sendable {
+        case starting
+        case stopped
+        case needsLogin
+        case needsMachineAuth
+        case running
+    }
+
+    var state: State
+    var loginName: String
+    var tailnet: String
+    var dnsName: String
+    var addresses: [String]
+
+    var isLoggedIn: Bool {
+        switch state {
+        case .stopped, .needsMachineAuth, .running: true
+        case .starting, .needsLogin: false
+        }
+    }
+
+    init(_ status: LibSwiptTailscaleStatus) {
+        state =
+            switch status.state {
+            case LibSwiptTailscaleStateStopped: .stopped
+            case LibSwiptTailscaleStateNeedsLogin: .needsLogin
+            case LibSwiptTailscaleStateNeedsMachineAuth: .needsMachineAuth
+            case LibSwiptTailscaleStateRunning: .running
+            default: .starting
+            }
+        loginName = status.loginName
+        tailnet = status.tailnet
+        dnsName = status.dnsName
+        addresses = status.addresses.split(separator: "\n").map(String.init)
+    }
+}
+
+nonisolated final class TailscaleEvents: NSObject, LibSwiptTailscaleHandlerProtocol, @unchecked Sendable {
+    private let deliver: @Sendable (TailscaleStatus) -> Void
+    private let deliverError: @Sendable (String) -> Void
+
+    init(_ deliver: @escaping @Sendable (TailscaleStatus) -> Void, error deliverError: @escaping @Sendable (String) -> Void) {
+        self.deliver = deliver
+        self.deliverError = deliverError
+    }
+
+    func onStatus(_ status: LibSwiptTailscaleStatus?) {
+        guard let status else { return }
+        deliver(TailscaleStatus(status))
+    }
+
+    func onError(_ message: String?) {
+        deliverError(message ?? "")
+    }
+}
+
 nonisolated final class ActionEvents: NSObject, LibSwiptActionObserverProtocol, @unchecked Sendable {
     private let deliverRequest: @Sendable (String) -> Void
 

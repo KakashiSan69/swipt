@@ -57,6 +57,11 @@ final class Platform {
     private var cloudflareTunnel: LibSwiptCloudflareTunnel?
     @PerceptionIgnored private var cloudflareGeneration = 0
     @PerceptionIgnored private var cloudflareError: String?
+    private(set) var tailscale: LibSwiptTailscale?
+    private(set) var tailscaleStatus: TailscaleStatus?
+    private var isTailscaleRunning = false
+    @PerceptionIgnored private var tailscaleGeneration = 0
+    @PerceptionIgnored private var tailscaleError: String?
     @PerceptionIgnored private let apiAdvertiser = BonjourAdvertiser()
     @PerceptionIgnored private var advertised: APIAdvertisement?
     @PerceptionIgnored private var dialogs: [Int64: Task<Void, Never>] = [:]
@@ -126,6 +131,16 @@ final class Platform {
         return UIDevice.current.name
     }
 
+    var hostLabel: String {
+        let slug = name
+            .filter { $0 != "'" && $0 != "’" }
+            .map { $0.isASCII && ($0.isLetter || $0.isNumber) ? String($0) : "-" }
+            .joined()
+            .split(separator: "-")
+            .joined(separator: "-")
+        return slug.isEmpty ? UIDevice.current.model : slug
+    }
+
     func start() {
         isAppActive.withLock { $0 = UIApplication.shared.applicationState == .active }
         for (name, active) in [(UIApplication.didBecomeActiveNotification, true), (UIApplication.willResignActiveNotification, false)] {
@@ -146,6 +161,16 @@ final class Platform {
             }
         }
         observeCloudflare()
+        let tailscaleOptions = LibSwiptTailscaleOptions()
+        tailscaleOptions.directory = Self.tailscaleDirectory.path
+        tailscaleOptions.hostname = hostLabel
+        let tailscaleEvents = TailscaleEvents { [weak self] status in
+            DispatchQueue.main.async { self?.tailscaleStatus = status }
+        } error: { [weak self] message in
+            DispatchQueue.main.async { self?.handleTailscaleError(message) }
+        }
+        tailscale = core.newTailscale(tailscaleOptions, handler: tailscaleEvents)
+        observeTailscale()
         observeAPI()
         SwipletStore.shared.reload()
         observeActivity()
@@ -268,6 +293,7 @@ final class Platform {
         case .shutdownRequested:
             developer.isLocalNetworkEnabled = false
             developer.isCloudflareEnabled = false
+            developer.isTailscaleEnabled = false
         case .recordingFailed(let message):
             ErrorAlert.shared.report(AlertState(String(localized: "Couldn’t Save the Screen Recording"), errorMessage: message))
         }
@@ -363,7 +389,8 @@ final class Platform {
 
     private var apiOptions: LibSwiptAPIOptions? {
         let cloudflare = developer.isCloudflareEnabled ? cloudflareTunnel : nil
-        guard developer.isLocalNetworkEnabled || cloudflare != nil else { return nil }
+        let tailscale = isTailscaleRunning ? self.tailscale : nil
+        guard developer.isLocalNetworkEnabled || cloudflare != nil || tailscale != nil else { return nil }
         let options = LibSwiptAPIOptions()
         options.localNetwork = developer.isLocalNetworkEnabled
         options.port = Int32(developer.localPort)
@@ -371,6 +398,8 @@ final class Platform {
         options.cloudflare = cloudflare
         options.cloudflarePath = developer.cloudflarePath
         options.cloudflareToken = developer.cloudflareToken
+        options.tailscale = tailscale
+        options.tailscaleToken = developer.tailscaleAuthenticates ? developer.tailscaleToken : ""
         return options
     }
 
@@ -475,5 +504,54 @@ final class Platform {
         case .tunnel:
             developer.cloudflareNamedTunnel = tunnel
         }
+    }
+
+    nonisolated private static let tailscaleDirectory: URL = {
+        var directory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("Tailscale", isDirectory: true)
+        do {
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            var values = URLResourceValues()
+            values.isExcludedFromBackup = true
+            try directory.setResourceValues(values)
+        } catch {
+            logger.error("Exclude the Tailscale state from backups: \(error, privacy: .public)")
+        }
+        return directory
+    }()
+
+    private func observeTailscale() {
+        let isEnabled = withPerceptionTracking {
+            developer.isTailscaleEnabled
+        } onChange: { [weak self] in
+            DispatchQueue.main.async { self?.observeTailscale() }
+        }
+        tailscaleGeneration += 1
+        tailscaleError = nil
+        if !isEnabled {
+            isTailscaleRunning = false
+        }
+        guard let tailscale else { return }
+        let generation = tailscaleGeneration
+        let box = UncheckedSendable(value: tailscale)
+        Self.queue.async { [weak self] in
+            do {
+                try box.value.setEnabled(isEnabled)
+            } catch {
+                let message = error.localizedDescription
+                DispatchQueue.main.async { self?.handleTailscaleError(message) }
+                return
+            }
+            DispatchQueue.main.async {
+                guard let self, generation == self.tailscaleGeneration else { return }
+                self.isTailscaleRunning = isEnabled
+            }
+        }
+    }
+
+    private func handleTailscaleError(_ message: String) {
+        guard developer.isTailscaleEnabled, message != tailscaleError else { return }
+        tailscaleError = message
+        apiFailed(message)
     }
 }

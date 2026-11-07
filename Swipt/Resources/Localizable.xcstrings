@@ -8859,6 +8859,310 @@
         }
       }
     },
+    "Can’t Log Out" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "يتعذر تسجيل الخروج"
+          }
+        },
+        "bg" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Не може да се излезе"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "লগ আউট করা যাচ্ছে না"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "No es pot tancar la sessió"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Nelze se odhlásit"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Kan ikke logge ud"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Abmelden nicht möglich"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Δεν είναι δυνατή η αποσύνδεση"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "No se puede cerrar sesión"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "No se puede cerrar sesión"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Uloskirjautuminen ei onnistu"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Impossible de se déconnecter"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Impossible de se déconnecter"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "લૉગ આઉટ કરી શકાતું નથી"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "לא ניתן להתנתק"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "लॉग आउट नहीं किया जा सकता"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Odjava nije moguća"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Nem lehet kijelentkezni"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Tidak Dapat Keluar"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Impossibile uscire"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ログアウトできません"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Шығу мүмкін емес"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ಲಾಗ್ ಔಟ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗುತ್ತಿಲ್ಲ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "로그아웃할 수 없음"
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Nepavyko atsijungti"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ലോഗൗട്ട് ചെയ്യാനാകുന്നില്ല"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "लॉग आउट करता येत नाही"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Tidak Dapat Log Keluar"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Kan ikke logge av"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Kan niet uitloggen"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ଲଗ୍ ଆଉଟ୍ କରାଯାଇପାରିବ ନାହିଁ"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ਲੌਗ-ਆਊਟ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Nie można się wylogować"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Não é possível encerrar sessão"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Não é possível terminar sessão"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Nu vă puteți deconecta"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Не удается выйти"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Nedá sa odhlásiť"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Odjava ni mogoča"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Kan inte logga ut"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "வெளியேற முடியவில்லை"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "లాగ్ అవుట్ చేయడం సాధ్యపడదు"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ไม่สามารถออกจากระบบได้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Çıkış Yapılamıyor"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Не вдається вийти"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "لاگ آؤٹ نہیں کیا جا سکتا"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Không thể đăng xuất"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "無法登出"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "无法退出登录"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "無法登出"
+          }
+        }
+      }
+    },
     "Can’t Open the File" : {
       "localizations" : {
         "ar" : {
@@ -12515,6 +12819,310 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "設定"
+          }
+        }
+      }
+    },
+    "Connecting…" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "يجري الاتصال…"
+          }
+        },
+        "bg" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Свързване…"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "কানেক্ট করা হচ্ছে…"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Connectant…"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Připojování…"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Opretter forbindelse…"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Verbinden …"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Σύνδεση…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Conectando…"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Conectando…"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Yhdistetään…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Connexion…"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Connexion…"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "કનેક્ટ થઈ રહ્યું છે…"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "מתחבר…"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "कनेक्ट किया जा रहा है…"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Povezivanje…"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Csatlakozás…"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Menghubungkan…"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Connessione…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "接続中…"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Қосылуда…"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ಕನೆಕ್ಟ್ ಆಗುತ್ತಿದೆ…"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "연결 중…"
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Jungiamasi…"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "കണക്റ്റ് ചെയ്യുന്നു…"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "कनेक्ट होत आहे…"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Menyambung…"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Kobler til…"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Verbinden…"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ସଂଯୋଗ ହେଉଛି…"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ਕਨੈਕਟ ਹੋ ਰਿਹਾ ਹੈ…"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Łączę…"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Conectando…"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "A ligar…"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Se conectează…"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Подключение…"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Pripájam…"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Povezovanje …"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Ansluter…"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "இணைக்கப்படுகிறது…"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "కనెక్ట్ అవుతోంది…"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "กำลังเชื่อมต่อ…"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Bağlanıyor…"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Підʼєднання…"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "کنکٹ ہو رہا ہے…"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Đang kết nối…"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "正在連線…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "正在连接…"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "正在連線…"
           }
         }
       }
@@ -29627,6 +30235,310 @@
         }
       }
     },
+    "Log Out" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "تسجيل الخروج"
+          }
+        },
+        "bg" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Изход"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "লগ আউট করুন"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Tanca la sessió"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Odhlásit se"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Log ud"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Abmelden"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Αποσύνδεση"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Cerrar sesión"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Cerrar sesión"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Kirjaudu ulos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Se déconnecter"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Se déconnecter"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "લૉગ આઉટ કરો"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "התנתקות"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "लॉग आउट करें"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Odjava"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Kijelentkezés"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Keluar"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Esci"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ログアウト"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Шығу"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ಲಾಗ್ ಔಟ್ ಮಾಡಿ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "로그아웃"
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Atsijungti"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ലോഗൗട്ട് ചെയ്യൂ"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "लॉग आउट करा"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Log Keluar"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Logg av"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Log uit"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ଲଗ୍ ଆଉଟ୍ କରନ୍ତୁ"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ਲੌਗ-ਆਊਟ ਕਰੋ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Wyloguj się"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Encerrar Sessão"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Terminar sessão"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Deconectați-vă"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Выйти"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Odhlásiť sa"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Odjava"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Logga ut"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "வெளியேறு"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "లాగ్ అవుట్ చేయండి"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ออกจากระบบ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Çıkış Yap"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Вийти"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "لاگ آؤٹ کریں"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Đăng xuất"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "登出"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "退出登录"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "登出"
+          }
+        }
+      }
+    },
     "Loopback VPN" : {
       "localizations" : {
         "ar" : {
@@ -30845,6 +31757,310 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "名稱"
+          }
+        }
+      }
+    },
+    "Network" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "الشبكة"
+          }
+        },
+        "bg" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Мрежа"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "নেটওয়ার্ক"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Xarxa"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Síť"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Netværk"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Netzwerk"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Δίκτυο"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Red"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Red"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Verkko"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Réseau"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Réseau"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "નેટવર્ક"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "רשת"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "नेटवर्क"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Mreža"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Hálózat"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Jaringan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Rete"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ネットワーク"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Желі"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ನೆಟ್‌ವರ್ಕ್"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "네트워크"
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Tinklas"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "നെറ്റ്‌വർക്ക്"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "नेटवर्क"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Rangkaian"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Nettverk"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Netwerk"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ନେଟ୍‌ୱର୍କ୍"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ਨੈੱਟਵਰਕ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Sieć"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Rede"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Rede"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Rețea"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Сеть"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Sieť"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Omrežje"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Nätverk"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "நெட்வொர்க்"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "నెట్‌వర్క్"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "เครือข่าย"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Ağ"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Мережа"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "نیٹ ورک"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Mạng"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "網絡"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "网络"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "網路"
           }
         }
       }
@@ -39381,6 +40597,310 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "向區域網路提供 Swipt API 和 MCP。"
+          }
+        }
+      }
+    },
+    "Provides the Swipt API and MCP to your Tailscale network." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "يوفر Swipt API وMCP لشبكة Tailscale لديك."
+          }
+        },
+        "bg" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Предоставя достъп до Swipt API и MCP във Вашата Tailscale мрежа."
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "আপনার Tailscale নেটওয়ার্কে Swipt API এবং MCP প্রদান করে।"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Proporciona Swipt API i MCP a la teva xarxa de Tailscale."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Zpřístupňuje Swipt API a MCP ve vaší Tailscale síti."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Gør Swipt API og MCP tilgængelige på dit Tailscale-netværk."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Stellt die Swipt API und MCP in deinem Tailscale-Netzwerk bereit."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Παρέχει το Swipt API και το MCP στο δίκτυο Tailscale σας."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Proporciona Swipt API y MCP a tu red de Tailscale."
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Proporciona Swipt API y MCP a tu red de Tailscale."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Tarjoaa Swipt API:n ja MCP:n Tailscale-verkkoosi."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Fournit Swipt API et MCP à votre réseau Tailscale."
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Fournit Swipt API et MCP à votre réseau Tailscale."
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "તમારા Tailscale નેટવર્કને Swipt API અને MCP પૂરાં પાડે છે."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "מספק את Swipt API ואת MCP ברשת Tailscale."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "आपके Tailscale नेटवर्क को Swipt API और MCP उपलब्ध कराता है।"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Pruža Swipt API i MCP na vašoj Tailscale mreži."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "A Swipt API és az MCP elérhetővé válik az Ön Tailscale-hálózatán."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Menyediakan Swipt API dan MCP ke jaringan Tailscale Anda."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Fornisce Swipt API e MCP alla tua rete Tailscale."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Swipt APIとMCPをTailscaleネットワークに提供します。"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Swipt API және MCP қызметтерін Tailscale желіңізге ұсынады."
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ನಿಮ್ಮ Tailscale ನೆಟ್‌ವರ್ಕ್‌ಗೆ Swipt API ಮತ್ತು MCP ಅನ್ನು ಒದಗಿಸುತ್ತದೆ."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Tailscale 네트워크에 Swipt API 및 MCP를 제공합니다."
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Teikia „Swipt API” ir MCP jūsų „Tailscale” tinkle."
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "നിങ്ങളുടെ Tailscale നെറ്റ്‌വർക്കിലേക്ക് Swipt API-യും MCP-യും നൽകുന്നു."
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "तुमच्या Tailscale नेटवर्कला Swipt API आणि MCP उपलब्ध करून देते."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Menyediakan Swipt API dan MCP kepada rangkaian Tailscale anda."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Gjør Swipt API og MCP tilgjengelig på Tailscale-nettverket."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Biedt de Swipt API en MCP aan op je Tailscale-netwerk."
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ଆପଣଙ୍କ Tailscale ନେଟ୍‌ୱର୍କ୍‌କୁ Swipt API ଓ MCP ପ୍ରଦାନ କରେ।"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ਤੁਹਾਡੇ Tailscale ਨੈੱਟਵਰਕ ਨੂੰ Swipt API ਅਤੇ MCP ਮੁਹੱਈਆ ਕਰਵਾਉਂਦਾ ਹੈ।"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Udostępnia Swipt API i MCP w Twojej sieci Tailscale."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Disponibiliza a Swipt API e o MCP na sua rede Tailscale."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Disponibiliza a Swipt API e o MCP na sua rede Tailscale."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Oferă Swipt API și MCP în rețeaua dvs. Tailscale."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Открывает доступ к Swipt API и MCP в Вашей сети Tailscale."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Sprístupňuje Swipt API a MCP vo vašej sieti Tailscale."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Ponuja Swipt API in MCP v vašem omrežju Tailscale."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Gör Swipt API och MCP tillgängliga i ditt Tailscale-nätverk."
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "உங்கள் Tailscale நெட்வொர்க்கிற்கு Swipt API, MCP ஆகியவற்றை வழங்குகிறது."
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "మీ Tailscale నెట్‌వర్క్‌కు Swipt API, MCPలను అందిస్తుంది."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ให้บริการ Swipt API และ MCP แก่เครือข่าย Tailscale ของคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Swipt API’yi ve MCP’yi Tailscale ağınıza sunar."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Відкриває доступ до Swipt API та MCP у мережі Tailscale."
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "آپ کے Tailscale نیٹ ورک کو Swipt API اور MCP فراہم کرتا ہے۔"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Cung cấp Swipt API và MCP cho mạng Tailscale của bạn."
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "向你的 Tailscale 網絡提供 Swipt API 和 MCP。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "向你的 Tailscale 网络提供 Swipt API 和 MCP。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "向你的 Tailscale 網路提供 Swipt API 和 MCP。"
           }
         }
       }
@@ -60757,6 +62277,310 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在等待「設定」"
+          }
+        }
+      }
+    },
+    "Waiting for an admin of your Tailscale network to approve this device." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "في انتظار موافقة مسؤول شبكة Tailscale لديك على هذا الجهاز."
+          }
+        },
+        "bg" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Изчакване администратор на Вашата Tailscale мрежа да одобри това устройство."
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "আপনার Tailscale নেটওয়ার্কের কোনো অ্যাডমিনের এই ডিভাইসটি অনুমোদন করার জন্য অপেক্ষা করা হচ্ছে।"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Esperant que l’administració de la teva xarxa de Tailscale aprovi aquest dispositiu."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Čekání, až toto zařízení schválí správce vaší Tailscale sítě."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Venter på, at en administrator af dit Tailscale-netværk godkender denne enhed."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Warten, bis dieses Gerät von den Admins deines Tailscale-Netzwerks genehmigt wird."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Αναμονή για έγκριση αυτής της συσκευής από διαχειριστή του δικτύου Tailscale σας."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Esperando a que un administrador de tu red de Tailscale apruebe este dispositivo."
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Esperando a que un administrador de tu red de Tailscale apruebe este dispositivo."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Odotetaan, että Tailscale-verkkosi ylläpitäjä hyväksyy tämän laitteen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "En attente de l’approbation de cet appareil par un administrateur de votre réseau Tailscale."
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "En attente de l’approbation de cet appareil par un administrateur de votre réseau Tailscale."
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "તમારા Tailscale નેટવર્કના ઍડમિન આ ડિવાઇસને મંજૂરી આપે તેની રાહ જોવાઈ રહી છે."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "בהמתנה לאישור המכשיר הזה על ידי מנהל רשת Tailscale."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "आपके Tailscale नेटवर्क के एडमिन की ओर से इस डिवाइस को मंज़ूरी मिलने की प्रतीक्षा की जा रही है।"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Čekanje da administrator vaše Tailscale mreže odobri ovaj uređaj."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Várakozás arra, hogy az Ön Tailscale-hálózatának egyik rendszergazdája jóváhagyja ezt az eszközt."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Menunggu admin jaringan Tailscale Anda menyetujui perangkat ini."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "In attesa dell’approvazione di questo dispositivo da parte di chi amministra la tua rete Tailscale."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Tailscaleネットワークの管理者によるこのデバイスの承認を待機中です。"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Tailscale желіңіздің әкімшісі осы құрылғыны мақұлдауы күтілуде."
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ನಿಮ್ಮ Tailscale ನೆಟ್‌ವರ್ಕ್‌ನ ಆ್ಯಡ್ಮಿನ್ ಈ ಸಾಧನವನ್ನು ಅನುಮೋದಿಸುವುದಕ್ಕಾಗಿ ಕಾಯಲಾಗುತ್ತಿದೆ."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Tailscale 네트워크 관리자가 이 기기를 승인할 때까지 기다리는 중입니다."
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Laukiama, kol jūsų „Tailscale” tinklo administratorius patvirtins šį įrenginį."
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "നിങ്ങളുടെ Tailscale നെറ്റ്‌വർക്കിന്റെ അഡ്‌മിൻ ഈ ഡിവൈസ് അംഗീകരിക്കുന്നതിനായി കാത്തിരിക്കുന്നു."
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "तुमच्या Tailscale नेटवर्कच्या ॲडमिनने हे डिव्हाइस मंजूर करण्याची प्रतीक्षा करत आहे."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Menunggu pentadbir rangkaian Tailscale anda meluluskan peranti ini."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Venter på at en administrator av Tailscale-nettverket godkjenner denne enheten."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Wachten tot een beheerder van je Tailscale-netwerk dit apparaat goedkeurt."
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ଆପଣଙ୍କ Tailscale ନେଟ୍‌ୱର୍କ୍‌ର ଆଡ୍‌ମିନ୍ ଏହି ଡିଭାଇସ୍‌କୁ ଅନୁମୋଦନ କରିବା ପାଇଁ ଅପେକ୍ଷା କରାଯାଉଛି।"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "ਤੁਹਾਡੇ Tailscale ਨੈੱਟਵਰਕ ਦੇ ਐਡਮਿਨ ਵੱਲੋਂ ਇਸ ਡਿਵਾਈਸ ਨੂੰ ਮਨਜ਼ੂਰੀ ਦਿੱਤੇ ਜਾਣ ਦੀ ਉਡੀਕ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ।"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Oczekiwanie, aż administrator Twojej sieci Tailscale zatwierdzi to urządzenie."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Aguardando a aprovação deste dispositivo por um administrador da sua rede Tailscale."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "A aguardar a aprovação deste dispositivo por um administrador da sua rede Tailscale."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Se așteaptă ca un administrator al rețelei dvs. Tailscale să aprobe acest dispozitiv."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Ожидание одобрения этого устройства администратором Вашей сети Tailscale."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Čakanie, kým toto zariadenie schváli správca vašej siete Tailscale."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Čakanje, da skrbnik vašega omrežja Tailscale odobri to napravo."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Väntar på att en administratör för ditt Tailscale-nätverk godkänner den här enheten."
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "உங்கள் Tailscale நெட்வொர்க்கின் நிர்வாகி இந்தச் சாதனத்தை அங்கீகரிப்பதற்காகக் காத்திருக்கிறது."
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "మీ Tailscale నెట్‌వర్క్ అడ్మిన్ ఈ డివైజ్‌ను ఆమోదించడం కోసం వేచి ఉంది."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "กำลังรอให้ผู้ดูแลเครือข่าย Tailscale ของคุณอนุมัติอุปกรณ์นี้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Tailscale ağınızın bir yöneticisinin bu aygıtı onaylaması bekleniyor."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Очікування, доки адміністратор мережі Tailscale схвалить цей пристрій."
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "آپ کے Tailscale نیٹ ورک کے ایڈمن کی طرف سے اس ڈیوائس کو منظور کیے جانے کا انتظار کیا جا رہا ہے۔"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Đang chờ quản trị viên mạng Tailscale của bạn phê duyệt thiết bị này."
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "正在等待你的 Tailscale 網絡管理員批准此裝置。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "正在等待你的 Tailscale 网络管理员批准此设备。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "正在等待你的 Tailscale 網路管理員核准此裝置。"
           }
         }
       }

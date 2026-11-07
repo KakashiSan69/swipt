@@ -20,6 +20,13 @@ struct DeveloperView: View {
                         icon: "cloud", title: Text(verbatim: "Cloudflare"),
                         description: Text("Securely provides the Swipt API and MCP to the internet through Cloudflare."))
                 }
+                NavigationLink {
+                    TailscaleView()
+                } label: {
+                    PublishRow(
+                        icon: "point.3.connected.trianglepath.dotted", title: Text(verbatim: "Tailscale"),
+                        description: Text("Provides the Swipt API and MCP to your Tailscale network."))
+                }
             } header: {
                 Text(verbatim: "API")
             }
@@ -266,14 +273,18 @@ private struct CloudflareModeView: View {
     }
 
     private func logIn() {
+        guard let login = LibSwiptNewCloudflareLogin() else { return }
+        let box = UncheckedSendable(value: login)
         isLoggingIn = true
         Task {
             defer { isLoggingIn = false }
             do {
-                guard let login = try await CloudflareWebLogin().run() else { return }
-                account = login.credential
-                accountName = login.accountName
-                zone = login.zoneName
+                guard let result = try await WebLogin().run(url: login.loginURL(), wait: { try box.value.wait() }, cancel: { box.value.cancel() }) else {
+                    return
+                }
+                account = result.credential
+                accountName = result.accountName
+                zone = result.zoneName
                 if subdomain.isEmpty {
                     subdomain = Platform.shared.hostLabel.lowercased()
                 }
@@ -294,6 +305,123 @@ private struct CloudflareModeView: View {
         settings.cloudflareHostname = account.isEmpty ? "" : "\(subdomain).\(zone)"
         settings.cloudflareMode = mode
         dismiss()
+    }
+}
+
+private struct TailscaleView: View {
+    @Perception.Bindable private var settings = DeveloperSettings.shared
+    @State private var host = ""
+    @State private var isWorking = false
+    @State private var alert: AlertState?
+
+    var body: some View {
+        WithPerceptionTracking {
+            let tailscale = Platform.shared.tailscale
+            let status = Platform.shared.tailscaleStatus
+            Form {
+                Section {
+                    Toggle("Enabled", isOn: $settings.isTailscaleEnabled)
+                        .disabled(!settings.isTailscaleEnabled && status?.isLoggedIn != true)
+                }
+                Section {
+                    switch status?.state {
+                    case .needsLogin:
+                        Button("Log In") { logIn(tailscale) }
+                            .disabled(isWorking || tailscale == nil)
+                    case .stopped, .needsMachineAuth, .running:
+                        if let status {
+                            LabeledContentCompat("Name") {
+                                Text(verbatim: status.loginName)
+                            }
+                            if !status.tailnet.isEmpty, status.tailnet != status.loginName {
+                                LabeledContentCompat("Network") {
+                                    Text(verbatim: status.tailnet)
+                                }
+                            }
+                        }
+                        Button("Log Out", role: .destructive) { logOut(tailscale) }
+                            .disabled(isWorking || tailscale == nil)
+                    case .starting, nil:
+                        LabeledContentCompat("Connecting…") {
+                            ProgressView()
+                        }
+                    }
+                } header: {
+                    Text("Account")
+                } footer: {
+                    if status?.state == .needsMachineAuth {
+                        Text("Waiting for an admin of your Tailscale network to approve this device.")
+                    }
+                }
+                Section("Authentication") {
+                    Toggle("Enabled", isOn: $settings.tailscaleAuthenticates)
+                    if settings.tailscaleAuthenticates {
+                        ValueRow(
+                            title: "Token", value: settings.tailscaleToken, isSecret: true,
+                            random: ("Random Token", { DeveloperSettings.randomHex(32) })
+                        ) { text in
+                            let token = text.trimmingCharacters(in: .whitespacesAndNewlines)
+                            if !token.isEmpty {
+                                settings.tailscaleToken = token
+                            }
+                        }
+                    }
+                }
+                if let status, status.state == .running {
+                    let hosts = ([status.dnsName] + status.addresses.map { $0.contains(":") ? "[\($0)]" : $0 }).filter { !$0.isEmpty }
+                    if !hosts.isEmpty {
+                        let selected = hosts.contains(host) ? host : hosts[0]
+                        let token = settings.tailscaleAuthenticates ? settings.tailscaleToken : nil
+                        UsageSection(title: Text(verbatim: "Swipt API")) {
+                            Picker("Host", selection: Binding(get: { selected }, set: { host = $0 })) {
+                                ForEach(hosts, id: \.self) { host in
+                                    Text(verbatim: host).tag(host)
+                                }
+                            }
+                            .pickerStyle(.menu)
+                        } items: { revealed in
+                            apiUsage(scheme: "http", address: selected, token: token, revealed: revealed)
+                        }
+                        UsageSection(title: Text(verbatim: "MCP")) {
+                        } items: { revealed in
+                            mcpUsage(scheme: "http", address: selected, token: token, revealed: revealed)
+                        }
+                    }
+                }
+            }
+            .navigationTitle(Text(verbatim: "Tailscale"))
+            .alert($alert)
+        }
+    }
+
+    private func logIn(_ tailscale: LibSwiptTailscale?) {
+        guard let tailscale else { return }
+        let box = UncheckedSendable(value: tailscale)
+        isWorking = true
+        Task {
+            defer { isWorking = false }
+            do {
+                let login = try await blocking { UncheckedSendable(value: try box.value.login()) }.value
+                let loginBox = UncheckedSendable(value: login)
+                _ = try await WebLogin().run(url: login.loginURL(), wait: { try loginBox.value.wait() }, cancel: { loginBox.value.cancel() })
+            } catch {
+                alert = AlertState(String(localized: "Can’t Log In"), error: error)
+            }
+        }
+    }
+
+    private func logOut(_ tailscale: LibSwiptTailscale?) {
+        guard let tailscale else { return }
+        let box = UncheckedSendable(value: tailscale)
+        isWorking = true
+        Task {
+            defer { isWorking = false }
+            do {
+                try await blocking { try box.value.logout() }
+            } catch {
+                alert = AlertState(String(localized: "Can’t Log Out"), error: error)
+            }
+        }
     }
 }
 
@@ -436,25 +564,27 @@ private struct ValueRow: View {
     }
 }
 
-private final class CloudflareWebLogin: NSObject, ASWebAuthenticationPresentationContextProviding {
-    func run() async throws -> LibSwiptCloudflareAccount? {
-        guard let login = LibSwiptNewCloudflareLogin(), let url = URL(string: login.loginURL()) else { return nil }
-        let box = UncheckedSendable(value: login)
+private final class WebLogin: NSObject, ASWebAuthenticationPresentationContextProviding {
+    func run<Value>(url: String, wait: @escaping @Sendable () throws -> Value, cancel: @escaping @Sendable () -> Void) async throws -> Value? {
+        guard let url = URL(string: url) else {
+            cancel()
+            return nil
+        }
         let dismissed = LockedState(initialState: false)
         let session = ASWebAuthenticationSession(url: url, callbackURLScheme: nil) { @Sendable _, error in
             guard error != nil else { return }
             dismissed.withLock { $0 = true }
-            box.value.cancel()
+            cancel()
         }
         session.presentationContextProvider = self
         session.prefersEphemeralWebBrowserSession = false
         guard session.start() else {
-            login.cancel()
+            cancel()
             return nil
         }
         defer { session.cancel() }
         do {
-            return try await blocking { UncheckedSendable(value: try box.value.wait()) }.value
+            return try await blocking { UncheckedSendable(value: try wait()) }.value
         } catch {
             if dismissed.withLock({ $0 }) { return nil }
             throw error
@@ -463,17 +593,5 @@ private final class CloudflareWebLogin: NSObject, ASWebAuthenticationPresentatio
 
     func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
         UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.flatMap(\.windows).first(where: \.isKeyWindow) ?? ASPresentationAnchor()
-    }
-}
-
-private extension Platform {
-    var hostLabel: String {
-        let slug = name
-            .filter { $0 != "'" && $0 != "’" }
-            .map { $0.isASCII && ($0.isLetter || $0.isNumber) ? String($0) : "-" }
-            .joined()
-            .split(separator: "-")
-            .joined(separator: "-")
-        return slug.isEmpty ? UIDevice.current.model : slug
     }
 }

@@ -23,6 +23,9 @@ final class DeveloperSettings {
         static let cloudflareQuickTunnel = "developerCloudflareQuickTunnel"
         static let cloudflareQuickHostname = "developerCloudflareQuickHostname"
         static let cloudflareNamedTunnel = "developerCloudflareNamedTunnel"
+        static let tailscaleEnabled = "developerTailscaleEnabled"
+        static let tailscaleAuthenticates = "developerTailscaleAuthenticates"
+        static let tailscaleToken = "developerTailscaleToken"
     }
 
     var isLocalNetworkEnabled: Bool {
@@ -85,6 +88,18 @@ final class DeveloperSettings {
         didSet { store.set(cloudflareNamedTunnel, for: Key.cloudflareNamedTunnel) }
     }
 
+    var isTailscaleEnabled: Bool {
+        didSet { store.set(isTailscaleEnabled, for: Key.tailscaleEnabled) }
+    }
+
+    var tailscaleAuthenticates: Bool {
+        didSet { store.set(tailscaleAuthenticates, for: Key.tailscaleAuthenticates) }
+    }
+
+    var tailscaleToken: String {
+        didSet { store.set(tailscaleToken, for: Key.tailscaleToken) }
+    }
+
     private let store = PreferenceStore.shared
 
     init() {
@@ -92,6 +107,8 @@ final class DeveloperSettings {
         localToken = storedLocalToken ?? Self.randomHex(32)
         let storedCloudflareToken = store.value(String.self, for: Key.cloudflareToken)
         cloudflareToken = storedCloudflareToken ?? Self.randomHex(32)
+        let storedTailscaleToken = store.value(String.self, for: Key.tailscaleToken)
+        tailscaleToken = storedTailscaleToken ?? Self.randomHex(32)
         let publishesLocalNetwork = ProcessInfo.processInfo.arguments.contains("--publish-local-network")
         isLocalNetworkEnabled = publishesLocalNetwork || store.value(Bool.self, for: Key.localNetworkEnabled) ?? false
         let storedPort = store.value(Int.self, for: Key.localPort)
@@ -107,6 +124,8 @@ final class DeveloperSettings {
         cloudflareQuickTunnel = store.value(String.self, for: Key.cloudflareQuickTunnel) ?? ""
         cloudflareQuickHostname = store.value(String.self, for: Key.cloudflareQuickHostname) ?? ""
         cloudflareNamedTunnel = store.value(String.self, for: Key.cloudflareNamedTunnel) ?? ""
+        isTailscaleEnabled = store.value(Bool.self, for: Key.tailscaleEnabled) ?? false
+        tailscaleAuthenticates = store.value(Bool.self, for: Key.tailscaleAuthenticates) ?? false
         if publishesLocalNetwork {
             store.set(true, for: Key.localNetworkEnabled)
         }
@@ -115,6 +134,9 @@ final class DeveloperSettings {
         }
         if storedCloudflareToken == nil {
             store.set(cloudflareToken, for: Key.cloudflareToken)
+        }
+        if storedTailscaleToken == nil {
+            store.set(tailscaleToken, for: Key.tailscaleToken)
         }
         if storedPort == nil {
             store.set(localPort, for: Key.localPort)
@@ -126,7 +148,7 @@ final class DeveloperSettings {
     }
 
     var isPublishing: Bool {
-        isLocalNetworkEnabled || isCloudflareEnabled
+        isLocalNetworkEnabled || isCloudflareEnabled || isTailscaleEnabled
     }
 
     var isCloudflareComplete: Bool {
