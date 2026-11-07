@@ -30,17 +30,18 @@ type Event struct {
 	BundleID     string
 	Notification uint64
 	Name         string
+	at           time.Time
 }
 
 type events struct {
 	screen      atomic.Uint64
 	access      sync.Mutex
 	watchers    map[chan struct{}]bool
-	subscribers map[chan Event]struct{}
+	subscribers map[chan Event]func(Event) bool
 }
 
 func newEvents() *events {
-	return &events{watchers: make(map[chan struct{}]bool), subscribers: make(map[chan Event]struct{})}
+	return &events{watchers: make(map[chan struct{}]bool), subscribers: make(map[chan Event]func(Event) bool)}
 }
 
 func (e *events) watch(screen bool) (<-chan struct{}, func()) {
@@ -55,10 +56,10 @@ func (e *events) watch(screen bool) (<-chan struct{}, func()) {
 	}
 }
 
-func (e *events) subscribe() (<-chan Event, func()) {
+func (e *events) subscribe(accept func(Event) bool) (<-chan Event, func()) {
 	received := make(chan Event, eventBuffer)
 	e.access.Lock()
-	e.subscribers[received] = struct{}{}
+	e.subscribers[received] = accept
 	e.access.Unlock()
 	return received, func() {
 		e.access.Lock()
@@ -68,6 +69,7 @@ func (e *events) subscribe() (<-chan Event, func()) {
 }
 
 func (e *events) publish(event Event) {
+	event.at = time.Now()
 	screen := event.Kind != EventAppState
 	if screen {
 		e.screen.Add(1)
@@ -83,7 +85,10 @@ func (e *events) publish(event Event) {
 		default:
 		}
 	}
-	for received := range e.subscribers {
+	for received, accept := range e.subscribers {
+		if accept != nil && !accept(event) {
+			continue
+		}
 		select {
 		case received <- event:
 		default:
@@ -128,7 +133,7 @@ func (p *Phone) Events(ctx context.Context, emit func(Event)) error {
 		if err != nil {
 			return err
 		}
-		received, cancel := c.events.subscribe()
+		received, cancel := c.events.subscribe(nil)
 		for operation.Err() == nil {
 			select {
 			case event := <-received:

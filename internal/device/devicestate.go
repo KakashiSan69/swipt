@@ -14,6 +14,7 @@ import (
 const notificationProxyService = "com.apple.mobile.notification_proxy.shim.remote"
 
 var stateNotifications = []string{
+	"com.apple.mobile.keybagd.lock_status",
 	"com.apple.springboard.lockstate",
 	"com.apple.springboard.hasBlankedScreen",
 	"com.apple.iokit.hid.displayStatus",
@@ -29,9 +30,17 @@ type darwinNotifications struct {
 
 	access   sync.Mutex
 	watchers map[chan struct{}]struct{}
-	relayed  bool
-	stop     context.CancelFunc
-	stopped  chan struct{}
+	active   *notificationRelay
+}
+
+type notificationRelay struct {
+	ctx       context.Context
+	stop      context.CancelFunc
+	ready     chan struct{}
+	readyOnce sync.Once
+	stopped   chan struct{}
+	relayed   bool
+	err       error
 }
 
 func newDarwinNotifications(c *conn) *darwinNotifications {
@@ -42,42 +51,73 @@ func (d *darwinNotifications) watch() (changed <-chan struct{}, relayed func() b
 	signal := make(chan struct{}, 1)
 	d.access.Lock()
 	d.watchers[signal] = struct{}{}
-	if d.stop == nil {
+	if d.active == nil {
 		ctx, stop := context.WithCancel(d.conn.ctx)
-		d.stop, d.stopped = stop, make(chan struct{})
-		go d.observe(ctx, d.stopped)
+		d.active = &notificationRelay{ctx: ctx, stop: stop, ready: make(chan struct{}), stopped: make(chan struct{})}
+		go d.observe(d.active)
 	}
 	d.access.Unlock()
 	var once sync.Once
 	return signal, func() bool {
 			d.access.Lock()
 			defer d.access.Unlock()
-			return d.relayed
+			return d.active != nil && d.active.relayed
 		}, func() {
 			once.Do(func() {
 				d.access.Lock()
 				defer d.access.Unlock()
 				delete(d.watchers, signal)
-				if len(d.watchers) == 0 && d.stop != nil {
-					d.stop()
-					d.stop, d.relayed = nil, false
+				if len(d.watchers) == 0 && d.active != nil {
+					d.active.stop()
+					d.active = nil
 				}
 			})
 		}
 }
 
-func (d *darwinNotifications) observe(ctx context.Context, stopped chan struct{}) {
-	defer close(stopped)
-	err := d.relay(ctx)
+func (d *darwinNotifications) waitReady(ctx context.Context) error {
 	d.access.Lock()
-	d.relayed = false
+	active := d.active
 	d.access.Unlock()
-	if err != nil && ctx.Err() == nil {
+	if active == nil {
+		return E.New("the device's notification observation is not running")
+	}
+	select {
+	case <-active.ready:
+	case <-ctx.Done():
+		return ctx.Err()
+	case <-active.ctx.Done():
+		return active.ctx.Err()
+	}
+	if err := ctx.Err(); err != nil {
+		return err
+	}
+	d.access.Lock()
+	defer d.access.Unlock()
+	if d.active != active {
+		return context.Canceled
+	}
+	if active.err != nil {
+		return active.err
+	}
+	return active.ctx.Err()
+}
+
+func (d *darwinNotifications) observe(active *notificationRelay) {
+	defer close(active.stopped)
+	err := d.relay(active)
+	d.access.Lock()
+	active.err = err
+	active.relayed = false
+	active.readyOnce.Do(func() { close(active.ready) })
+	d.access.Unlock()
+	if err != nil && active.ctx.Err() == nil {
 		d.conn.logger.Debug(E.Cause(err, "observe the device's lock and display notifications"))
 	}
 }
 
-func (d *darwinNotifications) relay(ctx context.Context) error {
+func (d *darwinNotifications) relay(active *notificationRelay) error {
+	ctx := active.ctx
 	conn, err := d.conn.device.DialShim(ctx, notificationProxyService)
 	if err != nil {
 		return err
@@ -91,7 +131,8 @@ func (d *darwinNotifications) relay(ctx context.Context) error {
 		}
 	}
 	d.access.Lock()
-	d.relayed = true
+	active.relayed = ctx.Err() == nil
+	active.readyOnce.Do(func() { close(active.ready) })
 	d.access.Unlock()
 	for {
 		message, err := conn.Receive()
@@ -100,9 +141,13 @@ func (d *darwinNotifications) relay(ctx context.Context) error {
 		}
 		switch message["Command"] {
 		case "RelayNotification":
+			d.access.Lock()
+			if d.active != active || ctx.Err() != nil {
+				d.access.Unlock()
+				return context.Canceled
+			}
 			name, _ := message["Name"].(string)
 			d.conn.events.publish(Event{Kind: EventDevice, Name: name})
-			d.access.Lock()
 			for signal := range d.watchers {
 				select {
 				case signal <- struct{}{}:
@@ -118,12 +163,12 @@ func (d *darwinNotifications) relay(ctx context.Context) error {
 
 func (d *darwinNotifications) close() {
 	d.access.Lock()
-	stop, stopped := d.stop, d.stopped
-	d.stop = nil
+	active := d.active
+	d.active = nil
 	d.access.Unlock()
-	if stop != nil {
-		stop()
-		<-stopped
+	if active != nil {
+		active.stop()
+		<-active.stopped
 	}
 }
 

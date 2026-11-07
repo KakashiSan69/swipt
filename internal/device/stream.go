@@ -48,12 +48,14 @@ type streamManager struct {
 }
 
 type deviceStream struct {
-	ctx     context.Context
-	device  *coredevice.Device
-	stream  *display.Stream
-	video   bool
-	partner *deviceStream
-	closed  bool
+	ctx      context.Context
+	device   *coredevice.Device
+	stream   *display.Stream
+	video    bool
+	partner  *deviceStream
+	closed   bool
+	owner    *conn
+	stopping time.Time
 }
 
 func newStreamManager(logger logger.ContextLogger, onStreaming func(bool)) *streamManager {
@@ -85,7 +87,11 @@ func (m *streamManager) stop(stream *deviceStream) {
 	m.access.Lock()
 	delete(m.remote, stream)
 	m.streamingStoppedLocked()
+	last := !slices.ContainsFunc(slices.Collect(maps.Keys(m.remote)), func(other *deviceStream) bool { return other.device == stream.device })
 	m.access.Unlock()
+	if last && stream.owner != nil {
+		stream.owner.connection.viewing.ended(stream.owner, stream.stopping)
+	}
 	info := stream.stream.Info()
 	switch {
 	case err == nil:
@@ -98,7 +104,7 @@ func (m *streamManager) stop(stream *deviceStream) {
 }
 
 func (m *streamManager) discard(a *conn, stream *display.Stream) error {
-	go m.stop(&deviceStream{ctx: a.owner, device: a.device, stream: stream})
+	go m.stop(&deviceStream{ctx: a.owner, device: a.device, stream: stream, owner: a, stopping: time.Now()})
 	return stream.Close()
 }
 
@@ -113,6 +119,7 @@ func (m *streamManager) retireLocked(stream *deviceStream) {
 		return
 	}
 	stream.closed = true
+	stream.stopping = time.Now()
 	delete(m.open, stream)
 	go m.stop(stream)
 	switch {
@@ -283,6 +290,12 @@ func (s *Connection) startVideo(ctx context.Context, a *conn, request media.Serv
 	if a.ctx.Err() != nil {
 		return nil, E.New("the device connection ended")
 	}
+	if err := a.darwin.waitReady(ctx); err != nil {
+		if ctx.Err() != nil {
+			return nil, ctx.Err()
+		}
+		s.logger.Warn(E.Cause(err, "observe screen-viewing notifications"))
+	}
 	device := a.device
 	sessionID := uuid.New()
 	readOptions := N.ReadWaitOptions{RearHeadroom: media.ServerRearHeadroom}
@@ -328,7 +341,7 @@ func (s *Connection) startVideo(ctx context.Context, a *conn, request media.Serv
 	}
 	info := video.Info()
 	now := time.Now()
-	source := &videoSource{connection: s, stream: &deviceStream{ctx: a.owner, device: device, stream: video, video: true}}
+	source := &videoSource{connection: s, stream: &deviceStream{ctx: a.owner, device: device, stream: video, video: true, owner: a}}
 	source.lastHeard.Store(now.UnixNano())
 	source.info = media.ServerVideoInfo{
 		SSRC:          info.DeviceSSRC,
@@ -348,7 +361,7 @@ func (s *Connection) startVideo(ctx context.Context, a *conn, request media.Serv
 	m.open[source.stream] = struct{}{}
 	m.remote[source.stream] = struct{}{}
 	if audio != nil {
-		parked := &deviceStream{ctx: a.owner, device: device, stream: audio, partner: source.stream}
+		parked := &deviceStream{ctx: a.owner, device: device, stream: audio, partner: source.stream, owner: a}
 		m.open[parked] = struct{}{}
 		m.remote[parked] = struct{}{}
 		m.parked = parked

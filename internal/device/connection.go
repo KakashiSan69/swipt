@@ -103,6 +103,7 @@ type Connection struct {
 	input    *hidQueue
 	clip     *clipboardBridge
 	phone    *Phone
+	viewing  *screenViewing
 
 	ctx         context.Context
 	cancel      context.CancelFunc
@@ -171,6 +172,7 @@ func New(options Options) *Connection {
 	s.input = newHIDQueue(s, s.logger)
 	s.clip = newClipboardBridge(s, s.logger)
 	s.phone = &Phone{connection: s, logger: s.logger}
+	s.viewing = &screenViewing{connection: s}
 	return s
 }
 
@@ -368,6 +370,7 @@ func (s *Connection) Close() error {
 	}
 	s.access.Unlock()
 	s.cancel()
+	s.viewing.close()
 	s.closeFrontends()
 	if started {
 		<-s.done

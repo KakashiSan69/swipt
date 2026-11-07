@@ -84,7 +84,7 @@ func (c *RemoteClient) DismissScreenViewingNotifications(ctx context.Context) (i
 	defer cancel()
 	count := 0
 	for _, obj := range candidates {
-		dismissed, err := c.dismissScreenViewingNotification(ctx, obj)
+		dismissed, err := c.dismissScreenViewingNotification(ctx, obj, "ListCell", "NotificationShortLookView")
 		if err != nil {
 			return count, err
 		}
@@ -95,7 +95,18 @@ func (c *RemoteClient) DismissScreenViewingNotifications(ctx context.Context) (i
 	return count, nil
 }
 
-func (c *RemoteClient) dismissScreenViewingNotification(ctx context.Context, obj translationObject) (bool, error) {
+func (c *RemoteClient) DismissScreenViewingBanner(ctx context.Context, element Element) (bool, error) {
+	if element.object.application || element.object.pid == 0 {
+		return false, nil
+	}
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+	return c.dismissScreenViewingNotification(ctx, element.object, "NotificationShortLookView")
+}
+
+func (c *RemoteClient) dismissScreenViewingNotification(ctx context.Context, obj translationObject, identifiers ...string) (bool, error) {
 	application, err := c.query(ctx, requestApplication, nil, 0, 0, map[string]any{"pid": obj.pid})
 	if err != nil {
 		return false, err
@@ -118,9 +129,10 @@ func (c *RemoteClient) dismissScreenViewingNotification(ctx context.Context, obj
 		return false, err
 	}
 	values, ok := response.value.(map[any]any)
-	// SpringBoard's notification cells have the identifier ListCell
-	// (iPhone18,2, iOS 27.2 24B5110a and 24B115).
-	if response.code != 0 || !ok || values[uint64(attributeIsValid)] != true || values[uint64(attributeIdentifier)] != "ListCell" {
+	// Notification Center uses ListCell (iOS 27.2 24B5110a and 24B115),
+	// while the banner uses NotificationShortLookView (iOS 27.3 24C5037i).
+	kind, _ := values[uint64(attributeIdentifier)].(string)
+	if response.code != 0 || !ok || values[uint64(attributeIsValid)] != true || !slices.Contains(identifiers, kind) {
 		return false, nil
 	}
 	label, _ := values[uint64(attributeLabel)].(string)
@@ -140,7 +152,9 @@ func (c *RemoteClient) dismissScreenViewingNotification(ctx context.Context, obj
 		// block-backed one ends in "\nTarget:0x0\nSelector:(null)". On the
 		// Device Hub cell only Clear was, beside More with _axMore: (iPhone18,2,
 		// iOS 27.2 24B5110a), while on a TestFlight cell Options was too
-		// (iPhone18,2, iOS 27.2 24B115).
+		// (iPhone18,2, iOS 27.2 24B115). The Device Hub banner's Close action
+		// was likewise the only block-backed action, beside More with _axMore:
+		// (iOS 27.3 24C5037i).
 		if strings.HasSuffix(id, "\nTarget:0x0\nSelector:(null)") {
 			if identifier != "" {
 				return false, nil

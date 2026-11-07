@@ -23,20 +23,21 @@ import (
 const keptModels = 16
 
 type conn struct {
-	connection *Connection
-	logger     logger.ContextLogger
-	device     *coredevice.Device
-	display    *display.Client
-	pasteboard *pasteboard.Client
-	ctx        context.Context
-	cancel     context.CancelFunc
-	owner      context.Context
-	events     *events
-	ax         *axWorker
-	front      *foreground
-	darwin     *darwinNotifications
-	nodes      nodeIndex
-	lockState  lockStateReader
+	connection  *Connection
+	logger      logger.ContextLogger
+	device      *coredevice.Device
+	display     *display.Client
+	pasteboard  *pasteboard.Client
+	ctx         context.Context
+	cancel      context.CancelFunc
+	owner       context.Context
+	events      *events
+	ax          *axWorker
+	front       *foreground
+	darwin      *darwinNotifications
+	nodes       nodeIndex
+	lockState   lockStateReader
+	viewingWake chan struct{}
 
 	geometryAccess sync.Mutex
 	geometry       phoneGeometry
@@ -53,13 +54,21 @@ func newConn(s *Connection, session context.Context, device *coredevice.Device, 
 	ctx, cancel := context.WithCancel(session)
 	c := &conn{
 		connection: s, logger: s.logger, device: device, display: displayClient, ctx: ctx, cancel: cancel, owner: owner,
-		events: newEvents(),
+		events: newEvents(), viewingWake: make(chan struct{}, 1),
 	}
 	c.pasteboard = pasteboard.New(ctx, device, s.logger)
 	c.lockState.owner = c
 	c.ax = newAXWorker(c)
 	c.front = newForeground(c)
 	c.darwin = newDarwinNotifications(c)
+	received, unsubscribe := c.events.subscribe(func(event Event) bool {
+		return event.Kind == EventDevice && event.Name == keybagLockStatus
+	})
+	_, _, unwatch := c.darwin.watch()
+	c.darwin.access.Lock()
+	relayDone := c.darwin.active.stopped
+	c.darwin.access.Unlock()
+	go c.watchScreenViewing(received, func() { unsubscribe(); unwatch() }, relayDone)
 	go c.ax.run()
 	go func() { _, _ = c.lockState.recent(ctx) }()
 	return c

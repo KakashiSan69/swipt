@@ -313,6 +313,12 @@ func (s *Connection) startFeedStream(ctx context.Context) (*deviceStream, error)
 	m.access.Lock()
 	m.lastStart = time.Now()
 	m.access.Unlock()
+	if err = a.darwin.waitReady(ctx); err != nil {
+		if ctx.Err() != nil {
+			return nil, ctx.Err()
+		}
+		s.logger.Warn(E.Cause(err, "observe screen-viewing notifications"))
+	}
 	video, err := a.display.StartVideo(ctx, display.StreamOptions{SessionID: uuid.New(), Mode: display.ModeRemoteDesktop})
 	if err != nil {
 		m.access.Lock()
@@ -320,7 +326,7 @@ func (s *Connection) startFeedStream(ctx context.Context) (*deviceStream, error)
 		m.access.Unlock()
 		return nil, E.Cause(err, "start the device's video")
 	}
-	stream := &deviceStream{ctx: a.owner, device: a.device, stream: video}
+	stream := &deviceStream{ctx: a.owner, device: a.device, stream: video, owner: a}
 	m.access.Lock()
 	m.failures = 0
 	m.open[stream] = struct{}{}
