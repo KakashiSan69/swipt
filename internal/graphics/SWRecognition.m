@@ -15,6 +15,8 @@
 // The accurate recognizer stops reading CJK glyphs below about 20 px (Vision, iOS 27).
 static const double SWGlyphPixels = 24;
 
+static const uint64_t SWCancelPollInterval = 20 * NSEC_PER_MSEC;
+
 typedef CGPoint (^SWPlacePoint)(CGPoint point);
 
 static NSDictionary<NSString *, id> *SWShape(VNRectangleObservation *observation, SWPlacePoint place) {
@@ -145,16 +147,30 @@ static NSArray<NSString *> *SWDeviceLanguages(VNRecognizeTextRequest *request, N
     return chosen;
 }
 
-static BOOL SWPerform(VNRequest *request, SWRaster *raster, NSError **error) {
+static BOOL SWPerform(VNRequest *request, SWRaster *raster, SWCancelToken *token, NSError **error) {
     CGImageRef image = SWRasterCreateImage(raster, error);
     if (image == NULL) {
         return NO;
     }
     VNImageRequestHandler *handler = [[VNImageRequestHandler alloc] initWithCGImage:image options:@{}];
+    dispatch_source_t watch = nil;
+    if (token != nil) {
+        watch = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(QOS_CLASS_UTILITY, 0));
+        dispatch_source_set_timer(watch, DISPATCH_TIME_NOW, SWCancelPollInterval, SWCancelPollInterval / 4);
+        dispatch_source_set_event_handler(watch, ^{
+            if (token.isCancelled) {
+                [request cancel];
+            }
+        });
+        dispatch_resume(watch);
+    }
     NSError *failure = nil;
     BOOL performed = [handler performRequests:@[request] error:&failure];
+    if (watch != nil) {
+        dispatch_source_cancel(watch);
+    }
     CGImageRelease(image);
-    if (!performed) {
+    if (!performed && ![token failIfCancelled:error]) {
         SWFailCause(error, SWErrorNameGeneric, failure, @"graphics: run %@", NSStringFromClass(request.class));
     }
     return performed;
@@ -169,7 +185,7 @@ void SWRecognitionWarm(void) {
         if (languages != nil) {
             request.recognitionLanguages = languages;
         }
-        if (languages == nil || !SWRestrict(request, &failure) || !SWPerform(request, [[SWRaster alloc] initWithWidth:64 height:32 channels:4], &failure)) {
+        if (languages == nil || !SWRestrict(request, &failure) || !SWPerform(request, [[SWRaster alloc] initWithWidth:64 height:32 channels:4], nil, &failure)) {
             SWLogError([NSString stringWithFormat:@"warm the text recognizer: %@", SWErrorMessageOf(failure)]);
         }
     });
@@ -220,7 +236,7 @@ SWRecognizedText *SWRecognizeText(SWImageNode *node, SWArguments *arguments, SWC
             }
         }
     }
-    if (!SWRestrict(request, error) || !SWPerform(request, sampled, error) || [token failIfCancelled:error]) {
+    if (!SWRestrict(request, error) || !SWPerform(request, sampled, token, error) || [token failIfCancelled:error]) {
         return nil;
     }
     double width = raster.width;
@@ -234,7 +250,7 @@ SWRecognizedText *SWRecognizeText(SWImageNode *node, SWArguments *arguments, SWC
 VNFeaturePrintObservation *SWFeaturePrint(SWImageNode *node, SWCancelToken *token, NSError **error) {
     VNGenerateImageFeaturePrintRequest *request = [VNGenerateImageFeaturePrintRequest new];
     SWRaster *raster = [node raster:token error:error];
-    if (raster == nil || !SWRestrict(request, error) || !SWPerform(request, raster, error)) {
+    if (raster == nil || !SWRestrict(request, error) || !SWPerform(request, raster, token, error)) {
         return nil;
     }
     VNFeaturePrintObservation *observation = request.results.firstObject;
@@ -260,7 +276,7 @@ BOOL SWFeatureDistance(VNFeaturePrintObservation *reference, SWImageNode *other,
 NSArray<NSDictionary<NSString *, id> *> *SWDetectBarcodes(SWImageNode *node, SWCancelToken *token, NSError **error) {
     VNDetectBarcodesRequest *request = [VNDetectBarcodesRequest new];
     SWRaster *raster = [node raster:token error:error];
-    if (raster == nil || !SWRestrict(request, error) || !SWPerform(request, raster, error)) {
+    if (raster == nil || !SWRestrict(request, error) || !SWPerform(request, raster, token, error)) {
         return nil;
     }
     double width = raster.width;
