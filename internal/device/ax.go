@@ -22,6 +22,7 @@ const (
 	stallLimit   = 3
 	restartLimit = 10 * time.Second
 	silentLimit  = 10 * time.Second
+	axIdle       = time.Second
 )
 
 type axRun func(ctx context.Context, client *accessibility.RemoteClient) (any, error)
@@ -30,7 +31,6 @@ type axJob struct {
 	ctx      context.Context
 	key      string
 	action   bool
-	low      bool
 	gen      uint64
 	run      axRun
 	started  bool
@@ -50,6 +50,8 @@ type axWorker struct {
 	access  sync.Mutex
 	queue   []*axJob
 	silence silence
+	holds   int
+	used    time.Time
 
 	generation atomic.Uint64
 	client     *accessibility.RemoteClient
@@ -80,25 +82,16 @@ func (w *axWorker) do(ctx context.Context, action bool, gen uint64, run func(ctx
 }
 
 func (w *axWorker) read(ctx context.Context, key string, run axRun) (any, error) {
-	return w.queued(ctx, key, false, run)
-}
-
-func (w *axWorker) readLow(ctx context.Context, key string, run axRun) (any, error) {
-	return w.queued(ctx, key, true, run)
-}
-
-func (w *axWorker) queued(ctx context.Context, key string, low bool, run axRun) (any, error) {
 	w.access.Lock()
 	index := slices.IndexFunc(w.queue, func(job *axJob) bool { return job.key == key && !job.started })
 	var job *axJob
 	if index >= 0 {
 		job = w.queue[index]
 		job.interest++
-		job.low = job.low && low
 		w.access.Unlock()
 	} else {
 		w.access.Unlock()
-		job = w.enqueue(&axJob{ctx: w.conn.ctx, key: key, low: low, interest: 1, run: run, done: make(chan struct{})})
+		job = w.enqueue(&axJob{ctx: w.conn.ctx, key: key, interest: 1, run: run, done: make(chan struct{})})
 	}
 	return w.await(ctx, job)
 }
@@ -133,25 +126,60 @@ func (w *axWorker) await(ctx context.Context, job *axJob) (any, error) {
 	return nil, E.Cause(ctx.Err(), "wait for the accessibility service")
 }
 
+// While a remoteAXService client is connected, axauditd generates the
+// frontmost application's tree at each change of the screen, which nothing but
+// clientNeedsAccessibility: false stops (24B5110a
+// AccessibilityPlatformTranslation -[AXPRemoteCacheManager
+// handleNotification:data:associatedObject:] 0x253fe623c), and the elements
+// read before closing answered through the next connection (iPhone18,2, iOS
+// 27.3 24C5037i).
 func (w *axWorker) next() *axJob {
 	for {
 		w.access.Lock()
 		if len(w.queue) > 0 {
-			index := max(slices.IndexFunc(w.queue, func(job *axJob) bool { return !job.low }), 0)
-			job := w.queue[index]
-			w.queue = slices.Delete(w.queue, index, index+1)
+			job := w.queue[0]
+			w.queue = w.queue[1:]
 			job.started = true
 			w.access.Unlock()
 			return job
 		}
+		held, used := w.holds > 0, w.used
 		w.access.Unlock()
 		if w.client != nil && w.client.Err() != nil && w.conn.ctx.Err() == nil {
 			w.ended()
+		}
+		var idle <-chan time.Time
+		if w.client != nil && !held {
+			idle = time.After(time.Until(used.Add(axIdle)))
 		}
 		select {
 		case <-w.conn.ctx.Done():
 			return nil
 		case <-w.wake:
+		case <-idle:
+			w.access.Lock()
+			held = w.holds > 0 || len(w.queue) > 0
+			w.access.Unlock()
+			if !held {
+				w.logger.Debug("closing the accessibility connection, idle for ", axIdle)
+				w.closeClient()
+			}
+		}
+	}
+}
+
+func (w *axWorker) hold() (release func()) {
+	w.access.Lock()
+	w.holds++
+	w.access.Unlock()
+	return func() {
+		w.access.Lock()
+		w.holds--
+		w.used = time.Now()
+		w.access.Unlock()
+		select {
+		case w.wake <- struct{}{}:
+		default:
 		}
 	}
 }
@@ -174,6 +202,9 @@ func (w *axWorker) run() {
 			job.err = job.ctx.Err()
 		}
 		close(job.done)
+		w.access.Lock()
+		w.used = time.Now()
+		w.access.Unlock()
 	}
 	w.access.Lock()
 	queued := w.queue

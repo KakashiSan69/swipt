@@ -40,7 +40,7 @@ func (p *Phone) readApplication(ctx context.Context, c *conn, client *accessibil
 	if base != nil {
 		read.Within = refText(base.AX.Ref)
 	}
-	return p.model(c, geometry, screen, started, base, read, options.PID == 0 && base == nil), nil
+	return p.model(c, geometry, screen, started, base, read), nil
 }
 
 type axSession struct {

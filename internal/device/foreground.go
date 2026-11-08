@@ -2,22 +2,22 @@ package device
 
 import (
 	"context"
-	"fmt"
 	"slices"
 	"strconv"
 	"sync"
 	"time"
 
+	"github.com/sagernet/sing/common"
 	E "github.com/sagernet/sing/common/exceptions"
-	"github.com/swipt-automation/swipt/internal/coredevice/accessibility"
 	"github.com/swipt-automation/swipt/internal/coredevice/apps"
 	"github.com/swipt-automation/swipt/internal/coredevice/instruments"
 )
 
 // Enabling the notifications sent the state of every app within 40 ms. They
 // report a process as Running when it starts or resumes and again when it is
-// suspended, and the frontmost application turned to a cold-launched app 70 to
-// 550 ms after its process was reported (iPhone18,2, iOS 27.2 24B115).
+// suspended (iPhone18,2, iOS 27.2 24B115), and nothing when an app that kept
+// running in the background went to or left the front (iPhone18,2, iOS 27.3
+// 24C5037i).
 const (
 	appStatesBacklog = 250 * time.Millisecond
 	recentFront      = 250 * time.Millisecond
@@ -26,12 +26,13 @@ const (
 	frontProbe       = 3 * time.Second
 )
 
-// AXP notification 3, which the translator forwards at once for a change of
-// first responder or native focus (24B5110a AccessibilityPlatformTranslation
-// __axEventHandler 0x253fd8ba0, -[AXPRemoteCacheManager
-// handleNotification:data:associatedObject:] 0x253fe623c); launching or
-// switching to an app sometimes sent it (iPhone18,2, iOS 27.2 24B115).
-const notificationFocusChanged = 3
+// SpringBoard posted SubstantialTransition as the app in front changed, also
+// to and from the home screen, Notification Center and the app switcher, but
+// not as the device locked, which posted lockstate (iPhone18,2, iOS 27.3
+// 24C5037i).
+const substantialTransition = "com.apple.mobile.SubstantialTransition"
+
+var frontNotifications = []string{substantialTransition, "com.apple.springboard.lockstate"}
 
 type ForegroundApp struct {
 	BundleID string
@@ -47,16 +48,11 @@ type frontApplication struct {
 	via      string
 }
 
-func (a frontApplication) app() bool {
-	return a.pid != 0 && a.bundleID != springboardBundleID
-}
-
 type foreground struct {
 	conn *conn
 
 	access    sync.Mutex
 	current   frontApplication
-	frontmost uint64
 	tracked   bool
 	listeners map[int]func(ForegroundApp)
 	next      int
@@ -64,21 +60,18 @@ type foreground struct {
 	stopped   chan struct{}
 	linger    *time.Timer
 	until     time.Time
-	pending   uint64
 	kick      chan struct{}
 	bundles   map[string]string
+	listed    map[string]bool
 	paths     map[uint64]string
-	probes    map[uint64]time.Time
 
 	infoAccess sync.Mutex
 	info       *instruments.DeviceInfo
+	list       *instruments.DeviceInfo
 }
 
 func newForeground(c *conn) *foreground {
-	return &foreground{
-		conn: c, listeners: make(map[int]func(ForegroundApp)), kick: make(chan struct{}, 1), paths: make(map[uint64]string),
-		probes: make(map[uint64]time.Time),
-	}
+	return &foreground{conn: c, listeners: make(map[int]func(ForegroundApp)), kick: make(chan struct{}, 1), paths: make(map[uint64]string)}
 }
 
 func (f *foreground) get(ctx context.Context) (frontApplication, error) {
@@ -91,138 +84,75 @@ func (f *foreground) get(ctx context.Context) (frontApplication, error) {
 	return f.read(ctx)
 }
 
+// SpringBoard held foregroundRunning throughout, and so did unlisted system
+// apps such as InputUI; an app held it in the app switcher and under Control
+// Center, but not under Notification Center, and both apps held it while
+// one replaced the other (iPhone18,2, iOS 27.3 24C5037i).
 func (f *foreground) read(ctx context.Context) (frontApplication, error) {
-	value, err := f.conn.ax.readLow(ctx, "frontmost", func(ctx context.Context, client *accessibility.RemoteClient) (any, error) {
-		seen := time.Now()
-		batch := &accessibility.Batch{}
-		front := batch.Frontmost()
-		if err := client.Run(ctx, batch); err != nil {
-			return nil, err
-		}
-		if err := front.Err("read the frontmost application"); err != nil {
-			return nil, err
-		}
-		bundleID := f.bundleOf(front.Value.Ref.PID)
-		if bundleID == "" {
-			read := &accessibility.Batch{}
-			bundle := read.BundleID(front.Value)
-			if err := client.Run(ctx, read); err != nil {
-				return nil, err
-			}
-			if err := bundle.Err("read the frontmost application's bundle ID"); err != nil {
-				return nil, err
-			}
-			bundleID = bundle.Value
-		}
-		return frontApplication{pid: front.Value.Ref.PID, bundleID: bundleID, at: seen, via: "frontmost"}, nil
-	})
+	if err := f.loadBundles(ctx); err != nil {
+		return frontApplication{}, E.Cause(err, "list the apps")
+	}
+	asked := time.Now()
+	info, err := f.deviceInfo(ctx, &f.list)
 	if err != nil {
 		return frontApplication{}, err
 	}
-	front := value.(frontApplication)
-	f.conn.connection.trace(front.at, "frontmost", front.bundleID+" pid "+strconv.FormatUint(front.pid, 10), time.Since(front.at))
-	f.access.Lock()
-	f.frontmost = front.pid
-	f.access.Unlock()
-	if front.bundleID == springboardBundleID {
-		front = f.beneath(ctx, front)
-	} else if f.contradicted(ctx, front) {
-		return f.current, nil
+	processes, err := info.RunningProcesses(ctx)
+	if err != nil {
+		return frontApplication{}, err
 	}
+	f.access.Lock()
+	current, listed := f.current, f.listed
+	f.access.Unlock()
+	var springboard uint64
+	var shown []instruments.RunningProcess
+	for _, process := range processes {
+		switch {
+		case process.BundleID == springboardBundleID:
+			springboard = process.PID
+		case process.Foreground && listed[process.BundleID]:
+			shown = append(shown, process)
+		}
+	}
+	front := frontApplication{pid: springboard, bundleID: springboardBundleID, at: asked, via: "processes"}
+	if len(shown) > 0 {
+		chosen := common.Find(shown, func(it instruments.RunningProcess) bool { return it.PID == current.pid })
+		if chosen.PID == 0 {
+			chosen = shown[0]
+		}
+		front.pid, front.bundleID = chosen.PID, chosen.BundleID
+	}
+	f.conn.connection.trace(asked, "frontmost", front.bundleID+" pid "+strconv.FormatUint(front.pid, 10), time.Since(asked))
 	return f.saw(front), nil
 }
 
-// The frontmost application and the tree named the previous app for up to
-// 1.8 s after the device ran a launched one in front, and the device kept
-// running the previous app in front for at least 700 ms of that (iPhone18,2,
-// iOS 27.2 24B119).
-func (f *foreground) contradicted(ctx context.Context, front frontApplication) bool {
-	f.access.Lock()
-	current := f.current
-	f.access.Unlock()
-	if !front.app() || !current.app() || front.pid == current.pid {
-		return false
-	}
-	shown, err := f.foregroundProcesses(ctx, []uint64{front.pid, current.pid})
-	if err != nil {
-		f.conn.connection.trace(front.at, "stale.unknown", front.bundleID+" pid "+strconv.FormatUint(front.pid, 10)+": "+err.Error(), time.Since(front.at))
-		return false
-	}
-	reason := ""
-	switch {
-	case slices.Contains(shown, current.pid):
-		reason = current.bundleID + " is still in front"
-	case !slices.Contains(shown, front.pid):
-		reason = "it is not in front"
-	default:
-		return false
-	}
-	f.conn.connection.trace(front.at, "stale", front.bundleID+" pid "+strconv.FormatUint(front.pid, 10)+" via "+front.via+": "+reason, time.Since(front.at))
-	return true
-}
-
-// The frontmost application is SpringBoard on the home screen and also while
-// one of its alerts, such as the paste prompt, covers an application
-// (iPhone18,2, iOS 27.2 24B115).
-func (f *foreground) beneath(ctx context.Context, springboard frontApplication) frontApplication {
-	f.access.Lock()
-	current := f.current
-	var pids []uint64
-	if current.app() {
-		pids = append(pids, current.pid)
-	}
-	for pid, until := range f.probes {
-		switch {
-		case until.Before(springboard.at):
-			delete(f.probes, pid)
-		case pid != current.pid && pid != springboard.pid:
-			pids = append(pids, pid)
-		}
-	}
-	f.access.Unlock()
-	if len(pids) == 0 {
-		return springboard
-	}
-	shown, err := f.foregroundProcesses(ctx, pids)
-	if err != nil {
-		if ctx.Err() == nil {
-			f.conn.logger.Debug(E.Cause(err, "read the foreground state of processes"))
-		}
-		return springboard
-	}
-	f.conn.connection.trace(springboard.at, "beneath", "probed "+fmt.Sprint(pids)+", foreground "+fmt.Sprint(shown), time.Since(springboard.at))
-	switch {
-	case len(shown) == 0:
-		return springboard
-	case shown[0] == current.pid:
-		return frontApplication{pid: current.pid, bundleID: current.bundleID, at: springboard.at, via: "beneath"}
-	}
-	if bundleID := f.bundleOf(shown[0]); bundleID != "" {
-		return frontApplication{pid: shown[0], bundleID: bundleID, at: springboard.at, via: "beneath"}
-	}
-	return springboard
-}
-
-func (f *foreground) foregroundProcesses(ctx context.Context, pids []uint64) ([]uint64, error) {
+func (f *foreground) deviceInfo(ctx context.Context, slot **instruments.DeviceInfo) (*instruments.DeviceInfo, error) {
 	f.infoAccess.Lock()
 	defer f.infoAccess.Unlock()
-	if f.info != nil && f.info.Err() != nil {
-		f.info.Close()
-		f.info = nil
+	if *slot != nil && (*slot).Err() != nil {
+		(*slot).Close()
+		*slot = nil
 	}
-	if f.info == nil {
+	if *slot == nil {
 		info, err := instruments.DialDeviceInfo(ctx, f.conn.ctx, f.conn.device)
 		if err != nil {
 			return nil, err
 		}
-		f.info = info
+		*slot = info
+	}
+	return *slot, nil
+}
+
+func (f *foreground) foregroundProcesses(ctx context.Context, pids []uint64) ([]uint64, error) {
+	info, err := f.deviceInfo(ctx, &f.info)
+	if err != nil {
+		return nil, err
 	}
 	var shown []uint64
 	for _, pid := range pids {
-		running, err := f.info.Foreground(ctx, pid)
+		running, err := info.Foreground(ctx, pid)
 		if err != nil {
-			f.info.Close()
-			f.info = nil
+			info.Close()
 			return nil, err
 		}
 		if running {
@@ -235,17 +165,14 @@ func (f *foreground) foregroundProcesses(ctx context.Context, pids []uint64) ([]
 func (f *foreground) closeInfo() {
 	f.infoAccess.Lock()
 	defer f.infoAccess.Unlock()
-	if f.info != nil {
-		f.info.Close()
-		f.info = nil
+	for _, info := range []*instruments.DeviceInfo{f.info, f.list} {
+		if info != nil {
+			info.Close()
+		}
 	}
+	f.info, f.list = nil, nil
 }
 
-// probeFront reports an app as soon as the device runs it in front, as the
-// frontmost application stayed on the previous app for up to 1.8 s while a
-// launched one already drew its first screens, reading it waited on the
-// launching app, and the accessibility service stopped answering for 3 s while
-// a resumed app came to the front (iPhone18,2, iOS 27.2 24B119).
 func (f *foreground) probeFront(ctx context.Context, pid uint64, bundleID string) {
 	if bundleID == "" || bundleID == springboardBundleID {
 		return
@@ -276,22 +203,6 @@ func (f *foreground) probeFront(ctx context.Context, pid uint64, bundleID string
 	}
 }
 
-func (f *foreground) observed(front frontApplication) {
-	f.access.Lock()
-	moved := front.pid != f.frontmost
-	f.frontmost = front.pid
-	held := front.bundleID == springboardBundleID && f.current.app()
-	f.access.Unlock()
-	switch {
-	case !held:
-		if !f.contradicted(f.conn.ctx, front) {
-			f.saw(front)
-		}
-	case moved:
-		f.trigger(0)
-	}
-}
-
 func (f *foreground) bundleOf(pid uint64) string {
 	f.access.Lock()
 	defer f.access.Unlock()
@@ -310,9 +221,6 @@ func (f *foreground) saw(front frontApplication) frontApplication {
 	pid := front.pid
 	changed := pid != f.current.pid || front.bundleID != f.current.bundleID
 	f.current = front
-	if path := f.paths[pid]; path != "" && f.bundles != nil {
-		f.bundles[path] = front.bundleID
-	}
 	if !changed {
 		return front
 	}
@@ -381,30 +289,16 @@ func (f *foreground) acted() {
 		f.current.at = time.Time{}
 	}
 	f.access.Unlock()
-	f.trigger(frontBurst)
-}
-
-func (f *foreground) pushed(push accessibility.Push) {
-	switch {
-	case push.Frontmost != nil:
-		pid := push.Frontmost.Ref.PID
-		f.access.Lock()
-		changed := f.stop != nil && pid != f.current.pid && pid != f.frontmost
-		f.frontmost = pid
-		if changed {
-			f.pending = pid
-		}
-		f.access.Unlock()
-		if changed {
-			f.trigger(0)
-		}
-	case push.Notification == notificationFocusChanged:
-		f.trigger(frontBurst)
-	}
 }
 
 func (f *foreground) track(ctx context.Context, stopped chan struct{}) {
 	defer close(stopped)
+	_, _, unwatch := f.conn.darwin.watch()
+	defer unwatch()
+	notified, unsubscribe := f.conn.events.subscribe(func(event Event) bool {
+		return event.Kind == EventDevice && slices.Contains(frontNotifications, event.Name)
+	})
+	defer unsubscribe()
 	if err := f.loadBundles(ctx); err != nil && ctx.Err() == nil {
 		f.conn.logger.Debug(E.Cause(err, "list apps"))
 	}
@@ -427,7 +321,7 @@ func (f *foreground) track(ctx context.Context, stopped chan struct{}) {
 	confirmed := make(chan struct{}, 1)
 	confirming := true
 	go func() {
-		f.confirm(ctx, 0)
+		f.confirm(ctx)
 		confirmed <- struct{}{}
 	}()
 	var delay time.Duration
@@ -436,9 +330,9 @@ func (f *foreground) track(ctx context.Context, stopped chan struct{}) {
 		case <-confirmed:
 			confirming = false
 			f.access.Lock()
-			pending, until := f.pending, f.until
+			until := f.until
 			f.access.Unlock()
-			if pending != 0 || time.Now().Before(until) {
+			if time.Now().Before(until) {
 				confirm.Reset(min(max(delay*2, pollFirst), pollLongest))
 			}
 			continue
@@ -463,6 +357,9 @@ func (f *foreground) track(ctx context.Context, stopped chan struct{}) {
 			f.conn.logger.Debug("watch app states: ", states.Err())
 			pushes, pushesDone = nil, nil
 			continue
+		case <-notified:
+			f.trigger(frontBurst)
+			continue
 		case <-f.kick:
 			delay = 0
 		case <-confirm.C:
@@ -473,12 +370,11 @@ func (f *foreground) track(ctx context.Context, stopped chan struct{}) {
 			continue
 		}
 		f.access.Lock()
-		pending, until := f.pending, f.until
-		f.pending = 0
+		until := f.until
 		f.access.Unlock()
 		confirming = true
 		go func() {
-			f.confirm(ctx, pending)
+			f.confirm(ctx)
 			confirmed <- struct{}{}
 		}()
 		if left := time.Until(until); left > 0 {
@@ -488,27 +384,13 @@ func (f *foreground) track(ctx context.Context, stopped chan struct{}) {
 	}
 }
 
-func (f *foreground) confirm(ctx context.Context, pushed uint64) {
-	if pushed != 0 {
-		if bundleID := f.bundleOf(pushed); bundleID != "" && bundleID != springboardBundleID {
-			front := frontApplication{pid: pushed, bundleID: bundleID, at: time.Now(), via: "push"}
-			if !f.contradicted(ctx, front) {
-				f.saw(front)
-				f.markTracked()
-				return
-			}
-		}
-	}
+func (f *foreground) confirm(ctx context.Context) {
 	if _, err := f.read(ctx); err != nil {
 		if ctx.Err() == nil {
 			f.conn.logger.Debug(E.Cause(err, "read the frontmost application"))
 		}
 		return
 	}
-	f.markTracked()
-}
-
-func (f *foreground) markTracked() {
 	f.access.Lock()
 	f.tracked = f.stop != nil
 	f.access.Unlock()
@@ -526,13 +408,15 @@ func (f *foreground) loadBundles(ctx context.Context) error {
 		return err
 	}
 	bundles := make(map[string]string)
+	listed := make(map[string]bool)
 	for _, app := range installed {
 		if app.Path != "" {
 			bundles[app.Path] = app.BundleID
 		}
+		listed[app.BundleID] = true
 	}
 	f.access.Lock()
-	f.bundles = bundles
+	f.bundles, f.listed = bundles, listed
 	f.access.Unlock()
 	return nil
 }
@@ -544,7 +428,6 @@ func (f *foreground) record(state instruments.AppState) (relevant, launched bool
 	switch {
 	case state.State == "Terminated":
 		delete(f.paths, state.PID)
-		delete(f.probes, state.PID)
 	case state.Path != "":
 		f.paths[state.PID] = state.Path
 	}
@@ -554,7 +437,6 @@ func (f *foreground) record(state instruments.AppState) (relevant, launched bool
 	if state.State != "Running" || f.bundles[state.Path] == "" {
 		return false, false
 	}
-	f.probes[state.PID] = time.Now().Add(frontBurst)
 	return true, !known
 }
 
@@ -577,7 +459,6 @@ func (f *foreground) waitFor(ctx context.Context, bundleID string, deadline time
 		}
 	})
 	defer cancel()
-	f.trigger(time.Until(deadline))
 	for {
 		front, err := f.get(ctx)
 		if err != nil || front.bundleID == bundleID {

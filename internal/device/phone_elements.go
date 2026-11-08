@@ -87,12 +87,9 @@ func (p *Phone) Find(ctx context.Context, selectors []*Selector, depth int64) (*
 		}
 		if screen.Root == nil {
 			p.connection.trace(started, "find.skipped", waits+", "+screen.BundleID+" pid "+strconv.FormatUint(screen.App.Ref.PID, 10)+" is in front", time.Since(started))
-			if base == nil {
-				c.front.observed(frontApplication{pid: screen.App.Ref.PID, bundleID: screen.BundleID, at: started, via: "find"})
-			}
 			return (*PhoneModel)(nil), nil
 		}
-		model := p.model(c, geometry, screen, started, base, SnapshotOptions{Depth: depth, Within: within}, options.PID == 0 && base == nil)
+		model := p.model(c, geometry, screen, started, base, SnapshotOptions{Depth: depth, Within: within})
 		p.connection.trace(started, "find.read", waits+", "+strconv.Itoa(len(model.nodes))+" nodes of "+screen.BundleID+", "+strconv.Itoa(len(model.Truncated))+" cut off, "+strconv.FormatUint(c.events.screen.Load()-seen, 10)+" screen changes since", time.Since(started))
 		return model, nil
 	})
@@ -113,6 +110,8 @@ func (p *Phone) Changed(ctx context.Context, seen uint64, timeout time.Duration)
 		return err
 	}
 	defer done()
+	release := c.ax.hold()
+	defer release()
 	changed, stop := c.events.watch(true)
 	defer stop()
 	if c.events.screen.Load() != seen {

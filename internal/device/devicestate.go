@@ -125,7 +125,7 @@ func (d *darwinNotifications) relay(active *notificationRelay) error {
 	stop := context.AfterFunc(ctx, func() { conn.Close() })
 	defer stop()
 	defer conn.Close()
-	for _, name := range stateNotifications {
+	for _, name := range append(stateNotifications, substantialTransition) {
 		if err = conn.Send(map[string]any{"Command": "ObserveNotification", "Name": name}); err != nil {
 			return E.Cause(err, "observe ", name)
 		}
@@ -148,10 +148,12 @@ func (d *darwinNotifications) relay(active *notificationRelay) error {
 			}
 			name, _ := message["Name"].(string)
 			d.conn.events.publish(Event{Kind: EventDevice, Name: name})
-			for signal := range d.watchers {
-				select {
-				case signal <- struct{}{}:
-				default:
+			if name != substantialTransition {
+				for signal := range d.watchers {
+					select {
+					case signal <- struct{}{}:
+					default:
+					}
 				}
 			}
 			d.access.Unlock()

@@ -105,7 +105,6 @@ func (c *conn) pushed(push accessibility.Push) {
 		}
 	}
 	c.events.publish(event)
-	c.front.pushed(push)
 }
 
 func (c *conn) springboardPID(ctx context.Context) (uint64, error) {

@@ -503,10 +503,10 @@ func (p *Phone) readScreen(ctx context.Context, c *conn, client *accessibility.R
 	if err != nil {
 		return nil, err
 	}
-	return p.model(c, geometry, screen, started, base, options, base == nil), nil
+	return p.model(c, geometry, screen, started, base, options), nil
 }
 
-func (p *Phone) model(c *conn, geometry phoneGeometry, screen *accessibility.Screen, started time.Time, base *PhoneNode, read SnapshotOptions, front bool) *PhoneModel {
+func (p *Phone) model(c *conn, geometry phoneGeometry, screen *accessibility.Screen, started time.Time, base *PhoneNode, read SnapshotOptions) *PhoneModel {
 	model := modelOf(geometry, screen, base)
 	model.generation = c.ax.current()
 	model.read = read
@@ -521,9 +521,6 @@ func (p *Phone) model(c *conn, geometry phoneGeometry, screen *accessibility.Scr
 			strings.Join(common.Map(model.Truncated, func(node *PhoneNode) string { return refText(node.AX.Ref) + " " + describeElement(node.AX) }), ", "))
 	}
 	c.ax.answered(screen.App.Ref.PID)
-	if front {
-		c.front.observed(frontApplication{pid: screen.App.Ref.PID, bundleID: screen.BundleID, at: started, via: "tree"})
-	}
 	return model
 }
 
