@@ -7,7 +7,7 @@ import UIKit
 import UniformTypeIdentifiers
 import os
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 @Perceptible
 final class ScriptDialogs {
     static let shared = ScriptDialogs()
@@ -173,7 +173,7 @@ private nonisolated enum Metrics {
     static let exitDuration = 0.4
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 private final class OverlayWindow: UIWindow {
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         guard ScriptDialogs.shared.capturesTouch(at: point) || rootViewController?.presentedViewController != nil else { return nil }
@@ -181,7 +181,7 @@ private final class OverlayWindow: UIWindow {
     }
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 private final class OverlayController: UIViewController {
     private let backdropView = UIImageView()
     private let host = UIHostingController(rootView: DialogOverlay())
@@ -211,7 +211,7 @@ private final class OverlayController: UIViewController {
     }
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 private struct DialogOverlay: View {
     private let dialogs = ScriptDialogs.shared
 
@@ -238,7 +238,7 @@ private struct DialogOverlay: View {
 }
 
 // WFBannerTransitionSettings (iOS 27.2 24B5084k)
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 private struct DialogTransition: Transition {
     let scale: CGFloat
 
@@ -250,12 +250,11 @@ private struct DialogTransition: Transition {
     }
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 private struct DialogPlatter: View {
     let presentation: ScriptDialogs.Presentation
     @State private var drag: CGFloat = 0
     @State private var contentHeight: CGFloat?
-    private let isPad = UIDevice.current.userInterfaceIdiom == .pad
 
     var body: some View {
         ScrollView {
@@ -263,13 +262,13 @@ private struct DialogPlatter: View {
         }
         .scrollBounceBehavior(.basedOnSize)
         .frame(maxHeight: contentHeight)
-        .frame(maxWidth: isPad ? Metrics.padWidth : .infinity)
+        .frame(maxWidth: UIDevice.isPad ? Metrics.padWidth : .infinity)
         .clipShape(.rect(cornerRadius: Metrics.cornerRadius))
-        .glassEffect(.regular, in: .rect(cornerRadius: Metrics.cornerRadius))
+        .glassEffectCompat(in: .rect(cornerRadius: Metrics.cornerRadius))
         .onGeometryChange(for: CGRect.self) { $0.frame(in: .global) } action: { ScriptDialogs.shared.platterFrame = $0 }
         .padding(.horizontal, 8)
-        .padding(.top, isPad ? Metrics.padTop : 5.0 / 3)
-        .ignoresSafeArea(.container, edges: isPad ? .top : [])
+        .padding(.top, UIDevice.isPad ? Metrics.padTop : 5.0 / 3)
+        .ignoresSafeArea(.container, edges: UIDevice.isPad ? .top : [])
         .offset(y: drag < 0 ? drag : sqrt(drag) * 3)
         .gesture(
             DragGesture(minimumDistance: 12)
@@ -402,7 +401,7 @@ private struct DialogAction {
     }
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 private struct DialogActions: View {
     private let actions: [DialogAction]
 
@@ -494,7 +493,7 @@ private struct DialogButtonStyle: ButtonStyle {
     }
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 private struct DialogList: View {
     let rows: [String]
     let choose: (Int) -> Void
@@ -530,7 +529,7 @@ private struct DialogList: View {
     }
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 private struct ValueDialog: View {
     let prompt: String?
     let field: DialogRequest.Field
@@ -746,7 +745,7 @@ private struct DialogRow<Label: View, Accessory: View>: View {
     }
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 private struct InputField: UIViewRepresentable {
     enum Kind: Equatable {
         case text(multiline: Bool, literal: Bool)
@@ -862,7 +861,7 @@ private struct InputField: UIViewRepresentable {
         }
 
         func signAccessory(for field: UITextField) -> UIView {
-            var configuration = UIButton.Configuration.glass()
+            var configuration: UIButton.Configuration = if #available(iOS 26, *) { .glass() } else { .gray() }
             configuration.image = UIImage(systemName: "plus.forwardslash.minus")
             configuration.cornerStyle = .capsule
             let button = UIButton(
@@ -970,7 +969,7 @@ private struct ContactPicker: UIViewControllerRepresentable {
     }
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 private struct PlacemarkSearch: View {
     let choose: (String, DialogAnswer) -> Void
     let dismiss: () -> Void
@@ -1010,16 +1009,26 @@ private struct PlacemarkSearch: View {
                 .onChange(of: query) { completer.search(query) }
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
-                        Button(role: .cancel, action: dismiss)
+                        if #available(iOS 26, *) {
+                            Button(role: .cancel, action: dismiss)
+                        } else {
+                            Button(SystemText.workflowUI("Cancel"), role: .cancel, action: dismiss)
+                        }
                     }
                     ToolbarItem(placement: .confirmationAction) {
-                        Button(role: .confirm) {
-                            if let selection { confirm(selection) }
+                        if #available(iOS 26, *) {
+                            Button(role: .confirm, action: done)
+                        } else {
+                            Button(SystemText.workflowUI("Done"), action: done)
                         }
                     }
                 }
             }
         }
+    }
+
+    private func done() {
+        if let selection { confirm(selection) }
     }
 
     private func confirm(_ completion: MKLocalSearchCompletion) {
@@ -1031,8 +1040,18 @@ private struct PlacemarkSearch: View {
                 AppDirectory.logger.error("look up the place: \(error, privacy: .public)")
             }
             let name = item?.name ?? completion.title
-            choose(name, .placemark(name: name, coordinate: item?.location.coordinate, address: item?.address?.fullAddress))
+            choose(name, .placemark(name: name, coordinate: item?.coordinateCompat, address: item?.fullAddressCompat))
         }
+    }
+}
+
+extension MKMapItem {
+    var coordinateCompat: CLLocationCoordinate2D {
+        if #available(iOS 26, *) { location.coordinate } else { placemark.coordinate }
+    }
+
+    var fullAddressCompat: String? {
+        if #available(iOS 26, *) { address?.fullAddress } else { placemark.title }
     }
 }
 

@@ -5,7 +5,6 @@ import (
 	"errors"
 	"net"
 	"strconv"
-	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -17,6 +16,7 @@ import (
 	"github.com/swipt-automation/swipt/internal/coredevice/display"
 	"github.com/swipt-automation/swipt/internal/coredevice/imagemounter"
 	"github.com/swipt-automation/swipt/internal/rfb"
+	"github.com/swipt-automation/swipt/internal/version"
 )
 
 // The Developer Disk Image registers this RemoteService for /System/Developer/usr/libexec/dtremotedisplayd
@@ -597,8 +597,8 @@ func (s *Connection) serveDevice(session context.Context, device *coredevice.Dev
 	s.access.Unlock()
 	s.notify(func(observer Observer) { observer.DeviceConnected(info) })
 	s.setModel(info.ProductType)
-	if major, ok := majorVersion(info.OSVersion); ok && major < 27 {
-		return newError(ProblemUnsupported, "iOS ", info.OSVersion, " cannot share its screen; it needs iOS 27 or later")
+	if current, ok := version.Parse(info.OSVersion); ok && !current.AtLeast(version.Version{17, 4}) {
+		return newError(ProblemUnsupported, "iOS ", info.OSVersion, " cannot share its screen; it needs iOS 17.4 or later")
 	}
 	s.setState(StatePreparing, nil)
 	err := s.prepareDiskImage(session, device, imagemounter.New(device, s.logger))
@@ -823,12 +823,6 @@ func (s *Connection) geometry() screenGeometry {
 		Density: s.screen.Density(),
 		Turns:   touchTurns(s.display, s.screen.Width, s.screen.Height),
 	}
-}
-
-func majorVersion(version string) (int, bool) {
-	major, _, _ := strings.Cut(version, ".")
-	value, err := strconv.Atoi(major)
-	return value, err == nil
 }
 
 type notifier struct {

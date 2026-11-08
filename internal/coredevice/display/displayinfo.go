@@ -7,6 +7,7 @@ import (
 	"github.com/sagernet/sing/common"
 	E "github.com/sagernet/sing/common/exceptions"
 	"github.com/swipt-automation/swipt/internal/coredevice"
+	"github.com/swipt-automation/swipt/internal/version"
 )
 
 // pymobiledevice3 sends getdisplayinfo to deviceinfo with no action
@@ -43,10 +44,11 @@ func (c *Client) BacklightState(ctx context.Context) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return primaryBacklightState(output)
+	current, knownVersion := version.Parse(c.device.Info().OSVersion)
+	return primaryBacklightState(output, knownVersion && !current.AtLeast(version.Version{27}))
 }
 
-func primaryBacklightState(output map[string]any) (string, error) {
+func primaryBacklightState(output map[string]any, aggregateForUnknown bool) (string, error) {
 	var selected map[string]any
 	for _, value := range array(output["displays"]) {
 		display := dictionary(value)
@@ -78,6 +80,13 @@ func primaryBacklightState(output map[string]any) (string, error) {
 	// or a display it has no backlight of (DDI 27B5028f CoreDeviceUtilities
 	// 0x37298c, 0x35aecc, 0x372bbc).
 	state, _ := selected["backlightState"].(string)
+	// It reads a display's backlight only through BLSDisplayReference, and answers
+	// unknown for every display where BacklightServices has no such class, as on
+	// iOS 26.6.2 23G90; the aggregate state comes from BLSBacklight.sharedBacklight
+	// (DDI 27B5028f CoreDeviceUtilities 0x372a04, 0x37206c).
+	if aggregate, _ := output["backlightState"].(string); aggregateForUnknown && state == "unknown" && aggregate != "" {
+		state = aggregate
+	}
 	switch state {
 	case "off", "inactiveOn", "activeOn":
 		return state, nil

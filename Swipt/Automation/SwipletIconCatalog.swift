@@ -1,14 +1,14 @@
 import SwiftUI
 import UIKit
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 struct SwipletIconColor: Identifiable {
     let id: String
     let top: Color
     let bottom: Color
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 enum SwipletIconCatalog {
     // VoiceShortcutClient +[WFColor workflowGradientPalette]: Display P3 base colors (light, dark, increased contrast light, increased contrast dark)
     // under a white overlay fading from 14% to 0%.
@@ -31,7 +31,7 @@ enum SwipletIconCatalog {
     ]
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 extension SwipletIconColor {
     fileprivate init(
         _ id: String,

@@ -2,7 +2,7 @@ import AppIntents
 import LibSwipt
 import UniformTypeIdentifiers
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 enum ServiceOperation: String, AppEnum {
     case turnOn
     case turnOff
@@ -16,7 +16,7 @@ enum ServiceOperation: String, AppEnum {
     ]
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 struct SwipletActionEntity: AppEntity {
     static let typeDisplayRepresentation: TypeDisplayRepresentation = "Swiplet Action"
     static let defaultQuery = SwipletActionQuery()
@@ -33,7 +33,7 @@ struct SwipletActionEntity: AppEntity {
     }
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 struct SwipletActionQuery: EntityStringQuery {
     @MainActor private var all: [SwipletActionEntity] {
         let store = SwipletStore.shared
@@ -59,7 +59,7 @@ struct SwipletActionQuery: EntityStringQuery {
     }
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 struct RunSwipletActionIntent: AppIntent {
     static let title: LocalizedStringResource = "Run Swiplet Action"
     static let description = IntentDescription("Runs an action of a swiplet with the input as JSON, and returns its output as JSON.")
@@ -89,7 +89,7 @@ struct RunSwipletActionIntent: AppIntent {
     }
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 struct SwipletServiceEntity: AppEntity {
     static let typeDisplayRepresentation: TypeDisplayRepresentation = "Swiplet"
     static let defaultQuery = SwipletServiceQuery()
@@ -102,7 +102,7 @@ struct SwipletServiceEntity: AppEntity {
     }
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 struct SwipletServiceQuery: EntityStringQuery {
     @MainActor private var all: [SwipletServiceEntity] {
         let store = SwipletStore.shared
@@ -124,7 +124,7 @@ struct SwipletServiceQuery: EntityStringQuery {
     }
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 struct SetSwipletServiceIntent: AppIntent {
     static let title: LocalizedStringResource = "Set Swiplet Service"
     static let description = IntentDescription("Turns the service of a swiplet on or off, and returns whether it’s on afterwards.")
@@ -152,7 +152,7 @@ struct SetSwipletServiceIntent: AppIntent {
     }
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 struct SwiptShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
         AppShortcut(

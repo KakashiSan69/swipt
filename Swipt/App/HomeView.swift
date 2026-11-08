@@ -141,7 +141,7 @@ struct HomeView: View {
     #if os(iOS)
     @ViewBuilder
     private var swipletsView: some View {
-        if #available(iOS 27, *), Platform.isSupported {
+        if #available(iOS 17.4, *), Platform.isSupported {
             SwipletsView()
         } else {
             PlatformUnsupportedView(title: "Swiplets")

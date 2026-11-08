@@ -15,7 +15,7 @@ final class Platform {
     nonisolated private static let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "Swipt", category: "platform")
 
     static var isSupported: Bool {
-        guard #available(iOS 27, *) else { return false }
+        guard #available(iOS 17.4, *) else { return false }
         return !ProcessInfo.processInfo.isiOSAppOnMac
     }
 
@@ -90,7 +90,7 @@ final class Platform {
         let events = PlatformEvents(
             backdrop: { image in
                 DispatchQueue.main.sync {
-                    if #available(iOS 27, *) {
+                    if #available(iOS 17.4, *) {
                         ScriptDialogs.shared.showBackdrop(image)
                     }
                 }
@@ -177,7 +177,7 @@ final class Platform {
         observeActivity()
     }
 
-    @available(iOS 27, *)
+    @available(iOS 17.4, *)
     func callAction(_ swiplet: String, action: String, input: String, caller: String, dialogs: DialogHost) async throws -> String {
         calls += 1
         defer { calls -= 1 }
@@ -324,7 +324,7 @@ final class Platform {
             return
         }
         let box = UncheckedSendable(value: core)
-        guard #available(iOS 27, *) else {
+        guard #available(iOS 17.4, *) else {
             box.value.dismissDialog(dialogID)
             return
         }

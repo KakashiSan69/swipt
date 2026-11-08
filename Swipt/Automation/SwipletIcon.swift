@@ -21,7 +21,7 @@ nonisolated struct SwipletIcon: Hashable, Sendable {
     }
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 @MainActor
 extension SwipletIcon {
     var gradient: LinearGradient? {
@@ -31,7 +31,7 @@ extension SwipletIcon {
     }
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 struct SwipletIconImage: View {
     let icon: SwipletIcon
     var size: CGFloat = 24
@@ -56,7 +56,7 @@ struct SwipletIconImage: View {
     }
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 struct SwipletIconGlyph: View {
     let symbol: String
     let pointSize: CGFloat

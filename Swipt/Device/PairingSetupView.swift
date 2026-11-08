@@ -7,6 +7,7 @@ struct PairingSetupView: View {
     var next: (() -> Void)? = nil
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.openURL) private var openURL
     @State private var isPickingFile = false
     @State private var alert: AlertState?
 
@@ -17,28 +18,37 @@ struct PairingSetupView: View {
         WithPerceptionTracking {
             SetupPage(
                 "link", Text("Pair with This Device"),
-                description: Text("Swipt needs to pair with this device to connect to its developer services.")
+                description: description
             ) {
-                PairingGuideView(hostName: session.hostName)
-                VStack(alignment: .leading, spacing: 10) {
-                    SetupStepLine(number: 1, text: Text("Go to Settings › Privacy & Security › Developer Mode."))
-                    SetupStepLine(number: 2, text: Text("Tap “\("Pair with \(session.hostName)")”."))
-                    SetupStepLine(number: 3, text: Text("Enter the pairing code shown in the Live Activity."))
-                }
-                switch session.state {
-                case .code(let pin):
-                    PairingCodeView(pin: pin)
-                case .waiting:
-                    InlineProgress("Waiting for Settings")
-                case .idle, .failed:
-                    EmptyView()
+                if #available(iOS 27, *) {
+                    PairingGuideView(hostName: session.hostName)
+                    VStack(alignment: .leading, spacing: 10) {
+                        SetupStepLine(number: 1, text: Text("Go to Settings › Privacy & Security › Developer Mode."))
+                        SetupStepLine(number: 2, text: Text("Tap “\("Pair with \(session.hostName)")”."))
+                        SetupStepLine(number: 3, text: Text("Enter the pairing code shown in the Live Activity."))
+                    }
+                    switch session.state {
+                    case .code(let pin):
+                        PairingCodeView(pin: pin)
+                    case .waiting:
+                        InlineProgress("Waiting for Settings")
+                    case .idle, .failed:
+                        EmptyView()
+                    }
                 }
             } actions: {
-                SetupPrimaryButton(title: Text("Pair in Settings"), action: pairInSettings)
-                if session.isInProgress {
-                    SetupSecondaryButton(title: Text("Cancel")) { session.cancel() }
+                if #available(iOS 27, *) {
+                    SetupPrimaryButton(title: Text("Pair in Settings"), action: pairInSettings)
+                    if session.isInProgress {
+                        SetupSecondaryButton(title: Text("Cancel")) { session.cancel() }
+                    } else {
+                        SetupSecondaryButton(title: Text("Import Pairing File…")) { isPickingFile = true }
+                    }
                 } else {
-                    SetupSecondaryButton(title: Text("Import Pairing File…")) { isPickingFile = true }
+                    SetupPrimaryButton(title: Text("Import Pairing File…")) { isPickingFile = true }
+                    SetupSecondaryButton(title: Text("How to Get This File")) {
+                        openURL(URL(string: "https://swipt.io/\(Bundle.main.preferredLocalizations.first ?? "en")/docs/setup")!)
+                    }
                 }
             }
             .fileImporter(isPresented: $isPickingFile, allowedContentTypes: [.item]) { result in
@@ -56,6 +66,14 @@ struct PairingSetupView: View {
                 }
             }
         }
+    }
+
+    private var description: Text {
+        let description = String(localized: "Swipt needs to pair with this device to connect to its developer services.")
+        if #available(iOS 27, *) {
+            return Text(verbatim: description)
+        }
+        return Text(verbatim: description + "\n\n" + String(localized: "On devices running a version earlier than iOS 27, Swipt can’t provide self-service pairing, so you need a computer to get a pairing file."))
     }
 
     private var problemAlert: Binding<AlertState?> {

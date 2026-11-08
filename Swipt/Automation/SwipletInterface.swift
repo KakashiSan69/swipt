@@ -10,7 +10,7 @@ import SwiftUI
 internal import SwiptHost
 import os
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 struct SwipletInterface: View {
     let name: String
     let entry: SwipletEntry
@@ -25,7 +25,7 @@ struct SwipletInterface: View {
     }
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 private struct SwipletSurfaceView: UIViewControllerRepresentable {
     let name: String
     let entry: SwipletEntry
@@ -43,7 +43,7 @@ private struct SwipletSurfaceView: UIViewControllerRepresentable {
     }
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 private final class SwipletViewController: UIViewController {
     private let name: String
     private var displayed: SwipletSurface
@@ -98,7 +98,7 @@ private final class SwipletViewController: UIViewController {
     }
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 private final class SwipletRuntime: SwiptHostDelegate {
     nonisolated let swiplet: String
     let entry: SwipletEntry
@@ -158,9 +158,10 @@ private final class SwipletRuntime: SwiptHostDelegate {
             items = []
         }
         let places = items.map { item -> [String: Any] in
-            var place: [String: Any] = ["coordinate": [item.location.coordinate.latitude, item.location.coordinate.longitude]]
+            let coordinate = item.coordinateCompat
+            var place: [String: Any] = ["coordinate": [coordinate.latitude, coordinate.longitude]]
             place["name"] = item.name
-            place["address"] = item.address?.fullAddress
+            place["address"] = item.fullAddressCompat
             return place
         }
         return String(decoding: try JSONSerialization.data(withJSONObject: places), as: UTF8.self)
@@ -214,7 +215,7 @@ private final class SwipletRuntime: SwiptHostDelegate {
     }
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 final class SwipletSurface {
     let view: RCTSurfaceHostingProxyRootView
     fileprivate let runtime: SwipletRuntime
@@ -271,7 +272,7 @@ final class SwipletSurface {
     }
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 final class SwipletHost {
     static let shared = SwipletHost()
 

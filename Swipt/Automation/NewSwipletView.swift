@@ -2,7 +2,7 @@ import Perception
 import SwiftUI
 import UniformTypeIdentifiers
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 struct NewSwipletView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var isPickingFile = false
@@ -101,7 +101,7 @@ struct NewSwipletView: View {
     }
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 private struct ImportFromURLView: View {
     @Binding var isImported: Bool
 

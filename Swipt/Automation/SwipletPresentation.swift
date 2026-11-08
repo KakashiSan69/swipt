@@ -11,7 +11,7 @@ func topViewController() -> UIViewController? {
 }
 
 // Pushing a view that holds a NavigationStack onto another NavigationStack hangs the main thread (iOS 27.2 24B115).
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 @MainActor
 enum SwipletPresentation {
     static func open(name: String, entry: SwipletEntry) {
@@ -29,7 +29,7 @@ enum SwipletPresentation {
     }
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 private final class SwipletPresentationController: UIHostingController<AnyView>, UIViewControllerTransitioningDelegate, UIGestureRecognizerDelegate {
     private let name: String
     private var interaction: UIPercentDrivenInteractiveTransition?

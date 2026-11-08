@@ -84,7 +84,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         let content = response.notification.request.content
         guard content.categoryIdentifier == ErrorAlert.notificationCategory else { return }
         await MainActor.run {
-            if #available(iOS 27, *), let name = content.userInfo[ErrorAlert.swipletKey] as? String, !SwipletHost.shared.isPresented(name),
+            if #available(iOS 17.4, *), let name = content.userInfo[ErrorAlert.swipletKey] as? String, !SwipletHost.shared.isPresented(name),
                let entry = SwipletStore.shared.interfaces[name] {
                 SwipletPresentation.open(name: name, entry: entry)
             }

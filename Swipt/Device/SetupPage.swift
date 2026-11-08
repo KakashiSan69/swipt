@@ -3,7 +3,7 @@ import UIKit
 
 struct SetupPage<Content: View, Actions: View>: View {
     private static var textWidth: CGFloat { 520 }
-    private static var contentWidth: CGFloat { UIDevice.current.userInterfaceIdiom == .pad ? 760 : 520 }
+    private static var contentWidth: CGFloat { UIDevice.isPad ? 760 : 520 }
     private static var actionsWidth: CGFloat { 480 }
 
     private let icon: String

@@ -8,7 +8,8 @@
 
 ## Requirements
 
-- iOS 27
+- iOS 27 (First-tier support)
+- iOS 17.4–26 (I do not have actual devices for testing)
 
 ## Architecture
 

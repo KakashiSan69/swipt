@@ -1,7 +1,7 @@
 import Perception
 import SwiftUI
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 struct SwipletsView: View {
     @State private var isAddingSwiplet = false
     @State private var isShowingUpdates = false
@@ -205,7 +205,7 @@ struct SwipletsView: View {
     }
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 struct SwipletUpdatesView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var alert: AlertState?

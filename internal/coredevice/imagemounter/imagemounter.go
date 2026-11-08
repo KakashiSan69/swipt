@@ -20,6 +20,10 @@ const (
 	// pymobiledevice3 uses this RSD shim for mobile_image_mounter
 	// (pymobiledevice3 9c33842, pymobiledevice3/services/mobile_image_mounter.py:54).
 	mounterService = "com.apple.mobile.mobile_image_mounter.shim.remote"
+	// mobile_storage_proxy exposes the image-mounter commands through this
+	// RemoteXPC bridge (pymobiledevice3 cae0191,
+	// pymobiledevice3/services/storage_mounter_bridge.py:24-35).
+	mounterBridgeService = "com.apple.mobile.storage_mounter_proxy.bridge"
 	// pymobiledevice3 uses this RemoteXPC service for cryptexd
 	// (pymobiledevice3 9c33842, pymobiledevice3/services/cryptexd.py:384).
 	cryptexService = "com.apple.security.cryptexd.remote"

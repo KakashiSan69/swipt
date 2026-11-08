@@ -8,7 +8,7 @@ struct SwipletOpener: ViewModifier {
     func body(content: Content) -> some View {
         content
             .onOpenURL { url in
-                guard #available(iOS 27, *), url.isFileURL else { return }
+                guard #available(iOS 17.4, *), url.isFileURL else { return }
                 Task {
                     do {
                         let opened = try await SwipletStore.shared.open(url)
@@ -22,7 +22,7 @@ struct SwipletOpener: ViewModifier {
                 }
             }
             .sheet(item: $preview) { preview in
-                if #available(iOS 27, *) {
+                if #available(iOS 17.4, *) {
                     NavigationStackCompat {
                         OpenSwipletView(preview: preview)
                     }
@@ -32,7 +32,7 @@ struct SwipletOpener: ViewModifier {
     }
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 struct OpenSwipletView: View {
     let preview: SwipletPreview
 

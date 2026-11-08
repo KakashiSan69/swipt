@@ -1,6 +1,10 @@
 import SwiftUI
 #if os(iOS)
 import UIKit
+
+extension UIDevice {
+    static var isPad: Bool { current.userInterfaceIdiom == .pad }
+}
 #endif
 
 struct NavigationStackCompat<Content: View>: View {

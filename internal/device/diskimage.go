@@ -9,6 +9,7 @@ import (
 	E "github.com/sagernet/sing/common/exceptions"
 	"github.com/swipt-automation/swipt/internal/coredevice"
 	"github.com/swipt-automation/swipt/internal/coredevice/imagemounter"
+	"github.com/swipt-automation/swipt/internal/version"
 )
 
 var errRemounted = E.New("the Developer Disk Image is mounted now; reconnecting to reach its services")
@@ -18,8 +19,15 @@ var errRemounted = E.New("the Developer Disk Image is mounted now; reconnecting 
 var diskImageVariants = []imagemounter.Variant{imagemounter.Cryptex, imagemounter.Personalized}
 
 func (s *Connection) prepareDiskImage(ctx context.Context, device *coredevice.Device, images *imagemounter.Client) error {
+	current, knownVersion := version.Parse(device.Info().OSVersion)
+	// DDI cryptex asset indices changed in iOS 26.4 (pymobiledevice3 cae0191,
+	// services/cryptexd.py, DDI_CRYPTEX_MIN_VERSION).
+	cryptexSupported := !knownVersion || current.AtLeast(version.Version{26, 4})
 	if device.HasService(displayService) {
 		s.relisted = false
+		if !cryptexSupported {
+			return nil
+		}
 		return s.updateDiskImage(ctx, images)
 	}
 	status, err := images.Status(ctx)
@@ -41,8 +49,11 @@ func (s *Connection) prepareDiskImage(ctx context.Context, device *coredevice.De
 		return newError(ProblemNoDiskImage, "the Developer Disk Image is not mounted, and there is no directory for its files")
 	}
 	var failure error
-	variants := diskImageVariants
-	if status.CryptexError != nil {
+	variants := []imagemounter.Variant{imagemounter.Personalized}
+	if cryptexSupported {
+		variants = diskImageVariants
+	}
+	if cryptexSupported && status.CryptexError != nil {
 		s.logger.Warn("cryptexd failed, trying the personalized disk image first: ", status.CryptexError)
 		failure = E.Cause(status.CryptexError, "list installed cryptexes")
 		variants = []imagemounter.Variant{imagemounter.Personalized, imagemounter.Cryptex}

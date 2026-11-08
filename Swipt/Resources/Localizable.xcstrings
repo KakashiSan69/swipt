@@ -4895,610 +4895,610 @@
         }
       }
     },
-    "Automating this iPad needs iPadOS 27 or later." : {
+    "Automating this iPad needs iPadOS 17.4 or later." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تتطلب أتمتة جهاز iPad هذا نظام iPadOS 27 أو أحدث."
+            "value" : "تتطلب أتمتة جهاز iPad هذا نظام iPadOS 17.4 أو أحدث."
           }
         },
         "bg" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Автоматизирането на този iPad изисква iPadOS 27 или по-нова версия."
+            "value" : "Автоматизирането на този iPad изисква iPadOS 17.4 или по-нова версия."
           }
         },
         "bn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "এই iPad অটোমেট করতে iPadOS 27 বা তার পরের ভার্সন প্রয়োজন।"
+            "value" : "এই iPad অটোমেট করতে iPadOS 17.4 বা তার পরের ভার্সন প্রয়োজন।"
           }
         },
         "ca" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Per automatitzar aquest iPad, cal l’iPadOS 27 o posterior."
+            "value" : "Per automatitzar aquest iPad, cal l’iPadOS 17.4 o posterior."
           }
         },
         "cs" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Automatizace tohoto iPadu vyžaduje iPadOS 27 nebo novější."
+            "value" : "Automatizace tohoto iPadu vyžaduje iPadOS 17.4 nebo novější."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Automatisering af denne iPad kræver iPadOS 27 eller nyere."
+            "value" : "Automatisering af denne iPad kræver iPadOS 17.4 eller nyere."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zum Automatisieren dieses iPad ist iPadOS 27 oder neuer erforderlich."
+            "value" : "Zum Automatisieren dieses iPad ist iPadOS 17.4 oder neuer erforderlich."
           }
         },
         "el" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Η αυτοματοποίηση αυτού του iPad απαιτεί iPadOS 27 ή νεότερη έκδοση."
+            "value" : "Η αυτοματοποίηση αυτού του iPad απαιτεί iPadOS 17.4 ή νεότερη έκδοση."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Para automatizar este iPad se necesita iPadOS 27 o posterior."
+            "value" : "Para automatizar este iPad se necesita iPadOS 17.4 o posterior."
           }
         },
         "es-419" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Para automatizar este iPad se necesita iPadOS 27 o posterior."
+            "value" : "Para automatizar este iPad se necesita iPadOS 17.4 o posterior."
           }
         },
         "fi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tämän iPadin automatisointi vaatii iPadOS 27:n tai uudemman."
+            "value" : "Tämän iPadin automatisointi vaatii iPadOS 17.4:n tai uudemman."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L’automatisation de cet iPad nécessite iPadOS 27 ou une version ultérieure."
+            "value" : "L’automatisation de cet iPad nécessite iPadOS 17.4 ou une version ultérieure."
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L’automatisation de cet iPad nécessite iPadOS 27 ou une version ultérieure."
+            "value" : "L’automatisation de cet iPad nécessite iPadOS 17.4 ou une version ultérieure."
           }
         },
         "gu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "આ iPadને ઑટોમેટ કરવા માટે iPadOS 27 અથવા તે પછીનું વર્ઝન જરૂરી છે."
+            "value" : "આ iPadને ઑટોમેટ કરવા માટે iPadOS 17.4 અથવા તે પછીનું વર્ઝન જરૂરી છે."
           }
         },
         "he" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "אוטומציה של ה-iPad הזה דורשת iPadOS 27 ואילך."
+            "value" : "אוטומציה של ה-iPad הזה דורשת iPadOS 17.4 ואילך."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "इस iPad को ऑटोमेट करने के लिए iPadOS 27 या उसके बाद का वर्शन आवश्यक है।"
+            "value" : "इस iPad को ऑटोमेट करने के लिए iPadOS 17.4 या उसके बाद का वर्शन आवश्यक है।"
           }
         },
         "hr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Za automatizaciju ovog iPad uređaja potreban je iPadOS 27 ili noviji."
+            "value" : "Za automatizaciju ovog iPad uređaja potreban je iPadOS 17.4 ili noviji."
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Az iPad automatizálásához iPadOS 27 vagy újabb verzió szükséges."
+            "value" : "Az iPad automatizálásához iPadOS 17.4 vagy újabb verzió szükséges."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mengotomatiskan iPad ini memerlukan iPadOS 27 atau lebih baru."
+            "value" : "Mengotomatiskan iPad ini memerlukan iPadOS 17.4 atau lebih baru."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Per automatizzare iPad è necessario iPadOS 27 o versione successiva."
+            "value" : "Per automatizzare iPad è necessario iPadOS 17.4 o versione successiva."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "このiPadを自動化するには、iPadOS 27以降が必要です。"
+            "value" : "このiPadを自動化するには、iPadOS 17.4以降が必要です。"
           }
         },
         "kk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Осы iPad құрылғысын автоматтандыру үшін iPadOS 27 немесе одан кейінгі нұсқасы қажет."
+            "value" : "Осы iPad құрылғысын автоматтандыру үшін iPadOS 17.4 немесе одан кейінгі нұсқасы қажет."
           }
         },
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ಈ iPad ಅನ್ನು ಸ್ವಯಂಚಾಲಿತಗೊಳಿಸಲು iPadOS 27 ಅಥವಾ ನಂತರದ ಆವೃತ್ತಿ ಅಗತ್ಯವಿದೆ."
+            "value" : "ಈ iPad ಅನ್ನು ಸ್ವಯಂಚಾಲಿತಗೊಳಿಸಲು iPadOS 17.4 ಅಥವಾ ನಂತರದ ಆವೃತ್ತಿ ಅಗತ್ಯವಿದೆ."
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 iPad를 자동화하려면 iPadOS 27 이상이 필요합니다."
+            "value" : "이 iPad를 자동화하려면 iPadOS 17.4 이상이 필요합니다."
           }
         },
         "lt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Norint automatizuoti šį „iPad”, reikia „iPadOS 27” ar naujesnės versijos."
+            "value" : "Norint automatizuoti šį „iPad”, reikia „iPadOS 17.4” ar naujesnės versijos."
           }
         },
         "ml" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ഈ iPad ഓട്ടോമേറ്റ് ചെയ്യാൻ iPadOS 27 അല്ലെങ്കിൽ അതിനുശേഷമുള്ള പതിപ്പ് ആവശ്യമാണ്."
+            "value" : "ഈ iPad ഓട്ടോമേറ്റ് ചെയ്യാൻ iPadOS 17.4 അല്ലെങ്കിൽ അതിനുശേഷമുള്ള പതിപ്പ് ആവശ്യമാണ്."
           }
         },
         "mr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "हे iPad स्वयंचलित करण्यासाठी iPadOS 27 किंवा नंतरची आवृत्ती आवश्यक आहे."
+            "value" : "हे iPad स्वयंचलित करण्यासाठी iPadOS 17.4 किंवा नंतरची आवृत्ती आवश्यक आहे."
           }
         },
         "ms" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pengautomasian iPad ini memerlukan iPadOS 27 atau lebih baharu."
+            "value" : "Pengautomasian iPad ini memerlukan iPadOS 17.4 atau lebih baharu."
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Automatisering av denne iPaden krever iPadOS 27 eller nyere."
+            "value" : "Automatisering av denne iPaden krever iPadOS 17.4 eller nyere."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Voor het automatiseren van deze iPad is iPadOS 27 of nieuwer vereist."
+            "value" : "Voor het automatiseren van deze iPad is iPadOS 17.4 of nieuwer vereist."
           }
         },
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ଏହି iPad କୁ ସ୍ୱୟଂଚାଳିତ କରିବା ପାଇଁ iPadOS 27 କିମ୍ବା ପରବର୍ତ୍ତୀ ସଂସ୍କରଣ ଆବଶ୍ୟକ।"
+            "value" : "ଏହି iPad କୁ ସ୍ୱୟଂଚାଳିତ କରିବା ପାଇଁ iPadOS 17.4 କିମ୍ବା ପରବର୍ତ୍ତୀ ସଂସ୍କରଣ ଆବଶ୍ୟକ।"
           }
         },
         "pa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ਇਸ iPad ਨੂੰ ਸਵੈਚਲਿਤ ਕਰਨ ਲਈ iPadOS 27 ਜਾਂ ਇਸ ਤੋਂ ਬਾਅਦ ਵਾਲਾ ਵਰਜਨ ਲੋੜੀਂਦਾ ਹੈ।"
+            "value" : "ਇਸ iPad ਨੂੰ ਸਵੈਚਲਿਤ ਕਰਨ ਲਈ iPadOS 17.4 ਜਾਂ ਇਸ ਤੋਂ ਬਾਅਦ ਵਾਲਾ ਵਰਜਨ ਲੋੜੀਂਦਾ ਹੈ।"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Automatyzacja tego iPada wymaga systemu iPadOS 27 lub nowszego."
+            "value" : "Automatyzacja tego iPada wymaga systemu iPadOS 17.4 lub nowszego."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Para automatizar este iPad, é necessário o iPadOS 27 ou posterior."
+            "value" : "Para automatizar este iPad, é necessário o iPadOS 17.4 ou posterior."
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Para automatizar este iPad, é necessário o iPadOS 27 ou posterior."
+            "value" : "Para automatizar este iPad, é necessário o iPadOS 17.4 ou posterior."
           }
         },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Automatizarea acestui iPad necesită iPadOS 27 sau o versiune ulterioară."
+            "value" : "Automatizarea acestui iPad necesită iPadOS 17.4 sau o versiune ulterioară."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Для автоматизации этого iPad требуется iPadOS 27 или новее."
+            "value" : "Для автоматизации этого iPad требуется iPadOS 17.4 или новее."
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Automatizácia tohto iPadu vyžaduje iPadOS 27 alebo novší."
+            "value" : "Automatizácia tohto iPadu vyžaduje iPadOS 17.4 alebo novší."
           }
         },
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Za avtomatizacijo tega iPada je potrebna različica iPadOS 27 ali novejša."
+            "value" : "Za avtomatizacijo tega iPada je potrebna različica iPadOS 17.4 ali novejša."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "För att automatisera den här iPad krävs iPadOS 27 eller senare."
+            "value" : "För att automatisera den här iPad krävs iPadOS 17.4 eller senare."
           }
         },
         "ta" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "இந்த iPadஐத் தானியக்கமாக்க iPadOS 27 அல்லது அதற்குப் பிந்தைய பதிப்பு தேவை."
+            "value" : "இந்த iPadஐத் தானியக்கமாக்க iPadOS 17.4 அல்லது அதற்குப் பிந்தைய பதிப்பு தேவை."
           }
         },
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ఈ iPadను ఆటోమేట్ చేయడానికి iPadOS 27 లేదా తర్వాతి వెర్షన్ అవసరం."
+            "value" : "ఈ iPadను ఆటోమేట్ చేయడానికి iPadOS 17.4 లేదా తర్వాతి వెర్షన్ అవసరం."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "การทำงานอัตโนมัติบน iPad เครื่องนี้ต้องใช้ iPadOS 27 หรือใหม่กว่า"
+            "value" : "การทำงานอัตโนมัติบน iPad เครื่องนี้ต้องใช้ iPadOS 17.4 หรือใหม่กว่า"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bu iPad’i otomatikleştirmek için iPadOS 27 veya sonrası gerekir."
+            "value" : "Bu iPad’i otomatikleştirmek için iPadOS 17.4 veya sonrası gerekir."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Для автоматизації цього iPad потрібна iPadOS 27 або новішої версії."
+            "value" : "Для автоматизації цього iPad потрібна iPadOS 17.4 або новішої версії."
           }
         },
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "اس iPad کو خودکار بنانے کے لیے iPadOS 27 یا اس کے بعد کا ورژن درکار ہے۔"
+            "value" : "اس iPad کو خودکار بنانے کے لیے iPadOS 17.4 یا اس کے بعد کا ورژن درکار ہے۔"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tự động hóa iPad này yêu cầu iPadOS 27 trở lên."
+            "value" : "Tự động hóa iPad này yêu cầu iPadOS 17.4 trở lên."
           }
         },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自動化此 iPad 需要 iPadOS 27 或以上版本。"
+            "value" : "自動化此 iPad 需要 iPadOS 17.4 或以上版本。"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自动化此 iPad 需要 iPadOS 27 或更高版本。"
+            "value" : "自动化此 iPad 需要 iPadOS 17.4 或更高版本。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自動化此 iPad 需要 iPadOS 27 或以上版本。"
+            "value" : "自動化此 iPad 需要 iPadOS 17.4 或以上版本。"
           }
         }
       }
     },
-    "Automating this iPhone needs iOS 27 or later." : {
+    "Automating this iPhone needs iOS 17.4 or later." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تتطلب أتمتة جهاز iPhone هذا نظام iOS 27 أو أحدث."
+            "value" : "تتطلب أتمتة جهاز iPhone هذا نظام iOS 17.4 أو أحدث."
           }
         },
         "bg" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Автоматизирането на този iPhone изисква iOS 27 или по-нова версия."
+            "value" : "Автоматизирането на този iPhone изисква iOS 17.4 или по-нова версия."
           }
         },
         "bn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "এই iPhone অটোমেট করতে iOS 27 বা তার পরের ভার্সন প্রয়োজন।"
+            "value" : "এই iPhone অটোমেট করতে iOS 17.4 বা তার পরের ভার্সন প্রয়োজন।"
           }
         },
         "ca" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Per automatitzar aquest iPhone, cal l’iOS 27 o posterior."
+            "value" : "Per automatitzar aquest iPhone, cal l’iOS 17.4 o posterior."
           }
         },
         "cs" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Automatizace tohoto iPhonu vyžaduje iOS 27 nebo novější."
+            "value" : "Automatizace tohoto iPhonu vyžaduje iOS 17.4 nebo novější."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Automatisering af denne iPhone kræver iOS 27 eller nyere."
+            "value" : "Automatisering af denne iPhone kræver iOS 17.4 eller nyere."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zum Automatisieren dieses iPhone ist iOS 27 oder neuer erforderlich."
+            "value" : "Zum Automatisieren dieses iPhone ist iOS 17.4 oder neuer erforderlich."
           }
         },
         "el" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Η αυτοματοποίηση αυτού του iPhone απαιτεί iOS 27 ή νεότερη έκδοση."
+            "value" : "Η αυτοματοποίηση αυτού του iPhone απαιτεί iOS 17.4 ή νεότερη έκδοση."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Para automatizar este iPhone se necesita iOS 27 o posterior."
+            "value" : "Para automatizar este iPhone se necesita iOS 17.4 o posterior."
           }
         },
         "es-419" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Para automatizar este iPhone se necesita iOS 27 o posterior."
+            "value" : "Para automatizar este iPhone se necesita iOS 17.4 o posterior."
           }
         },
         "fi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tämän iPhonen automatisointi vaatii iOS 27:n tai uudemman."
+            "value" : "Tämän iPhonen automatisointi vaatii iOS 17.4:n tai uudemman."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L’automatisation de cet iPhone nécessite iOS 27 ou une version ultérieure."
+            "value" : "L’automatisation de cet iPhone nécessite iOS 17.4 ou une version ultérieure."
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L’automatisation de cet iPhone nécessite iOS 27 ou une version ultérieure."
+            "value" : "L’automatisation de cet iPhone nécessite iOS 17.4 ou une version ultérieure."
           }
         },
         "gu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "આ iPhoneને ઑટોમેટ કરવા માટે iOS 27 અથવા તે પછીનું વર્ઝન જરૂરી છે."
+            "value" : "આ iPhoneને ઑટોમેટ કરવા માટે iOS 17.4 અથવા તે પછીનું વર્ઝન જરૂરી છે."
           }
         },
         "he" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "אוטומציה של ה-iPhone הזה דורשת iOS 27 ואילך."
+            "value" : "אוטומציה של ה-iPhone הזה דורשת iOS 17.4 ואילך."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "इस iPhone को ऑटोमेट करने के लिए iOS 27 या उसके बाद का वर्शन आवश्यक है।"
+            "value" : "इस iPhone को ऑटोमेट करने के लिए iOS 17.4 या उसके बाद का वर्शन आवश्यक है।"
           }
         },
         "hr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Za automatizaciju ovog iPhone uređaja potreban je iOS 27 ili noviji."
+            "value" : "Za automatizaciju ovog iPhone uređaja potreban je iOS 17.4 ili noviji."
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Az iPhone automatizálásához iOS 27 vagy újabb verzió szükséges."
+            "value" : "Az iPhone automatizálásához iOS 17.4 vagy újabb verzió szükséges."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mengotomatiskan iPhone ini memerlukan iOS 27 atau lebih baru."
+            "value" : "Mengotomatiskan iPhone ini memerlukan iOS 17.4 atau lebih baru."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Per automatizzare iPhone è necessario iOS 27 o versione successiva."
+            "value" : "Per automatizzare iPhone è necessario iOS 17.4 o versione successiva."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "このiPhoneを自動化するには、iOS 27以降が必要です。"
+            "value" : "このiPhoneを自動化するには、iOS 17.4以降が必要です。"
           }
         },
         "kk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Осы iPhone құрылғысын автоматтандыру үшін iOS 27 немесе одан кейінгі нұсқасы қажет."
+            "value" : "Осы iPhone құрылғысын автоматтандыру үшін iOS 17.4 немесе одан кейінгі нұсқасы қажет."
           }
         },
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ಈ iPhone ಅನ್ನು ಸ್ವಯಂಚಾಲಿತಗೊಳಿಸಲು iOS 27 ಅಥವಾ ನಂತರದ ಆವೃತ್ತಿ ಅಗತ್ಯವಿದೆ."
+            "value" : "ಈ iPhone ಅನ್ನು ಸ್ವಯಂಚಾಲಿತಗೊಳಿಸಲು iOS 17.4 ಅಥವಾ ನಂತರದ ಆವೃತ್ತಿ ಅಗತ್ಯವಿದೆ."
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 iPhone을 자동화하려면 iOS 27 이상이 필요합니다."
+            "value" : "이 iPhone을 자동화하려면 iOS 17.4 이상이 필요합니다."
           }
         },
         "lt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Norint automatizuoti šį „iPhone”, reikia „iOS 27” ar naujesnės versijos."
+            "value" : "Norint automatizuoti šį „iPhone”, reikia „iOS 17.4” ar naujesnės versijos."
           }
         },
         "ml" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ഈ iPhone ഓട്ടോമേറ്റ് ചെയ്യാൻ iOS 27 അല്ലെങ്കിൽ അതിനുശേഷമുള്ള പതിപ്പ് ആവശ്യമാണ്."
+            "value" : "ഈ iPhone ഓട്ടോമേറ്റ് ചെയ്യാൻ iOS 17.4 അല്ലെങ്കിൽ അതിനുശേഷമുള്ള പതിപ്പ് ആവശ്യമാണ്."
           }
         },
         "mr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "हा iPhone स्वयंचलित करण्यासाठी iOS 27 किंवा नंतरची आवृत्ती आवश्यक आहे."
+            "value" : "हा iPhone स्वयंचलित करण्यासाठी iOS 17.4 किंवा नंतरची आवृत्ती आवश्यक आहे."
           }
         },
         "ms" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pengautomasian iPhone ini memerlukan iOS 27 atau lebih baharu."
+            "value" : "Pengautomasian iPhone ini memerlukan iOS 17.4 atau lebih baharu."
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Automatisering av denne iPhonen krever iOS 27 eller nyere."
+            "value" : "Automatisering av denne iPhonen krever iOS 17.4 eller nyere."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Voor het automatiseren van deze iPhone is iOS 27 of nieuwer vereist."
+            "value" : "Voor het automatiseren van deze iPhone is iOS 17.4 of nieuwer vereist."
           }
         },
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ଏହି iPhone କୁ ସ୍ୱୟଂଚାଳିତ କରିବା ପାଇଁ iOS 27 କିମ୍ବା ପରବର୍ତ୍ତୀ ସଂସ୍କରଣ ଆବଶ୍ୟକ।"
+            "value" : "ଏହି iPhone କୁ ସ୍ୱୟଂଚାଳିତ କରିବା ପାଇଁ iOS 17.4 କିମ୍ବା ପରବର୍ତ୍ତୀ ସଂସ୍କରଣ ଆବଶ୍ୟକ।"
           }
         },
         "pa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ਇਸ iPhone ਨੂੰ ਸਵੈਚਲਿਤ ਕਰਨ ਲਈ iOS 27 ਜਾਂ ਇਸ ਤੋਂ ਬਾਅਦ ਵਾਲਾ ਵਰਜਨ ਲੋੜੀਂਦਾ ਹੈ।"
+            "value" : "ਇਸ iPhone ਨੂੰ ਸਵੈਚਲਿਤ ਕਰਨ ਲਈ iOS 17.4 ਜਾਂ ਇਸ ਤੋਂ ਬਾਅਦ ਵਾਲਾ ਵਰਜਨ ਲੋੜੀਂਦਾ ਹੈ।"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Automatyzacja tego iPhone’a wymaga systemu iOS 27 lub nowszego."
+            "value" : "Automatyzacja tego iPhone’a wymaga systemu iOS 17.4 lub nowszego."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Para automatizar este iPhone, é necessário o iOS 27 ou posterior."
+            "value" : "Para automatizar este iPhone, é necessário o iOS 17.4 ou posterior."
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Para automatizar este iPhone, é necessário o iOS 27 ou posterior."
+            "value" : "Para automatizar este iPhone, é necessário o iOS 17.4 ou posterior."
           }
         },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Automatizarea acestui iPhone necesită iOS 27 sau o versiune ulterioară."
+            "value" : "Automatizarea acestui iPhone necesită iOS 17.4 sau o versiune ulterioară."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Для автоматизации этого iPhone требуется iOS 27 или новее."
+            "value" : "Для автоматизации этого iPhone требуется iOS 17.4 или новее."
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Automatizácia tohto iPhonu vyžaduje iOS 27 alebo novší."
+            "value" : "Automatizácia tohto iPhonu vyžaduje iOS 17.4 alebo novší."
           }
         },
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Za avtomatizacijo tega iPhona je potrebna različica iOS 27 ali novejša."
+            "value" : "Za avtomatizacijo tega iPhona je potrebna različica iOS 17.4 ali novejša."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "För att automatisera den här iPhone krävs iOS 27 eller senare."
+            "value" : "För att automatisera den här iPhone krävs iOS 17.4 eller senare."
           }
         },
         "ta" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "இந்த iPhoneஐத் தானியக்கமாக்க iOS 27 அல்லது அதற்குப் பிந்தைய பதிப்பு தேவை."
+            "value" : "இந்த iPhoneஐத் தானியக்கமாக்க iOS 17.4 அல்லது அதற்குப் பிந்தைய பதிப்பு தேவை."
           }
         },
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ఈ iPhoneను ఆటోమేట్ చేయడానికి iOS 27 లేదా తర్వాతి వెర్షన్ అవసరం."
+            "value" : "ఈ iPhoneను ఆటోమేట్ చేయడానికి iOS 17.4 లేదా తర్వాతి వెర్షన్ అవసరం."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "การทำงานอัตโนมัติบน iPhone เครื่องนี้ต้องใช้ iOS 27 หรือใหม่กว่า"
+            "value" : "การทำงานอัตโนมัติบน iPhone เครื่องนี้ต้องใช้ iOS 17.4 หรือใหม่กว่า"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bu iPhone’u otomatikleştirmek için iOS 27 veya sonrası gerekir."
+            "value" : "Bu iPhone’u otomatikleştirmek için iOS 17.4 veya sonrası gerekir."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Для автоматизації цього iPhone потрібна iOS 27 або новішої версії."
+            "value" : "Для автоматизації цього iPhone потрібна iOS 17.4 або новішої версії."
           }
         },
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "اس iPhone کو خودکار بنانے کے لیے iOS 27 یا اس کے بعد کا ورژن درکار ہے۔"
+            "value" : "اس iPhone کو خودکار بنانے کے لیے iOS 17.4 یا اس کے بعد کا ورژن درکار ہے۔"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tự động hóa iPhone này yêu cầu iOS 27 trở lên."
+            "value" : "Tự động hóa iPhone này yêu cầu iOS 17.4 trở lên."
           }
         },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自動化此 iPhone 需要 iOS 27 或以上版本。"
+            "value" : "自動化此 iPhone 需要 iOS 17.4 或以上版本。"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自动化此 iPhone 需要 iOS 27 或更高版本。"
+            "value" : "自动化此 iPhone 需要 iOS 17.4 或更高版本。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自動化此 iPhone 需要 iOS 27 或以上版本。"
+            "value" : "自動化此 iPhone 需要 iOS 17.4 或以上版本。"
           }
         }
       }
@@ -26253,6 +26253,310 @@
         }
       }
     },
+    "How to Get This File" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كيفية الحصول على هذا الملف"
+          }
+        },
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Как да получите този файл"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "এই ফাইলটি কীভাবে পাবেন"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Com obtenir aquest arxiu"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jak získat tento soubor"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sådan får du denne fil"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "So erhältst du diese Datei"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Πώς να αποκτήσετε αυτό το αρχείο"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cómo obtener este archivo"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cómo obtener este archivo"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Näin saat tämän tiedoston"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comment obtenir ce fichier"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comment obtenir ce fichier"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "આ ફાઇલ કેવી રીતે મેળવવી"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "איך משיגים את הקובץ הזה"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "यह फ़ाइल कैसे पाएँ"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kako dobiti ovu datoteku"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Útmutató a fájl beszerzéséhez"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cara Mendapatkan File Ini"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Come ottenere questo file"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このファイルの入手方法"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бұл файлды алу жолы"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ಈ ಫೈಲ್ ಅನ್ನು ಪಡೆಯುವುದು ಹೇಗೆ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 파일을 얻는 방법"
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaip gauti šį failą"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ഈ ഫയൽ എങ്ങനെ നേടാം"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ही फाइल कशी मिळवायची"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cara Mendapatkan Fail Ini"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slik får du filen"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zo krijg je dit bestand"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ଏହି ଫାଇଲ୍ କିପରି ପାଇବେ"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ਇਹ ਫ਼ਾਈਲ ਕਿਵੇਂ ਪ੍ਰਾਪਤ ਕਰੀਏ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jak uzyskać ten plik"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como Obter Este Arquivo"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como obter este ficheiro"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cum obțineți acest fișier"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Как получить этот файл"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ako získať tento súbor"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kako pridobiti to datoteko"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Så här får du filen"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "இந்தக் கோப்பைப் பெறுவது எப்படி"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ఈ ఫైల్‌ను ఎలా పొందాలి"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "วิธีรับไฟล์นี้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu Dosya Nasıl Edinilir"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Як отримати цей файл"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "یہ فائل کیسے حاصل کریں"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cách lấy tệp này"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "如何取得此檔案"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "如何获取此文件"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "如何取得此檔案"
+          }
+        }
+      }
+    },
     "Import" : {
       "localizations" : {
         "ar" : {
@@ -36013,6 +36317,310 @@
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "官方 Swiplet"
+          }
+        }
+      }
+    },
+    "On devices running a version earlier than iOS 27, Swipt can’t provide self-service pairing, so you need a computer to get a pairing file." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "على الأجهزة التي تعمل بإصدار أقدم من iOS 27، لا يستطيع Swipt توفير الإقران الذاتي، لذا يلزم استخدام كمبيوتر للحصول على ملف إقران."
+          }
+        },
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "На устройства с версия, по-стара от iOS 27, Swipt не може да предложи самостоятелно сдвояване, затова за получаване на файл за сдвояване е необходим компютър."
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS 27-এর আগের ভার্সনে চলা ডিভাইসে Swipt নিজে থেকে পেয়ার করার সুবিধা দিতে পারে না, তাই পেয়ারিং ফাইল পেতে আপনার কম্পিউটার প্রয়োজন।"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Als dispositius amb una versió anterior a l’iOS 27, l’app Swipt no pot oferir l’enllaç autònom, així que necessites un ordinador per obtenir un arxiu d’enllaç."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Na zařízeních s verzí starší než iOS 27 nemůže aplikace Swipt nabídnout samoobslužné párování, a proto k získání párovacího souboru potřebujete počítač."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "På enheder med en tidligere version end iOS 27 kan Swipt ikke tilbyde selvbetjent parring, så du skal bruge en computer for at få en parringsfil."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf Geräten mit einer Version vor iOS 27 kann Swipt keine eigenständige Kopplung anbieten, daher wird ein Computer benötigt, um eine Kopplungsdatei zu erhalten."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Σε συσκευές με έκδοση παλαιότερη από το iOS 27, το Swipt δεν μπορεί να παρέχει αυτόνομη ζευγοποίηση, επομένως χρειάζεστε υπολογιστή για να αποκτήσετε αρχείο ζευγοποίησης."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En los dispositivos con una versión anterior a iOS 27, Swipt no puede ofrecer el enlace autónomo, por lo que necesitas un ordenador para obtener un archivo de enlace."
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En los dispositivos con una versión anterior a iOS 27, Swipt no puede ofrecer el enlace autónomo, por lo que necesitas una computadora para obtener un archivo de enlace."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laitteissa, joissa on vanhempi versio kuin iOS 27, Swipt ei voi tarjota itsenäistä parinmuodostusta, joten tarvitset tietokoneen parinmuodostustiedoston hankkimiseen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sur les appareils sous une version antérieure à iOS 27, Swipt ne peut pas proposer de jumelage autonome. Vous avez donc besoin d’un ordinateur pour obtenir un fichier de jumelage."
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sur les appareils dotés d’une version antérieure à iOS 27, l’app Swipt ne peut pas offrir de jumelage autonome. Vous avez donc besoin d’un ordinateur pour obtenir un fichier de jumelage."
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS 27 કરતાં પહેલાંના વર્ઝન પર ચાલતા ડિવાઇસમાં Swipt જાતે પેરિંગની સુવિધા આપી શકતું નથી, તેથી પેરિંગ ફાઇલ મેળવવા માટે તમારે કમ્પ્યૂટરની જરૂર પડશે."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "במכשירים עם גרסה קודמת ל-iOS 27, לא ניתן לבצע קישור עצמאי באמצעות Swipt, ולכן יש צורך במחשב כדי לקבל קובץ קישור."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS 27 से पहले के वर्शन वाले डिवाइस पर Swipt ख़ुद पेयरिंग की सुविधा नहीं दे सकता, इसलिए पेयरिंग फ़ाइल पाने के लिए आपको कंप्यूटर की ज़रूरत होगी।"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Na uređajima s verzijom starijom od iOS 27 aplikacija Swipt ne može ponuditi samostalno uparivanje, pa vam je za dobivanje datoteke za uparivanje potrebno računalo."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Az iOS 27-nél korábbi verziót futtató eszközökön a Swipt nem tud önálló párosítást biztosítani, ezért a párosítási fájl beszerzéséhez számítógépre van szükség."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Di perangkat yang menjalankan versi sebelum iOS 27, Swipt tidak dapat menyediakan pemasangan mandiri, jadi Anda memerlukan komputer untuk mendapatkan file pemasangan."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sui dispositivi con una versione precedente a iOS 27, Swipt non può offrire l’abbinamento autonomo, quindi per ottenere un file di abbinamento hai bisogno di un computer."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS 27より前のバージョンを搭載したデバイスでは、Swipt単体ではペアリングできないため、ペアリングファイルを入手するにはコンピュータが必要です。"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS 27-ден бұрынғы нұсқадағы құрылғыларда Swipt өз бетінше жұптауды қамтамасыз ете алмайды, сондықтан жұптау файлын алу үшін компьютер қажет."
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS 27 ಆವೃತ್ತಿಗಿಂತ ಹಿಂದಿನ ಆವೃತ್ತಿಗಳಲ್ಲಿ ರನ್ ಆಗುವ ಸಾಧನಗಳಲ್ಲಿ, Swipt ಆ್ಯಪ್‌ಗೆ ಸ್ವಯಂ ಪೇರಿಂಗ್ ಒದಗಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ, ಹಾಗಾಗಿ ಪೇರಿಂಗ್ ಫೈಲ್ ಪಡೆಯಲು ನಿಮಗೆ ಕಂಪ್ಯೂಟರ್ ಬೇಕಾಗುತ್ತದೆ."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS 27 이전 버전을 사용하는 기기에서는 Swipt가 자체 페어링을 제공할 수 없으므로 페어링 파일을 얻으려면 컴퓨터가 필요합니다."
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Įrenginiuose, kuriuose veikia senesnė nei iOS 27 versija, „Swipt” negali pasiūlyti savarankiško susiejimo, todėl susiejimo failui gauti jums reikės kompiuterio."
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS 27-ന് മുമ്പുള്ള വേർഷനുകൾ റൺ ചെയ്യുന്ന ഡിവൈസുകളിൽ Swipt-ന് സ്വയം പെയറിങ് നൽകാനാകില്ല, അതിനാൽ പെയറിങ് ഫയൽ ലഭിക്കാൻ ഒരു കമ്പ്യൂട്ടർ ആവശ്യമാണ്."
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS 27 पूर्वीच्या व्हर्जनवर चालणाऱ्या डिव्हाइसवर Swipt स्वतः पेअरिंगची सुविधा देऊ शकत नाही, त्यामुळे पेअरिंग फाइल मिळवण्यासाठी तुम्हाला कॉम्प्युटरची आवश्यकता आहे."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pada peranti yang menjalankan versi lebih awal daripada iOS 27, Swipt tidak dapat berpasangan dengan sendirinya, jadi anda memerlukan komputer untuk mendapatkan fail pasangan."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "På enheter med en eldre versjon enn iOS 27 kan Swipt ikke tilby selvbetjent sammenkobling, så du trenger en datamaskin for å få en sammenkoblingsfil."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Op apparaten met een eerdere versie dan iOS 27 kan Swipt geen zelfstandige koppeling aanbieden, dus je hebt een computer nodig om een koppelbestand te verkrijgen."
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS 27 ପୂର୍ବର ଭର୍ସନ୍ ଚାଲୁଥିବା ଡିଭାଇସ୍‌ରେ Swipt ନିଜେ ପେୟାରିଂର ସୁବିଧା ଦେଇପାରିବ ନାହିଁ, ତେଣୁ ପେୟାରିଂ ଫାଇଲ୍ ପାଇବା ପାଇଁ ଆପଣଙ୍କୁ ଏକ କମ୍ପ୍ୟୁଟର୍ ଆବଶ୍ୟକ ହେବ।"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS 27 ਤੋਂ ਪਹਿਲਾਂ ਦੇ ਵਰਜਨ ਵਾਲੇ ਡਿਵਾਈਸਾਂ ਉੱਤੇ Swipt ਖ਼ੁਦ ਜੋੜਾਬੱਧ ਕਰਨ ਦੀ ਸੁਵਿਧਾ ਪ੍ਰਦਾਨ ਨਹੀਂ ਕਰ ਸਕਦਾ, ਇਸ ਲਈ ਜੋੜਾਬੱਧ ਕਰਨ ਦੀ ਫ਼ਾਈਲ ਪ੍ਰਾਪਤ ਕਰਨ ਲਈ ਤੁਹਾਨੂੰ ਕੰਪਿਊਟਰ ਦੀ ਲੋੜ ਹੈ।"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Na urządzeniach z wersją starszą niż iOS 27 aplikacja Swipt nie może zapewnić samodzielnego parowania, więc do uzyskania pliku parowania potrzebny jest komputer."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em dispositivos com versão anterior ao iOS 27, o Swipt não pode oferecer emparelhamento autônomo, então você precisa de um computador para obter um arquivo de emparelhamento."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nos dispositivos com uma versão anterior ao iOS 27, o Swipt não pode disponibilizar o emparelhamento autónomo, pelo que é necessário um computador para obter um ficheiro de emparelhamento."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pe dispozitivele cu o versiune mai veche decât iOS 27, aplicația Swipt nu poate oferi asocierea autonomă, așa că aveți nevoie de un computer pentru a obține un fișier de asociere."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "На устройствах с версией ниже iOS 27 приложение Swipt не может самостоятельно создать пару, поэтому для получения файла пары потребуется компьютер."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "V zariadeniach s verziou staršou ako iOS 27 apka Swipt nemôže poskytnúť samoobslužné párovanie, preto na získanie párovacieho súboru potrebujete počítač."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "V napravah z različico, starejšo od iOS 27, aplikacija Swipt ne more ponuditi samostojnega seznanjanja, zato za pridobitev datoteke za seznanjanje potrebujete računalnik."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "På enheter med en tidigare version än iOS 27 kan Swipt inte erbjuda självständig parkoppling, så du behöver en dator för att få en parkopplingsfil."
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS 27 பதிப்புக்கு முந்தைய பதிப்புகளில் இயங்கும் சாதனங்களில், Swipt சுயமாக இணைசேர்ப்பை வழங்க முடியாது, எனவே இணைசேர்ப்புக் கோப்பைப் பெற உங்களுக்கு ஒரு கம்ப்யூட்டர் தேவை."
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS 27 కంటే ముందు వెర్షన్‌లలో రన్ అయ్యే డివైజ్‌లలో Swipt ద్వారా సెల్ఫ్-సర్వీస్ పెయిరింగ్‌ను అందించడం సాధ్యం కాదు, కాబట్టి పెయిరింగ్ ఫైల్‌ను పొందడానికి మీకు కంప్యూటర్ అవసరం."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ในอุปกรณ์ที่ใช้เวอร์ชันก่อน iOS 27 นั้น Swipt ไม่สามารถให้บริการจับคู่ด้วยตนเองได้ คุณจึงต้องใช้คอมพิวเตอร์เพื่อรับไฟล์จับคู่"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS 27’den önceki sürümleri kullanan aygıtlarda Swipt eşlemeyi kendi başına gerçekleştiremez, bu nedenle eşleme dosyası edinmek için bir bilgisayar gerekir."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "На пристроях із версією, старішою за iOS 27, програма Swipt не може самостійно створити пару, тому для отримання файлу створення пари потрібен компʼютер."
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جن ڈیوائسز پر iOS 27 سے پہلے کا ورژن چل رہا ہے، ان پر Swipt خود سے پیئرنگ کی سہولت فراہم نہیں کر سکتا، اس لیے پیئرنگ فائل حاصل کرنے کے لیے آپ کو کمپیوٹر کی ضرورت ہے۔"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trên các thiết bị chạy phiên bản trước iOS 27, Swipt không thể cung cấp tính năng tự ghép đôi, vì vậy bạn cần có máy tính để lấy tệp ghép đôi."
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 iOS 27 以前的裝置上，Swipt 無法提供自助配對，你需要一部電腦來取得配對檔案。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 iOS 27 以前的设备上，Swipt 无法提供自助配对，您需要一台电脑来获取配对文件。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 iOS 27 以前的裝置上，Swipt 無法提供自助配對，你需要一台電腦來取得配對檔案。"
           }
         }
       }

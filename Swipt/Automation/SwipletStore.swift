@@ -134,14 +134,14 @@ final class SwipletStore {
         try await Platform.shared.setServiceEnabled(id, enabled)
     }
 
-    @available(iOS 27, *)
+    @available(iOS 17.4, *)
     func importSwiplet(from picked: URL) async throws {
         defer { reload() }
         let id = try await Platform.shared.installSwiplet(picked: picked)
         try SwipletDatabase.setETag("", of: id)
     }
 
-    @available(iOS 27, *)
+    @available(iOS 17.4, *)
     func importSwiplet(downloadingFrom link: String) async throws {
         let link = link.trimmingCharacters(in: .whitespacesAndNewlines)
         let download = try await Self.download(link)
@@ -153,7 +153,7 @@ final class SwipletStore {
         try SwipletDatabase.setETag(download.updateURL == link ? download.etag : "", of: id)
     }
 
-    @available(iOS 27, *)
+    @available(iOS 17.4, *)
     func open(_ picked: URL) async throws -> SwipletPreview {
         let file = try Self.temporaryFile()
         do {
@@ -171,7 +171,7 @@ final class SwipletStore {
         }
     }
 
-    @available(iOS 27, *)
+    @available(iOS 17.4, *)
     func importSwiplet(_ preview: SwipletPreview) async throws {
         defer {
             Self.discard(preview.file)
@@ -189,7 +189,7 @@ final class SwipletStore {
         repositories.first { $0.url == url }
     }
 
-    @available(iOS 27, *)
+    @available(iOS 17.4, *)
     func addRepository(_ link: String) async throws {
         let link = link.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !repositories.contains(where: { $0.url == link }) else { throw MessageError(String(localized: "The repository is already added.")) }
@@ -214,7 +214,7 @@ final class SwipletStore {
         }
     }
 
-    @available(iOS 27, *)
+    @available(iOS 17.4, *)
     func refreshRepository(_ url: String, force: Bool) async throws {
         guard let index = repositories.firstIndex(where: { $0.url == url }) else { return }
         if !force, let last = repositoriesChecked[url], Date.now.timeIntervalSince(last) < Self.updateInterval {
@@ -241,7 +241,7 @@ final class SwipletStore {
         return !swiplet.version.isEmpty && swiplet.version != local.version
     }
 
-    @available(iOS 27, *)
+    @available(iOS 17.4, *)
     func install(_ swiplet: RepositorySwiplet, from repository: Repository) async throws {
         updating.insert(swiplet.id)
         defer {
@@ -259,7 +259,7 @@ final class SwipletStore {
         forgetUpdate(of: id)
     }
 
-    @available(iOS 27, *)
+    @available(iOS 17.4, *)
     func checkForUpdates(of ids: [String]) async {
         for id in ids where updatable.contains(id) {
             if let last = checked[id], Date.now.timeIntervalSince(last) < Self.updateInterval {
@@ -269,7 +269,7 @@ final class SwipletStore {
         }
     }
 
-    @available(iOS 27, *)
+    @available(iOS 17.4, *)
     @discardableResult
     func checkForUpdate(of id: String) async throws -> Bool {
         checked[id] = .now
@@ -294,7 +294,7 @@ final class SwipletStore {
         return true
     }
 
-    @available(iOS 27, *)
+    @available(iOS 17.4, *)
     func applyUpdates(_ ids: [String]) async throws {
         let ids = ids.filter { !updating.contains($0) }
         updating.formUnion(ids)
@@ -401,7 +401,7 @@ final class SwipletStore {
         return folder.appendingPathComponent("swiplet")
     }
 
-    @available(iOS 27, *)
+    @available(iOS 17.4, *)
     func export(_ id: String) async throws -> URL {
         let folder = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
         try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)

@@ -1,7 +1,7 @@
 import Perception
 import SwiftUI
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 struct SwipletInfoView: View {
     let id: String
 

@@ -1,7 +1,7 @@
 import Perception
 import SwiftUI
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 struct RepositoryView: View {
     let url: String
     @Binding var isImported: Bool
@@ -98,7 +98,7 @@ struct RepositoryView: View {
     }
 }
 
-@available(iOS 27, *)
+@available(iOS 17.4, *)
 struct AddRepositoryView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var url = ""

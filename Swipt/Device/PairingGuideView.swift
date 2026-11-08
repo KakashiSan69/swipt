@@ -4,22 +4,21 @@ import UIKit
 struct PairingGuideView: View {
     let hostName: String
 
-    private static let isPad = UIDevice.current.userInterfaceIdiom == .pad
-    private static var size: CGSize { isPad ? CGSize(width: 652, height: 134) : CGSize(width: 272, height: 252) }
+    private static var size: CGSize { UIDevice.isPad ? CGSize(width: 652, height: 134) : CGSize(width: 272, height: 252) }
 
     var body: some View {
         Canvas { context, canvasSize in
             let scale = canvasSize.width / Self.size.width
             context.scaleBy(x: scale, y: scale)
             var painter = GuidePainter(context: context, hostName: hostName)
-            if Self.isPad {
+            if UIDevice.isPad {
                 painter.drawPad(width: Self.size.width)
             } else {
                 painter.drawPhone(width: Self.size.width)
             }
         }
         .aspectRatio(Self.size.width / Self.size.height, contentMode: .fit)
-        .frame(maxWidth: Self.isPad ? nil : 245)
+        .frame(maxWidth: UIDevice.isPad ? nil : 245)
         .accessibilityHidden(true)
     }
 }

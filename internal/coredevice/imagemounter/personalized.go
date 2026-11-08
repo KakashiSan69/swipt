@@ -14,6 +14,7 @@ import (
 
 	E "github.com/sagernet/sing/common/exceptions"
 	"github.com/swipt-automation/swipt/internal/coredevice/rsd"
+	"github.com/swipt-automation/swipt/internal/coredevice/xpc"
 )
 
 // pymobiledevice3 queries the device for an existing personalization
@@ -110,13 +111,24 @@ func (c *Client) personalizedTicket(ctx context.Context, conn *mounterConn, iden
 }
 
 func (c *Client) withMounter(ctx context.Context, fn func(conn *mounterConn) error) error {
-	conn, err := c.device.DialShim(ctx, mounterService)
+	mounter := new(mounterConn)
+	var (
+		conn io.Closer
+		err  error
+	)
+	if c.device.HasService(mounterService) || !c.device.HasService(mounterBridgeService) {
+		mounter.conn, err = c.device.DialShim(ctx, mounterService)
+		conn = mounter.conn
+	} else {
+		mounter.bridge, err = c.device.DialXPC(ctx, mounterBridgeService)
+		conn = mounter.bridge
+	}
 	if err != nil {
 		return E.Cause(err, "imagemounter")
 	}
 	defer conn.Close()
 	stop := context.AfterFunc(ctx, func() { conn.Close() })
-	err = fn(&mounterConn{conn: conn})
+	err = fn(mounter)
 	if !stop() && err != nil && ctx.Err() != nil {
 		return E.Cause(ctx.Err(), "imagemounter: image mounter")
 	}
@@ -124,19 +136,37 @@ func (c *Client) withMounter(ctx context.Context, fn func(conn *mounterConn) err
 }
 
 type mounterConn struct {
-	conn *rsd.PlistConn
+	conn   *rsd.PlistConn
+	bridge *xpc.Conn
 }
 
 func (m *mounterConn) request(message map[string]any) (map[string]any, error) {
 	command, _ := message["Command"].(string)
-	if err := m.conn.Send(message); err != nil {
+	var err error
+	if m.bridge != nil {
+		if _, found := message["HostProcessName"]; !found {
+			message["HostProcessName"] = "swipt"
+		}
+		err = m.bridge.Send(map[string]any{"XPCRequestDictionary": message}, true)
+	} else {
+		err = m.conn.Send(message)
+	}
+	if err != nil {
 		return nil, E.Cause(err, "imagemounter: send ", command)
 	}
 	return m.receive(command)
 }
 
 func (m *mounterConn) receive(command string) (map[string]any, error) {
-	reply, err := m.conn.Receive()
+	var (
+		reply map[string]any
+		err   error
+	)
+	if m.bridge != nil {
+		reply, err = m.bridge.Receive()
+	} else {
+		reply, err = m.conn.Receive()
+	}
 	if err != nil {
 		return nil, E.Cause(err, "imagemounter: receive ", command, " reply")
 	}
@@ -249,6 +279,9 @@ func (m *mounterConn) upload(ctx context.Context, image resolvedFile, ticket []b
 	if err != nil {
 		return E.Cause(err, "imagemounter")
 	}
+	if m.bridge != nil {
+		return m.uploadBridge(ctx, file, info.Size(), ticket)
+	}
 	const command = "ReceiveBytes"
 	reply, err := m.request(map[string]any{
 		"Command":        command,
@@ -296,6 +329,13 @@ func (m *mounterConn) mount(ticket, trustCache []byte) error {
 // go-ios sends Hangup without reading a reply (go-ios ca2c56d,
 // ios/imagemounter/imagemounter.go:266-272).
 func (m *mounterConn) hangUp() error {
+	if m.bridge != nil {
+		// The bridge resets RSD after the successful MountImage reply. Its
+		// Hangup handler only replies Goodbye=true (mobile_storage_proxy,
+		// iOS 17.7 21H16, 0x100007640..0x100007690,
+		// 0x100009f78..0x100009f84, 0x10000a418..0x10000a4f0).
+		return nil
+	}
 	if err := m.conn.Send(map[string]any{"Command": "Hangup"}); err != nil {
 		return E.Cause(err, "imagemounter: send Hangup")
 	}
