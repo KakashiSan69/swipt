@@ -30,6 +30,9 @@ type WebSession struct {
 
 func (h *Host) OpenWeb(id string) (*WebSession, error) {
 	swiplet, err := h.Swiplet(id)
+	if err == nil {
+		err = h.Compatible(swiplet.Manifest)
+	}
 	if err != nil {
 		return nil, err
 	}

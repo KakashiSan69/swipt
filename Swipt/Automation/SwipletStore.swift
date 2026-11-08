@@ -27,6 +27,7 @@ final class SwipletStore {
     private(set) var withServices: Set<String> = []
     private(set) var services: [String: SwipletService] = [:]
     private(set) var updatable: Set<String> = []
+    private(set) var outdated: Set<String> = []
     private(set) var updates: [String: SwipletUpdate] = [:]
     private(set) var updating: Set<String> = []
     private(set) var repositories: [Repository] = []
@@ -60,6 +61,7 @@ final class SwipletStore {
             return title.isEmpty ? manifest.id_ : title
         }
         versions = manifests.mapValues(\.version)
+        outdated = Set(swiplets.filter(\.needsUpdate).map(\.id_))
         do {
             let stored = try SwipletDatabase.swipletIDs()
             let added = swiplets.map(\.id_).filter { !stored.contains($0) }
@@ -71,7 +73,7 @@ final class SwipletStore {
             AppDirectory.logger.error("load the swiplet order: \(error, privacy: .public)")
         }
         icons = directories.mapValues { SwipletIcon.load(from: $0) }
-        interfaces = directories.compactMapValues { directory in
+        interfaces = directories.filter { !outdated.contains($0.key) }.compactMapValues { directory in
             let entry = directory
                 .appendingPathComponent(LibSwiptSwipletSourceFolder, isDirectory: true)
                 .appendingPathComponent(LibSwiptSwipletInterfaceFile)
@@ -85,7 +87,7 @@ final class SwipletStore {
                     shortcuts: manifest.actionExposed(index, caller: LibSwiptCallerShortcuts))
             }
         }
-        withServices = Set(manifests.filter { $0.value.service }.keys)
+        withServices = Set(manifests.filter { $0.value.service && !outdated.contains($0.key) }.keys)
         services = Dictionary(uniqueKeysWithValues: withServices.map { ($0, Platform.shared.serviceState(of: $0)) })
         updatable = Set(manifests.filter { !$0.value.version.isEmpty && !$0.value.updateURL.isEmpty }.keys)
     }

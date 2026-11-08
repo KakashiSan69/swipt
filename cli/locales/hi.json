@@ -4,7 +4,7 @@
   "\"source.url\" in package.json is not an absolute URL": "package.json का \"source.url\" ऐब्सोल्यूट URL नहीं है",
   "\"swiplet.id\" in package.json must be 1 to 128 lowercase letters, digits, dots, underscores and hyphens starting with a letter or a digit": "package.json के \"swiplet.id\" में 1 से 128 तक छोटे अक्षर, अंक, डॉट, अंडरस्कोर और हाइफ़न होने चाहिए, और इसकी शुरुआत अक्षर या अंक से होनी चाहिए",
   "\"swiplet.localizedNames\" in package.json must map languages to names": "package.json के \"swiplet.localizedNames\" में भाषाओं के साथ नाम मैप होने चाहिए",
-  "\"swiplet.minimumAPILevel\" in package.json must be an integer from 1 to {level}, the API level of @swipt/api": "package.json का \"swiplet.minimumAPILevel\" 1 से लेकर @swipt/api के API स्तर {level} तक का पूर्णांक होना चाहिए",
+  "\"swiplet.minimumAPILevel\" in package.json must be an integer from {oldest} to {level}, the API level of @swipt/api": "package.json का \"swiplet.minimumAPILevel\" {oldest} से लेकर @swipt/api के API स्तर {level} तक का पूर्णांक होना चाहिए",
   "\"swiplet.minimumIOSVersion\" in package.json must be a version number from {version}, the minimum iOS version of @swipt/api": "package.json का \"swiplet.minimumIOSVersion\" @swipt/api के न्यूनतम iOS वर्ज़न {version} या उससे बड़ा वर्ज़न नंबर होना चाहिए",
   "\"swiplet.name\" in package.json must be a non-empty string": "package.json का \"swiplet.name\" ऐसी स्ट्रिंग होना चाहिए जो ख़ाली न हो",
   "\"swiplet.versionCode\" in package.json must be a positive integer": "package.json का \"swiplet.versionCode\" धनात्मक पूर्णांक होना चाहिए",

@@ -4,7 +4,7 @@
   "\"source.url\" in package.json is not an absolute URL": "\"source.url\" w package.json nie jest bezwzględnym adresem URL",
   "\"swiplet.id\" in package.json must be 1 to 128 lowercase letters, digits, dots, underscores and hyphens starting with a letter or a digit": "\"swiplet.id\" w package.json musi składać się z od 1 do 128 małych liter, cyfr, kropek, podkreśleń i łączników oraz zaczynać się od litery lub cyfry",
   "\"swiplet.localizedNames\" in package.json must map languages to names": "\"swiplet.localizedNames\" w package.json musi przypisywać nazwy do języków",
-  "\"swiplet.minimumAPILevel\" in package.json must be an integer from 1 to {level}, the API level of @swipt/api": "\"swiplet.minimumAPILevel\" w package.json musi być liczbą całkowitą od 1 do {level}, czyli poziomu API pakietu @swipt/api",
+  "\"swiplet.minimumAPILevel\" in package.json must be an integer from {oldest} to {level}, the API level of @swipt/api": "\"swiplet.minimumAPILevel\" w package.json musi być liczbą całkowitą od {oldest} do {level}, czyli poziomu API pakietu @swipt/api",
   "\"swiplet.minimumIOSVersion\" in package.json must be a version number from {version}, the minimum iOS version of @swipt/api": "\"swiplet.minimumIOSVersion\" w package.json musi być numerem wersji od {version}, czyli minimalnej wersji iOS pakietu @swipt/api",
   "\"swiplet.name\" in package.json must be a non-empty string": "\"swiplet.name\" w package.json musi być niepustym ciągiem znaków",
   "\"swiplet.versionCode\" in package.json must be a positive integer": "\"swiplet.versionCode\" w package.json musi być dodatnią liczbą całkowitą",

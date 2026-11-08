@@ -4,7 +4,7 @@
   "\"source.url\" in package.json is not an absolute URL": "package.json 中的 \"source.url\" 不是绝对 URL",
   "\"swiplet.id\" in package.json must be 1 to 128 lowercase letters, digits, dots, underscores and hyphens starting with a letter or a digit": "package.json 中的 \"swiplet.id\" 必须由 1 到 128 个小写字母、数字、点、下划线和连字符组成，并以字母或数字开头",
   "\"swiplet.localizedNames\" in package.json must map languages to names": "package.json 中的 \"swiplet.localizedNames\" 必须是语言到名称的映射",
-  "\"swiplet.minimumAPILevel\" in package.json must be an integer from 1 to {level}, the API level of @swipt/api": "package.json 中的 \"swiplet.minimumAPILevel\" 必须是 1 到 {level}（@swipt/api 的 API 级别）之间的整数",
+  "\"swiplet.minimumAPILevel\" in package.json must be an integer from {oldest} to {level}, the API level of @swipt/api": "package.json 中的 \"swiplet.minimumAPILevel\" 必须是 {oldest} 到 {level}（@swipt/api 的 API 级别）之间的整数",
   "\"swiplet.minimumIOSVersion\" in package.json must be a version number from {version}, the minimum iOS version of @swipt/api": "package.json 中的 \"swiplet.minimumIOSVersion\" 必须是不低于 {version}（@swipt/api 的最低 iOS 版本）的版本号",
   "\"swiplet.name\" in package.json must be a non-empty string": "package.json 中的 \"swiplet.name\" 必须是非空字符串",
   "\"swiplet.versionCode\" in package.json must be a positive integer": "package.json 中的 \"swiplet.versionCode\" 必须是正整数",

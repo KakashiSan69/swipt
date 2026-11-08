@@ -4,7 +4,7 @@
   "\"source.url\" in package.json is not an absolute URL": "package.jsonの\"source.url\"は絶対URLではありません",
   "\"swiplet.id\" in package.json must be 1 to 128 lowercase letters, digits, dots, underscores and hyphens starting with a letter or a digit": "package.jsonの\"swiplet.id\"は、英小文字、数字、ピリオド、アンダースコア、およびハイフンからなる1〜128文字で、英小文字または数字で始まる必要があります",
   "\"swiplet.localizedNames\" in package.json must map languages to names": "package.jsonの\"swiplet.localizedNames\"は言語と名前の対応付けである必要があります",
-  "\"swiplet.minimumAPILevel\" in package.json must be an integer from 1 to {level}, the API level of @swipt/api": "package.jsonの\"swiplet.minimumAPILevel\"は、1から@swipt/apiのAPIレベルである{level}までの整数である必要があります",
+  "\"swiplet.minimumAPILevel\" in package.json must be an integer from {oldest} to {level}, the API level of @swipt/api": "package.jsonの\"swiplet.minimumAPILevel\"は、{oldest}から@swipt/apiのAPIレベルである{level}までの整数である必要があります",
   "\"swiplet.minimumIOSVersion\" in package.json must be a version number from {version}, the minimum iOS version of @swipt/api": "package.jsonの\"swiplet.minimumIOSVersion\"は、@swipt/apiの最小iOSバージョンである{version}以上のバージョン番号である必要があります",
   "\"swiplet.name\" in package.json must be a non-empty string": "package.jsonの\"swiplet.name\"は空でない文字列である必要があります",
   "\"swiplet.versionCode\" in package.json must be a positive integer": "package.jsonの\"swiplet.versionCode\"は正の整数である必要があります",

@@ -2,6 +2,7 @@
   "name": "@swipt/api",
   "version": "0.1.0",
   "apiLevel": 2,
+  "oldestAPILevel": 2,
   "minimumIOSVersion": 17.4,
   "license": "GPL-3.0-or-later",
   "repository": {

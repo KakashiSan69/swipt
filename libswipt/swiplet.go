@@ -98,9 +98,10 @@ func readSwipletArchive(file string) (automation.Archive, error) {
 }
 
 type SwipletInfo struct {
-	ID        string
-	Directory string
-	Manifest  *SwipletManifest
+	ID          string
+	Directory   string
+	Manifest    *SwipletManifest
+	NeedsUpdate bool
 }
 
 type SwipletList struct {
@@ -118,7 +119,10 @@ func (p *Platform) Swiplets() (*SwipletList, error) {
 	}
 	list := &SwipletList{}
 	for _, swiplet := range swiplets {
-		list.items = append(list.items, &SwipletInfo{ID: swiplet.ID, Directory: swiplet.Directory, Manifest: newSwipletManifest(swiplet.Manifest)})
+		list.items = append(list.items, &SwipletInfo{
+			ID: swiplet.ID, Directory: swiplet.Directory, Manifest: newSwipletManifest(swiplet.Manifest),
+			NeedsUpdate: errors.Is(p.host.Compatible(swiplet.Manifest), automation.ErrSwipletOutdated),
+		})
 	}
 	return list, nil
 }
@@ -151,6 +155,8 @@ func newSwipletInstall(id string, err error) *SwipletInstall {
 		return &SwipletInstall{ID: id}
 	case errors.Is(err, automation.ErrOutdated):
 		return &SwipletInstall{ErrorCode: SwipletErrorOutdated, ErrorMessage: err.Error()}
+	case errors.Is(err, automation.ErrSwipletOutdated):
+		return &SwipletInstall{ErrorCode: SwipletErrorSwipletOutdated, ErrorMessage: err.Error()}
 	case errors.As(err, &outdatedIOS):
 		return &SwipletInstall{ErrorCode: SwipletErrorIOSOutdated, ErrorMessage: err.Error(), MinimumIOSVersion: outdatedIOS.Minimum}
 	default:

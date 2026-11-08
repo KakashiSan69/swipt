@@ -132,21 +132,23 @@ export function loadProject(root) {
   const apiManifest = require.resolve("@swipt/api/package.json", {
     paths: [root, import.meta.dirname],
   });
-  const { apiLevel, minimumIOSVersion = 27 } = JSON.parse(
-    fs.readFileSync(apiManifest, "utf8"),
-  );
+  const {
+    apiLevel,
+    oldestAPILevel = 1,
+    minimumIOSVersion = 27,
+  } = JSON.parse(fs.readFileSync(apiManifest, "utf8"));
   if (
     config.minimumAPILevel !== undefined &&
     !(
       Number.isInteger(config.minimumAPILevel) &&
-      config.minimumAPILevel >= 1 &&
+      config.minimumAPILevel >= oldestAPILevel &&
       config.minimumAPILevel <= apiLevel
     )
   ) {
     throw new Error(
       tr(
-        '"swiplet.minimumAPILevel" in package.json must be an integer from 1 to {level}, the API level of @swipt/api',
-        { level: apiLevel },
+        '"swiplet.minimumAPILevel" in package.json must be an integer from {oldest} to {level}, the API level of @swipt/api',
+        { oldest: oldestAPILevel, level: apiLevel },
       ),
     );
   }

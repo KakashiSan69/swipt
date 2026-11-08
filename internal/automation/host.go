@@ -33,10 +33,11 @@ const (
 const UpdateGuide = "https://swipt.io/"
 
 var (
-	ErrNotFound   = E.New("not found")
-	ErrNotAllowed = E.New("not allowed")
-	ErrInvalid    = device.ErrInvalid
-	ErrOutdated   = E.New("Swipt is outdated")
+	ErrNotFound        = E.New("not found")
+	ErrNotAllowed      = E.New("not allowed")
+	ErrInvalid         = device.ErrInvalid
+	ErrOutdated        = E.New("Swipt is outdated")
+	ErrSwipletOutdated = E.New("the swiplet is outdated")
 
 	errClosed  = E.New("the host closed")
 	errRemoved = E.New("the swiplet was removed")
@@ -232,6 +233,10 @@ func (h *Host) Compatible(manifest Manifest) error {
 	if manifest.MinimumAPILevel > api.Level {
 		return E.Extend(ErrOutdated, "the swiplet requires API level ", manifest.MinimumAPILevel,
 			", and this Swipt implements API level ", api.Level, "; see ", UpdateGuide, " to update it")
+	}
+	if manifest.MinimumAPILevel < api.OldestLevel {
+		return E.Extend(ErrSwipletOutdated, "it is built for API level ", manifest.MinimumAPILevel,
+			", and this Swipt runs swiplets built for API level ", api.OldestLevel, " or later; update it")
 	}
 	if minimum, required := version.Parse(manifest.MinimumIOSVersion); required && runtime.GOOS == "ios" {
 		if current, _ := version.Parse(h.options.OSVersion); !current.AtLeast(minimum) {

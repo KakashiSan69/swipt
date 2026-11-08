@@ -50681,6 +50681,310 @@
         }
       }
     },
+    "Swiplet Outdated" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إصدار Swiplet قديم"
+          }
+        },
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Остарял Swiplet"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet পুরনো হয়ে গেছে"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet obsolet"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet je zastaralý"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forældet Swiplet"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet veraltet"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Παρωχημένο Swiplet"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet obsoleto"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet obsoleto"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet on vanhentunut"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet obsolète"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet obsolète"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet જૂનું થઈ ગયું છે"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ה-Swiplet מיושן"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet पुराना हो गया है"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet je zastario"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elavult Swiplet"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet Usang"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet obsoleto"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swipletが古くなっています"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet ескірген"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet ಹಳೆಯದಾಗಿದೆ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오래된 Swiplet"
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pasenęs „Swiplet”"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet കാലഹരണപ്പെട്ടു"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet जुने झाले आहे"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet Lapuk"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swipleten er utdatert"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet is verouderd"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet ପୁରୁଣା ହୋଇଯାଇଛି"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet ਪੁਰਾਣਾ ਹੋ ਗਿਆ ਹੈ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet jest nieaktualny"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet desatualizado"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet desatualizado"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet învechit"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Устаревший Swiplet"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet je zastaraný"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet je zastarel"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Föråldrad Swiplet"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet காலாவதியானது"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet పాతబడింది"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet ล้าสมัย"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet Güncel Değil"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Застарілий Swiplet"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "‏Swiplet پرانا ہو گیا ہے"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet đã lỗi thời"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet 已過時"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet 已过时"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet 已過時"
+          }
+        }
+      }
+    },
     "Swiplets" : {
       "localizations" : {
         "ar" : {
@@ -67445,6 +67749,310 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "「%@」已停止"
+          }
+        }
+      }
+    },
+    "“%@” needs to be updated to work with this version of Swipt." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يجب تحديث \"%@\" ليعمل مع هذا الإصدار من Swipt."
+          }
+        },
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%@“ трябва да се актуализира, за да работи с тази версия на Swipt."
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swipt-এর এই ভার্সনের সাথে কাজ করার জন্য “%@” আপডেট করা প্রয়োজন।"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” s’ha d’actualitzar per funcionar amb aquesta versió de l’app Swipt."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet „%@“ je nutné aktualizovat, aby fungoval s touto verzí aplikace Swipt."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” skal opdateres for at fungere med denne version af Swipt."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%@“ muss aktualisiert werden, damit es mit dieser Version von Swipt funktioniert."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Το «%@» πρέπει να ενημερωθεί για να λειτουργεί με αυτήν την έκδοση του Swipt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” debe actualizarse para funcionar con esta versión de Swipt."
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” debe actualizarse para funcionar con esta versión de Swipt."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” on päivitettävä, jotta se toimii tämän Swipt-version kanssa."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "« %@ » doit être mis à jour pour fonctionner avec cette version de Swipt."
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "« %@ » doit être mis à jour pour fonctionner avec cette version de Swipt."
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiptના આ વર્ઝન સાથે કામ કરવા માટે “%@” અપડેટ કરવું જરૂરી છે."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "יש לעדכן את ״%@״ כדי שיעבוד עם הגרסה הזו של Swipt."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swipt के इस वर्शन के साथ काम करने के लिए “%@” को अपडेट करना होगा।"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet „%@“ treba ažurirati kako bi radio s ovom verzijom aplikacije Swipt."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A(z) „%@” frissítése szükséges ahhoz, hogy működjön a Swipt ezen verziójával."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” perlu diperbarui agar dapat berfungsi dengan versi Swipt ini."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” deve essere aggiornato per funzionare con questa versione di Swipt."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@”をこのバージョンのSwiptで使用するには、アップデートが必要です。"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«%@» Swipt қолданбасының осы нұсқасымен жұмыс істеуі үшін жаңартылуы керек."
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiptನ ಈ ಆವೃತ್ತಿಯೊಂದಿಗೆ ಕಾರ್ಯನಿರ್ವಹಿಸಲು “%@” ಅನ್ನು ಅಪ್‌ಡೇಟ್ ಮಾಡಬೇಕಾಗಿದೆ."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "‘%@’을(를) 이 버전의 Swipt에서 사용하려면 업데이트해야 합니다."
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%@” reikia atnaujinti, kad veiktų su šia „Swipt” versija."
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swipt-ന്റെ ഈ പതിപ്പിൽ പ്രവർത്തിക്കാൻ ‘%@’ അപ്ഡേറ്റ് ചെയ്യേണ്ടതുണ്ട്."
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swipt च्या या आवृत्तीसह काम करण्यासाठी ‘%@’ अपडेट करणे आवश्यक आहे."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” perlu dikemas kini untuk berfungsi dengan versi Swipt ini."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«%@» må oppdateres for å fungere med denne versjonen av Swipt."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'%@' moet worden bijgewerkt om met deze versie van Swipt te werken."
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swipt ର ଏହି ସଂସ୍କରଣ ସହ କାମ କରିବା ପାଇଁ “%@” ଅପଡେଟ୍ କରିବା ଆବଶ୍ୟକ।"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swipt ਦੇ ਇਸ ਵਰਜਨ ਨਾਲ ਕੰਮ ਕਰਨ ਲਈ “%@” ਨੂੰ ਅੱਪਡੇਟ ਕਰਨਾ ਲੋੜੀਂਦਾ ਹੈ।"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%@” wymaga uaktualnienia, aby działać z tą wersją aplikacji Swipt."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” precisa ser atualizado para funcionar com esta versão do Swipt."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” tem de ser atualizado para funcionar com esta versão do Swipt."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%@” trebuie actualizat pentru a funcționa cu această versiune a aplicației Swipt."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«%@» необходимо обновить для работы с этой версией Swipt."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet „%@“ je potrebné aktualizovať, aby fungoval s touto verziou apky Swipt."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet »%@« je treba posodobiti, da bo deloval s to različico aplikacije Swipt."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” måste uppdateras för att fungera med den här versionen av Swipt."
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiptஇன் இந்தப் பதிப்பில் செயல்பட “%@”-ஐப் புதுப்பிக்க வேண்டும்."
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swipt ఈ వెర్షన్‌తో పని చేయడానికి “%@”ను అప్‌డేట్ చేయాలి."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” ต้องได้รับการอัปเดตเพื่อให้ทำงานกับ Swipt เวอร์ชันนี้ได้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” öğesinin Swipt’in bu sürümüyle çalışması için güncellenmesi gerekir."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«%@» потрібно оновити для роботи з цією версією Swipt."
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“⁨%@⁩” کو Swipt کے اس ورژن کے ساتھ کام کرنے کے لیے اپ ڈیٹ کرنا ضروری ہے۔"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” cần được cập nhật để hoạt động với phiên bản Swipt này."
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「%@」需要更新才能在此版本的 Swipt 中使用。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@”需要更新才能在此版本的 Swipt 中使用。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「%@」需要更新才能在此版本的 Swipt 中使用。"
           }
         }
       }

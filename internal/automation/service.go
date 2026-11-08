@@ -76,6 +76,9 @@ type logWatcher struct {
 func (r *runner) enter(ctx context.Context) (context.Context, Swiplet, func(), error) {
 	h := r.host
 	swiplet, err := h.Swiplet(r.id)
+	if err == nil {
+		err = h.Compatible(swiplet.Manifest)
+	}
 	if err != nil {
 		return nil, Swiplet{}, nil, err
 	}
@@ -152,12 +155,16 @@ func (r *runner) supervise(ctx context.Context, cancel context.CancelFunc, previ
 		if ctx.Err() != nil {
 			break
 		}
-		if err == nil {
+		if err == nil || errors.Is(err, ErrSwipletOutdated) {
 			r.access.Lock()
 			if r.done == done {
 				r.stop = nil
 			}
-			r.setLocked(ServiceStopped, nil)
+			status := ServiceStopped
+			if err != nil {
+				status = ServiceFailed
+			}
+			r.setLocked(status, err)
 			r.access.Unlock()
 			return
 		}

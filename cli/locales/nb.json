@@ -4,7 +4,7 @@
   "\"source.url\" in package.json is not an absolute URL": "\"source.url\" i package.json er ikke en absolutt URL",
   "\"swiplet.id\" in package.json must be 1 to 128 lowercase letters, digits, dots, underscores and hyphens starting with a letter or a digit": "\"swiplet.id\" i package.json må bestå av 1 til 128 små bokstaver, sifre, punktum, understreker og bindestreker og begynne med en bokstav eller et siffer",
   "\"swiplet.localizedNames\" in package.json must map languages to names": "\"swiplet.localizedNames\" i package.json må tilordne språk til navn",
-  "\"swiplet.minimumAPILevel\" in package.json must be an integer from 1 to {level}, the API level of @swipt/api": "\"swiplet.minimumAPILevel\" i package.json må være et heltall fra 1 til {level}, som er API-nivået til @swipt/api",
+  "\"swiplet.minimumAPILevel\" in package.json must be an integer from {oldest} to {level}, the API level of @swipt/api": "\"swiplet.minimumAPILevel\" i package.json må være et heltall fra {oldest} til {level}, som er API-nivået til @swipt/api",
   "\"swiplet.minimumIOSVersion\" in package.json must be a version number from {version}, the minimum iOS version of @swipt/api": "\"swiplet.minimumIOSVersion\" i package.json må være et versjonsnummer fra og med {version}, som er minsteversjonen av iOS for @swipt/api",
   "\"swiplet.name\" in package.json must be a non-empty string": "\"swiplet.name\" i package.json må være en streng som ikke er tom",
   "\"swiplet.versionCode\" in package.json must be a positive integer": "\"swiplet.versionCode\" i package.json må være et positivt heltall",

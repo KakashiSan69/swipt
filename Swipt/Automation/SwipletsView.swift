@@ -7,6 +7,7 @@ struct SwipletsView: View {
     @State private var isShowingUpdates = false
     @State private var swipletToDelete: String?
     @State private var swipletInfo: String?
+    @State private var outdatedSwiplet: String?
     @State private var alert: AlertState?
 
     private let swiplets = SwipletStore.shared
@@ -83,6 +84,15 @@ struct SwipletsView: View {
                     swipletToDelete = nil
                 }
             }
+            .alert(
+                "Swiplet Outdated",
+                isPresented: Binding(get: { outdatedSwiplet != nil }, set: { if !$0 { outdatedSwiplet = nil } }),
+                presenting: outdatedSwiplet
+            ) { _ in
+                Button("OK") {}
+            } message: { name in
+                Text("“\(swiplets.titles[name] ?? name)” needs to be updated to work with this version of Swipt.")
+            }
             .alert($alert)
         }
     }
@@ -102,7 +112,14 @@ struct SwipletsView: View {
         let service = swiplets.withServices.contains(name) ? swiplets.service(of: name) : nil
         let interface = swiplets.interfaces[name]
         return Group {
-            if let interface {
+            if swiplets.outdated.contains(name) {
+                Button {
+                    outdatedSwiplet = name
+                } label: {
+                    swipletLabel(name)
+                }
+                .tint(.primary)
+            } else if let interface {
                 Button {
                     SwipletPresentation.open(name: name, entry: interface)
                 } label: {

@@ -4,7 +4,7 @@
   "\"source.url\" in package.json is not an absolute URL": "package.json dosyasındaki \"source.url\" mutlak bir URL değil",
   "\"swiplet.id\" in package.json must be 1 to 128 lowercase letters, digits, dots, underscores and hyphens starting with a letter or a digit": "package.json dosyasındaki \"swiplet.id\" 1 ile 128 karakter arasında olmalı, küçük harf, rakam, nokta, alt çizgi ve tirelerden oluşmalı ve harf veya rakamla başlamalıdır",
   "\"swiplet.localizedNames\" in package.json must map languages to names": "package.json dosyasındaki \"swiplet.localizedNames\" dilleri adlarla eşleştirmelidir",
-  "\"swiplet.minimumAPILevel\" in package.json must be an integer from 1 to {level}, the API level of @swipt/api": "package.json dosyasındaki \"swiplet.minimumAPILevel\" 1 ile {level} (@swipt/api API düzeyi) arasında bir tam sayı olmalıdır",
+  "\"swiplet.minimumAPILevel\" in package.json must be an integer from {oldest} to {level}, the API level of @swipt/api": "package.json dosyasındaki \"swiplet.minimumAPILevel\" {oldest} ile {level} (@swipt/api API düzeyi) arasında bir tam sayı olmalıdır",
   "\"swiplet.minimumIOSVersion\" in package.json must be a version number from {version}, the minimum iOS version of @swipt/api": "package.json dosyasındaki \"swiplet.minimumIOSVersion\" {version} (@swipt/api en düşük iOS sürümü) veya daha yüksek bir sürüm numarası olmalıdır",
   "\"swiplet.name\" in package.json must be a non-empty string": "package.json dosyasındaki \"swiplet.name\" boş olmayan bir dize olmalıdır",
   "\"swiplet.versionCode\" in package.json must be a positive integer": "package.json dosyasındaki \"swiplet.versionCode\" pozitif bir tam sayı olmalıdır",
