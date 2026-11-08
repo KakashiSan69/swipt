@@ -34,6 +34,11 @@ export type Jsonify<T> = T extends string | number | boolean | null
           ? { [K in keyof T]: Jsonify<Exclude<T[K], undefined>> }
           : never;
 
+export declare function available(requirements: {
+  readonly apiLevel?: number;
+  readonly iOS?: number;
+}): boolean;
+
 declare global {
   function sleep(ms: number, options?: CallOptions): Promise<void>;
 }

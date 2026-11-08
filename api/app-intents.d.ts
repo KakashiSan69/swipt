@@ -62,6 +62,7 @@ export interface Placemark {
 /**
  * A choice of style cancel rejects with AbortError. Swiping the request away answers
  * the first choice, so the first choice is the one that is safe to take unasked.
+ * @available iOS 26
  */
 export declare function requestChoice<
   T extends string | { title: string; style?: IntentChoiceStyle },

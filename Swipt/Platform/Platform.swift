@@ -79,6 +79,8 @@ final class Platform {
         options.swipletDirectory = SwipletStore.directory.path
         options.swipletCacheDirectory = SwipletStore.caches.path
         options.languages = Locale.preferredLanguages.joined(separator: "\n")
+        let version = ProcessInfo.processInfo.operatingSystemVersion
+        options.osVersion = "\(version.majorVersion).\(version.minorVersion).\(version.patchVersion)"
         options.appBundleID = Bundle.main.bundleIdentifier ?? ""
         options.appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
         options.appBuild = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? ""
@@ -248,21 +250,30 @@ final class Platform {
 
     func installSwiplet(_ file: URL) async throws -> String {
         let box = UncheckedSendable(value: core)
-        return try await blocking { try Self.install(file, into: box.value) }
+        let installed = try await blocking { UncheckedSendable(value: box.value.installSwiplet(file.path)!) }
+        return try Self.result(of: installed.value)
     }
 
     func installSwiplet(picked file: URL) async throws -> String {
         let box = UncheckedSendable(value: core)
-        return try await blocking { try file.withPickedFile { try Self.install($0, into: box.value) } }
+        let installed = try await blocking { try file.withPickedFile { UncheckedSendable(value: box.value.installSwiplet($0.path)!) } }
+        return try Self.result(of: installed.value)
     }
 
-    nonisolated private static func install(_ file: URL, into platform: LibSwiptPlatform) throws -> String {
-        let installed = platform.installSwiplet(file.path)!
+    func checkSwipletInstall(_ file: URL) async throws {
+        let box = UncheckedSendable(value: core)
+        let checked = try await blocking { UncheckedSendable(value: box.value.checkSwipletInstall(file.path)!) }
+        _ = try Self.result(of: checked.value)
+    }
+
+    private static func result(of installed: LibSwiptSwipletInstall) throws -> String {
         switch installed.errorCode {
         case LibSwiptSwipletErrorNone:
             return installed.id_
         case LibSwiptSwipletErrorOutdated:
             throw SwiptOutdatedError()
+        case LibSwiptSwipletErrorIOSOutdated:
+            throw IOSOutdatedError(version: installed.minimumIOSVersion, isPad: UIDevice.isPad)
         default:
             throw MessageError(installed.errorMessage)
         }

@@ -9,6 +9,7 @@ import {
 import { bind, type Native } from "../extension/native";
 import { installGlobalScope } from "../extension/scope";
 
+export { available } from "../extension/available";
 export { Client, CookieJar } from "../extension/http";
 import { createConsole } from "../shared/console";
 import { inspect } from "../shared/inspect";
@@ -20,6 +21,8 @@ interface WebResult {
 }
 
 export interface WebHost {
+  readonly os: string;
+  readonly osVersion: string;
   languages(): string[];
   log(level: string, message: string): void;
   webStart(id: string, name: string, args: string): Promise<WebResult>;
@@ -97,6 +100,8 @@ export function installWeb(
   const native: Native = {
     swiplet: "",
     languages,
+    os: host.os,
+    osVersion: host.osVersion,
     get dataDirectory() {
       return directories.data;
     },

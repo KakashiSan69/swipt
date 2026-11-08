@@ -70,10 +70,11 @@ type SwipletDownload struct {
 }
 
 const (
-	SwipletErrorNone     int32 = 0
-	SwipletErrorFailed   int32 = 1
-	SwipletErrorTimeout  int32 = 2
-	SwipletErrorOutdated int32 = 3
+	SwipletErrorNone        int32 = 0
+	SwipletErrorFailed      int32 = 1
+	SwipletErrorTimeout     int32 = 2
+	SwipletErrorOutdated    int32 = 3
+	SwipletErrorIOSOutdated int32 = 4
 )
 
 type SwipletDownloader struct {

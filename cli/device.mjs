@@ -21,6 +21,7 @@ import {
   serviceStatusText,
   serviceText,
 } from "./output.mjs";
+import { AvailabilityChecker } from "./availability.mjs";
 import { buildProject, loadProject } from "./project.mjs";
 import { LogLevel } from "./proto/common_pb.js";
 import { ServiceStatus } from "./proto/swiplets_pb.js";
@@ -633,11 +634,12 @@ export async function develop(context) {
     });
   }
   let deployed = "";
+  const checker = new AvailabilityChecker();
   const cycle = async () => {
     const started = Date.now();
     let built;
     try {
-      built = await buildProject(root);
+      built = await buildProject(root, checker);
     } catch (error) {
       if (!inner.aborted) {
         console.error(tr("error: {message}", { message: error.message }));
@@ -715,6 +717,7 @@ export async function develop(context) {
     await Promise.race([watch(), fatal]);
   } finally {
     controller.abort();
+    checker.close();
   }
 }
 

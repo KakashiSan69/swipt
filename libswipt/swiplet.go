@@ -75,22 +75,26 @@ func newSwipletManifest(manifest automation.Manifest) *SwipletManifest {
 }
 
 func ReadSwipletManifest(file string) (*SwipletManifest, error) {
-	content, err := os.ReadFile(file)
-	if err != nil {
-		return nil, err
-	}
-	if !bytes.HasPrefix(content, archiveMagic) {
-		return nil, E.New("the file is not a ZIP archive")
-	}
-	reader, err := zip.NewReader(bytes.NewReader(content), int64(len(content)))
-	if err != nil {
-		return nil, E.Cause(err, "open the archive")
-	}
-	archive, err := automation.ReadArchive(reader)
+	archive, err := readSwipletArchive(file)
 	if err != nil {
 		return nil, err
 	}
 	return newSwipletManifest(archive.Manifest), nil
+}
+
+func readSwipletArchive(file string) (automation.Archive, error) {
+	content, err := os.ReadFile(file)
+	if err != nil {
+		return automation.Archive{}, err
+	}
+	if !bytes.HasPrefix(content, archiveMagic) {
+		return automation.Archive{}, E.New("the file is not a ZIP archive")
+	}
+	reader, err := zip.NewReader(bytes.NewReader(content), int64(len(content)))
+	if err != nil {
+		return automation.Archive{}, E.Cause(err, "open the archive")
+	}
+	return automation.ReadArchive(reader)
 }
 
 type SwipletInfo struct {
@@ -122,17 +126,33 @@ func (p *Platform) Swiplets() (*SwipletList, error) {
 type SwipletInstall struct {
 	ID string
 
-	ErrorCode    int32
-	ErrorMessage string
+	ErrorCode         int32
+	ErrorMessage      string
+	MinimumIOSVersion string
 }
 
 func (p *Platform) InstallSwiplet(file string) *SwipletInstall {
 	id, err := p.installSwiplet(file)
+	return newSwipletInstall(id, err)
+}
+
+func (p *Platform) CheckSwipletInstall(file string) *SwipletInstall {
+	archive, err := readSwipletArchive(file)
+	if err == nil {
+		err = p.host.Compatible(archive.Manifest)
+	}
+	return newSwipletInstall(archive.Manifest.ID, err)
+}
+
+func newSwipletInstall(id string, err error) *SwipletInstall {
+	var outdatedIOS *automation.IOSOutdatedError
 	switch {
 	case err == nil:
 		return &SwipletInstall{ID: id}
 	case errors.Is(err, automation.ErrOutdated):
 		return &SwipletInstall{ErrorCode: SwipletErrorOutdated, ErrorMessage: err.Error()}
+	case errors.As(err, &outdatedIOS):
+		return &SwipletInstall{ErrorCode: SwipletErrorIOSOutdated, ErrorMessage: err.Error(), MinimumIOSVersion: outdatedIOS.Minimum}
 	default:
 		return &SwipletInstall{ErrorCode: SwipletErrorFailed, ErrorMessage: err.Error()}
 	}

@@ -4,6 +4,8 @@ import type { Position } from "./format";
 export interface Native {
   readonly swiplet: string;
   readonly languages: string;
+  readonly os: string;
+  readonly osVersion: string;
   readonly dataDirectory: string;
   readonly assetsDirectory: string;
   readonly cacheDirectory: string;

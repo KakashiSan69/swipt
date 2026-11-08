@@ -6,8 +6,10 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"strconv"
 
 	E "github.com/sagernet/sing/common/exceptions"
+	"github.com/swipt-automation/swipt/internal/version"
 )
 
 type ActionInfo struct {
@@ -20,34 +22,36 @@ type ActionInfo struct {
 }
 
 type Manifest struct {
-	ID              string
-	Name            string
-	LocalizedNames  map[string]string
-	Description     string
-	Version         string
-	VersionCode     int64
-	Icon            Icon
-	UpdateURL       string
-	MinimumAPILevel int64
-	Interface       bool
-	Service         bool
-	Actions         []ActionInfo
-	fields          map[string]json.RawMessage
+	ID                string
+	Name              string
+	LocalizedNames    map[string]string
+	Description       string
+	Version           string
+	VersionCode       int64
+	Icon              Icon
+	UpdateURL         string
+	MinimumAPILevel   int64
+	MinimumIOSVersion string
+	Interface         bool
+	Service           bool
+	Actions           []ActionInfo
+	fields            map[string]json.RawMessage
 }
 
 type manifestFields struct {
-	ID              string            `json:"id"`
-	Name            string            `json:"name"`
-	LocalizedNames  map[string]string `json:"localizedNames"`
-	Description     string            `json:"description"`
-	Version         string            `json:"version"`
-	VersionCode     int64             `json:"versionCode"`
-	Icon            Icon              `json:"icon"`
-	UpdateURL       string            `json:"updateURL"`
-	MinimumAPILevel int64             `json:"minimumAPILevel"`
-	Interface       bool              `json:"interface"`
-	Service         bool              `json:"service"`
-	Actions         []ActionInfo      `json:"actions"`
+	ID                string            `json:"id"`
+	Name              string            `json:"name"`
+	LocalizedNames    map[string]string `json:"localizedNames"`
+	Description       string            `json:"description"`
+	Version           string            `json:"version"`
+	VersionCode       int64             `json:"versionCode"`
+	Icon              Icon              `json:"icon"`
+	UpdateURL         string            `json:"updateURL"`
+	MinimumAPILevel   int64             `json:"minimumAPILevel"`
+	MinimumIOSVersion json.Number       `json:"minimumIOSVersion"`
+	Interface         bool              `json:"interface"`
+	Service           bool              `json:"service"`
+	Actions           []ActionInfo      `json:"actions"`
 }
 
 func ParseManifest(data []byte) (Manifest, error) {
@@ -62,10 +66,18 @@ func ParseManifest(data []byte) (Manifest, error) {
 	if known.Icon.Check() != nil {
 		known.Icon = DefaultIcon
 	}
+	var minimumIOSVersion string
+	if known.MinimumIOSVersion != "" {
+		number, err := known.MinimumIOSVersion.Float64()
+		minimumIOSVersion = strconv.FormatFloat(number, 'f', -1, 64)
+		if parsed, isVersion := version.Parse(minimumIOSVersion); err != nil || !isVersion || len(parsed) > 2 {
+			return Manifest{}, E.New("read ", ManifestFile, ": the minimum iOS version ", known.MinimumIOSVersion.String(), " is not a version")
+		}
+	}
 	return Manifest{
 		ID: known.ID, Name: known.Name, LocalizedNames: known.LocalizedNames, Description: known.Description, Version: known.Version,
 		VersionCode: known.VersionCode, Icon: known.Icon, UpdateURL: known.UpdateURL, MinimumAPILevel: known.MinimumAPILevel,
-		Interface: known.Interface, Service: known.Service, Actions: known.Actions, fields: fields,
+		MinimumIOSVersion: minimumIOSVersion, Interface: known.Interface, Service: known.Service, Actions: known.Actions, fields: fields,
 	}, nil
 }
 
@@ -95,6 +107,7 @@ func EncodeManifest(manifest Manifest) ([]byte, error) {
 	}
 	set("versionCode", manifest.VersionCode, manifest.VersionCode > 0)
 	set("minimumAPILevel", manifest.MinimumAPILevel, manifest.MinimumAPILevel > 0)
+	set("minimumIOSVersion", json.Number(manifest.MinimumIOSVersion), manifest.MinimumIOSVersion != "")
 	set("localizedNames", manifest.LocalizedNames, len(manifest.LocalizedNames) > 0)
 	set("icon", manifest.Icon, manifest.Icon != DefaultIcon)
 	set("interface", true, manifest.Interface)

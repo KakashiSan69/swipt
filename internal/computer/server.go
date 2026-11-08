@@ -23,6 +23,8 @@ import (
 	"github.com/swipt-automation/swipt/internal/dnssd"
 	"github.com/swipt-automation/swipt/internal/graphics"
 	"github.com/swipt-automation/swipt/internal/log"
+
+	"golang.org/x/sys/unix"
 )
 
 const (
@@ -109,11 +111,16 @@ func Run(ctx context.Context, options Options) error {
 		return err
 	}
 	defer connection.Close()
+	osVersion, err := unix.Sysctl("kern.osproductversion")
+	if err != nil {
+		return E.Cause(err, "read the macOS version")
+	}
 	swiplets := automation.New(automation.Options{
 		Device:     connection.Phone(),
 		Directory:  filepath.Join(directory, swipletsFolder),
 		Caches:     filepath.Join(caches, swipletsFolder),
 		Languages:  Languages(),
+		OSVersion:  osVersion,
 		LogFactory: options.Logs,
 		Graphics:   graphics.New(graphics.Options{Connection: connection, Logger: options.Logs.NewLogger("graphics")}),
 	})

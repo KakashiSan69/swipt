@@ -47,6 +47,11 @@ declare module "@swipt/api" {
             ? { [K in keyof T]: Jsonify<Exclude<T[K], undefined>> }
             : never;
 
+  export function available(requirements: {
+    readonly apiLevel?: number;
+    readonly iOS?: number;
+  }): boolean;
+
   global {
     function sleep(ms: number, options?: CallOptions): Promise<void>;
   }
@@ -831,6 +836,7 @@ declare module "@swipt/api/app-intents" {
   /**
    * A choice of style cancel rejects with AbortError. Swiping the request away answers
    * the first choice, so the first choice is the one that is safe to take unasked.
+   * @available iOS 26
    */
   export function requestChoice<
     T extends string | { title: string; style?: IntentChoiceStyle },

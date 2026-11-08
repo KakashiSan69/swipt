@@ -57983,6 +57983,614 @@
         }
       }
     },
+    "This swiplet requires iOS %@ or later." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يتطلب Swiplet هذا نظام iOS %@ أو أحدث."
+          }
+        },
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Този Swiplet изисква iOS %@ или по-нова версия."
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "এই Swiplet-এর জন্য iOS %@ বা তার পরের ভার্সন প্রয়োজন।"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aquest Swiplet requereix l’iOS %@ o posterior."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tento Swiplet vyžaduje iOS %@ nebo novější."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denne Swiplet kræver iOS %@ eller nyere."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieses Swiplet erfordert iOS %@ oder neuer."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Αυτό το Swiplet απαιτεί iOS %@ ή νεότερη έκδοση."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este Swiplet requiere iOS %@ o posterior."
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este Swiplet requiere iOS %@ o posterior."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tämä Swiplet vaatii iOS %@:n tai uudemman."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce Swiplet nécessite iOS %@ ou une version ultérieure."
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce Swiplet nécessite iOS %@ ou une version ultérieure."
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "આ Swiplet માટે iOS %@ અથવા તે પછીનું વર્ઝન જરૂરી છે."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ה-Swiplet הזה דורש iOS %@ ואילך."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "इस Swiplet के लिए iOS %@ या उसके बाद का वर्शन आवश्यक है।"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ovaj Swiplet zahtijeva iOS %@ ili noviji."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ez a Swiplet iOS %@ vagy újabb verziót igényel."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet ini memerlukan iOS %@ atau lebih baru."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questo Swiplet richiede iOS %@ o versione successiva."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このSwipletにはiOS %@以降が必要です。"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бұл Swiplet үшін iOS %@ немесе одан кейінгі нұсқасы қажет."
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ಈ Swipletಗೆ iOS %@ ಅಥವಾ ನಂತರದ ಆವೃತ್ತಿ ಅಗತ್ಯವಿದೆ."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 Swiplet에는 iOS %@ 이상이 필요합니다."
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Šiam „Swiplet” reikia „iOS %@” ar naujesnės versijos."
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ഈ Swiplet-ന് iOS %@ അല്ലെങ്കിൽ അതിനുശേഷമുള്ള പതിപ്പ് ആവശ്യമാണ്."
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "या Swiplet साठी iOS %@ किंवा नंतरची आवृत्ती आवश्यक आहे."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet ini memerlukan iOS %@ atau lebih baharu."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denne Swipleten krever iOS %@ eller nyere."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deze Swiplet vereist iOS %@ of nieuwer."
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ଏହି Swiplet ପାଇଁ iOS %@ କିମ୍ବା ପରବର୍ତ୍ତୀ ସଂସ୍କରଣ ଆବଶ୍ୟକ।"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ਇਸ Swiplet ਲਈ iOS %@ ਜਾਂ ਇਸ ਤੋਂ ਬਾਅਦ ਵਾਲਾ ਵਰਜਨ ਲੋੜੀਂਦਾ ਹੈ।"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ten Swiplet wymaga systemu iOS %@ lub nowszego."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este Swiplet requer o iOS %@ ou posterior."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este Swiplet requer o iOS %@ ou posterior."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acest Swiplet necesită iOS %@ sau o versiune ulterioară."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для этого Swiplet требуется iOS %@ или новее."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tento Swiplet vyžaduje iOS %@ alebo novší."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta Swiplet zahteva različico iOS %@ ali novejšo."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denna Swiplet kräver iOS %@ eller senare."
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "இந்த Swipletக்கு iOS %@ அல்லது அதற்குப் பிந்தைய பதிப்பு தேவை."
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ఈ Swiplet కోసం iOS %@ లేదా తర్వాతి వెర్షన్ అవసరం."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet นี้ต้องใช้ iOS %@ หรือใหม่กว่า"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu Swiplet için iOS %@ veya sonrası gerekir."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для цього Swiplet потрібна iOS %@ або новішої версії."
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اس Swiplet کے لیے iOS %@ یا اس کے بعد کا ورژن درکار ہے۔"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet này yêu cầu iOS %@ trở lên."
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此 Swiplet 需要 iOS %@ 或以上版本。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此 Swiplet 需要 iOS %@ 或更高版本。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此 Swiplet 需要 iOS %@ 或以上版本。"
+          }
+        }
+      }
+    },
+    "This swiplet requires iPadOS %@ or later." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يتطلب Swiplet هذا نظام iPadOS %@ أو أحدث."
+          }
+        },
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Този Swiplet изисква iPadOS %@ или по-нова версия."
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "এই Swiplet-এর জন্য iPadOS %@ বা তার পরের ভার্সন প্রয়োজন।"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aquest Swiplet requereix l’iPadOS %@ o posterior."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tento Swiplet vyžaduje iPadOS %@ nebo novější."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denne Swiplet kræver iPadOS %@ eller nyere."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieses Swiplet erfordert iPadOS %@ oder neuer."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Αυτό το Swiplet απαιτεί iPadOS %@ ή νεότερη έκδοση."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este Swiplet requiere iPadOS %@ o posterior."
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este Swiplet requiere iPadOS %@ o posterior."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tämä Swiplet vaatii iPadOS %@:n tai uudemman."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce Swiplet nécessite iPadOS %@ ou une version ultérieure."
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce Swiplet nécessite iPadOS %@ ou une version ultérieure."
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "આ Swiplet માટે iPadOS %@ અથવા તે પછીનું વર્ઝન જરૂરી છે."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ה-Swiplet הזה דורש iPadOS %@ ואילך."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "इस Swiplet के लिए iPadOS %@ या उसके बाद का वर्शन आवश्यक है।"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ovaj Swiplet zahtijeva iPadOS %@ ili noviji."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ez a Swiplet iPadOS %@ vagy újabb verziót igényel."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet ini memerlukan iPadOS %@ atau lebih baru."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questo Swiplet richiede iPadOS %@ o versione successiva."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このSwipletにはiPadOS %@以降が必要です。"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бұл Swiplet үшін iPadOS %@ немесе одан кейінгі нұсқасы қажет."
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ಈ Swipletಗೆ iPadOS %@ ಅಥವಾ ನಂತರದ ಆವೃತ್ತಿ ಅಗತ್ಯವಿದೆ."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 Swiplet에는 iPadOS %@ 이상이 필요합니다."
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Šiam „Swiplet” reikia „iPadOS %@” ar naujesnės versijos."
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ഈ Swiplet-ന് iPadOS %@ അല്ലെങ്കിൽ അതിനുശേഷമുള്ള പതിപ്പ് ആവശ്യമാണ്."
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "या Swiplet साठी iPadOS %@ किंवा नंतरची आवृत्ती आवश्यक आहे."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet ini memerlukan iPadOS %@ atau lebih baharu."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denne Swipleten krever iPadOS %@ eller nyere."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deze Swiplet vereist iPadOS %@ of nieuwer."
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ଏହି Swiplet ପାଇଁ iPadOS %@ କିମ୍ବା ପରବର୍ତ୍ତୀ ସଂସ୍କରଣ ଆବଶ୍ୟକ।"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ਇਸ Swiplet ਲਈ iPadOS %@ ਜਾਂ ਇਸ ਤੋਂ ਬਾਅਦ ਵਾਲਾ ਵਰਜਨ ਲੋੜੀਂਦਾ ਹੈ।"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ten Swiplet wymaga systemu iPadOS %@ lub nowszego."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este Swiplet requer o iPadOS %@ ou posterior."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este Swiplet requer o iPadOS %@ ou posterior."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acest Swiplet necesită iPadOS %@ sau o versiune ulterioară."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для этого Swiplet требуется iPadOS %@ или новее."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tento Swiplet vyžaduje iPadOS %@ alebo novší."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta Swiplet zahteva različico iPadOS %@ ali novejšo."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denna Swiplet kräver iPadOS %@ eller senare."
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "இந்த Swipletக்கு iPadOS %@ அல்லது அதற்குப் பிந்தைய பதிப்பு தேவை."
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ఈ Swiplet కోసం iPadOS %@ లేదా తర్వాతి వెర్షన్ అవసరం."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet นี้ต้องใช้ iPadOS %@ หรือใหม่กว่า"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu Swiplet için iPadOS %@ veya sonrası gerekir."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для цього Swiplet потрібна iPadOS %@ або новішої версії."
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اس Swiplet کے لیے iPadOS %@ یا اس کے بعد کا ورژن درکار ہے۔"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swiplet này yêu cầu iPadOS %@ trở lên."
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此 Swiplet 需要 iPadOS %@ 或以上版本。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此 Swiplet 需要 iPadOS %@ 或更高版本。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此 Swiplet 需要 iPadOS %@ 或以上版本。"
+          }
+        }
+      }
+    },
     "Tips" : {
       "localizations" : {
         "ar" : {

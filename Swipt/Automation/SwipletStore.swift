@@ -33,6 +33,7 @@ final class SwipletStore {
     @PerceptionIgnored private var manifests: [String: LibSwiptSwipletManifest] = [:]
     @PerceptionIgnored private var repositoriesChecked: [String: Date] = [:]
     private var checked: [String: Date] = [:]
+    @PerceptionIgnored private var incompatibleUpdates: [String: String] = [:]
 
     private init() {
         var stored: [Repository] = []
@@ -274,11 +275,12 @@ final class SwipletStore {
     func checkForUpdate(of id: String) async throws -> Bool {
         checked[id] = .now
         guard let local = manifests[id], !local.version.isEmpty, !local.updateURL.isEmpty else { return false }
+        let incompatible = incompatibleUpdates[id]
         let download = try await Self.download(
-            local.updateURL, etag: SwipletDatabase.etag(of: id), version: local.version, versionCode: local.versionCode)
+            local.updateURL, etag: incompatible ?? SwipletDatabase.etag(of: id), version: local.version, versionCode: local.versionCode)
         guard Self.isNewer(download, than: local) else {
             Self.discard(download.file)
-            if !download.etag.isEmpty {
+            if !download.etag.isEmpty, download.etag != incompatible {
                 try SwipletDatabase.setETag(download.etag, of: id)
             }
             return false
@@ -287,6 +289,14 @@ final class SwipletStore {
             Self.discard(download.file)
             throw MessageError(String(localized: "The update is a different swiplet."))
         }
+        do {
+            try await Platform.shared.checkSwipletInstall(download.file)
+        } catch is SwiptOutdatedError, is IOSOutdatedError {
+            Self.discard(download.file)
+            incompatibleUpdates[id] = download.etag
+            return false
+        }
+        incompatibleUpdates[id] = nil
         if let previous = updates[id] {
             Self.discard(previous.file)
         }
@@ -485,6 +495,17 @@ nonisolated struct SwiptOutdatedError: LocalizedError, RecoverableError {
             _ = await UIApplication.shared.open(URL(string: LibSwiptUpdateGuide)!)
         }
         return true
+    }
+}
+
+nonisolated struct IOSOutdatedError: LocalizedError {
+    let version: String
+    let isPad: Bool
+
+    var errorDescription: String? {
+        isPad
+            ? String(localized: "This swiplet requires iPadOS \(version) or later.")
+            : String(localized: "This swiplet requires iOS \(version) or later.")
     }
 }
 

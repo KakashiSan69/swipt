@@ -10,8 +10,10 @@ import vm from "node:vm";
 import { transformAsync } from "@babel/core";
 import { build } from "esbuild";
 
+import { AvailabilityChecker } from "./availability.mjs";
 import { tr } from "./i18n.mjs";
 import { loadEnvironment, metro } from "./metro.mjs";
+import { parseVersion, versionAtLeast } from "./version.mjs";
 
 const { version } = JSON.parse(
   fs.readFileSync(new URL("package.json", import.meta.url), "utf8"),
@@ -127,13 +129,11 @@ export function loadProject(root) {
       tr('"swiplet.versionCode" in package.json must be a positive integer'),
     );
   }
-  const { apiLevel } = JSON.parse(
-    fs.readFileSync(
-      require.resolve("@swipt/api/package.json", {
-        paths: [root, import.meta.dirname],
-      }),
-      "utf8",
-    ),
+  const apiManifest = require.resolve("@swipt/api/package.json", {
+    paths: [root, import.meta.dirname],
+  });
+  const { apiLevel, minimumIOSVersion = 27 } = JSON.parse(
+    fs.readFileSync(apiManifest, "utf8"),
   );
   if (
     config.minimumAPILevel !== undefined &&
@@ -150,6 +150,22 @@ export function loadProject(root) {
       ),
     );
   }
+  const version = parseVersion(config.minimumIOSVersion);
+  if (
+    config.minimumIOSVersion !== undefined &&
+    !(
+      typeof config.minimumIOSVersion === "number" &&
+      version &&
+      versionAtLeast(version, parseVersion(minimumIOSVersion))
+    )
+  ) {
+    throw new Error(
+      tr(
+        '"swiplet.minimumIOSVersion" in package.json must be a version number from {version}, the minimum iOS version of @swipt/api',
+        { version: minimumIOSVersion },
+      ),
+    );
+  }
   const entry = (name) =>
     config[name] === undefined ? undefined : path.resolve(root, config[name]);
   return {
@@ -158,6 +174,8 @@ export function loadProject(root) {
     config,
     localizedNames,
     apiLevel,
+    minimumIOSVersion,
+    apiDirectory: path.dirname(apiManifest),
     app: entry("app"),
     extension: entry("extension"),
   };
@@ -185,7 +203,13 @@ const typeImport = (extension) => ({
 });
 
 async function bundle(project) {
-  const out = { app: "", extension: "", extensionMap: "", assets: new Map() };
+  const out = {
+    app: "",
+    extension: "",
+    extensionMap: "",
+    assets: new Map(),
+    metafiles: [],
+  };
   loadEnvironment(project.root);
   if (project.extension) {
     const outfile = path.join(
@@ -207,9 +231,11 @@ async function bundle(project) {
       sourcemap: "external",
       sourcesContent: false,
       write: false,
+      metafile: true,
       logLevel: "silent",
       plugins: [metro(project.root, { sourcemap: true })],
     });
+    out.metafiles.push(result.metafile);
     out.extension = result.outputFiles.find((file) =>
       file.path.endsWith(".js"),
     ).text;
@@ -258,12 +284,14 @@ async function bundle(project) {
       define: { "process.env.NODE_ENV": '"production"', __DEV__: "false" },
       external: appModules,
       write: false,
+      metafile: true,
       logLevel: "silent",
       plugins: [
         ...(project.extension ? [typeImport(project.extension)] : []),
         metro(project.root, { assets: out.assets }),
       ],
     });
+    out.metafiles.push(result.metafile);
     const scoped = await transformAsync(result.outputFiles[0].text, {
       babelrc: false,
       configFile: false,
@@ -287,6 +315,20 @@ function describeExtension(source) {
   if (source === "") {
     return { service: false, actions: [] };
   }
+  const [newer, older] = [true, false].map((result) =>
+    evaluateExtension(source, result),
+  );
+  if (JSON.stringify(newer) !== JSON.stringify(older)) {
+    throw new Error(
+      tr(
+        "the extension defines different actions depending on available(); define the same actions on every system and check available() inside run or an action",
+      ),
+    );
+  }
+  return newer;
+}
+
+function evaluateExtension(source, availableResult) {
   const loading = (name) => {
     const fail = () => {
       throw new Error(
@@ -305,7 +347,7 @@ function describeExtension(source) {
     return new Proxy(fail, { get, apply: fail, construct: fail });
   };
   const modules = {
-    "@swipt/api": {},
+    "@swipt/api": { available: () => availableResult },
     "@swipt/api/swiplet": {
       defineExtension: (definition) => ({ [definitionKey]: definition }),
       defineAction: (definition) => definition,
@@ -574,6 +616,7 @@ function swipletManifest(project, output) {
     ...(config.icon ? { icon: config.icon } : {}),
     ...(config.updateURL ? { updateURL: config.updateURL } : {}),
     minimumAPILevel: config.minimumAPILevel ?? project.apiLevel,
+    minimumIOSVersion: config.minimumIOSVersion ?? project.minimumIOSVersion,
     ...(output.app ? { interface: true } : {}),
     ...(service ? { service } : {}),
     ...(actions.length > 0 ? { actions } : {}),
@@ -585,9 +628,19 @@ const sourceFiles = (output) => ({
   ...(output.extension ? { "extension.js": output.extension } : {}),
 });
 
-export async function buildProject(root) {
+export async function buildProject(root, checker) {
   const project = loadProject(root);
   const output = await bundle(project);
+  if (checker === undefined) {
+    const owned = new AvailabilityChecker();
+    try {
+      owned.check(project, output.metafiles);
+    } finally {
+      owned.close();
+    }
+  } else {
+    checker.check(project, output.metafiles);
+  }
   const manifest = swipletManifest(project, output);
   const dist = path.join(root, "dist");
   const folder = path.join(dist, manifest.id);

@@ -17,6 +17,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"runtime"
 	"slices"
 	"strconv"
 	"strings"
@@ -312,8 +313,13 @@ func (h *Host) newEngine(swiplet Swiplet, dialog Dialog, logger log.ContextLogge
 	native := e.context.NewObject()
 	defer native.Release()
 	origin := native.SetClock("now")
+	system := runtime.GOOS
+	if system == "darwin" {
+		system = "macos"
+	}
 	properties := map[string]string{
 		"swiplet": swiplet.ID, "dataDirectory": filepath.Join(swiplet.Directory, DataFolder), "languages": strings.Join(h.options.Languages, "\n"),
+		"os": system, "osVersion": h.options.OSVersion,
 		"assetsDirectory": filepath.Join(swiplet.Directory, AssetsFolder), "cacheDirectory": e.caches, "extensionHead": extensionHead,
 		"timeOrigin": strconv.FormatFloat(float64(origin.UnixMicro())/1000, 'f', -1, 64),
 	}

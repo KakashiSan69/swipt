@@ -103,6 +103,7 @@ const web = require("./web") as {
   ): Record<string, unknown>;
   Client: unknown;
   CookieJar: unknown;
+  available: unknown;
 };
 web.installWeb(host, format);
 Object.defineProperty(globalThis, "sleep", {
@@ -335,7 +336,7 @@ function load(props: Props): { Swiplet: ComponentType; close(): void } {
   const sqlite = createSQLite(sqliteBridge(props));
   let sqliteModule: object | undefined;
   const own: Record<string, () => unknown> = {
-    "@swipt/api": () => exportsOf("@swipt/api", {}),
+    "@swipt/api": () => exportsOf("@swipt/api", { available: web.available }),
     "@swipt/api/swiplet": () => interfaceModule(props),
     "@swipt/api/file-system": () =>
       exportsOf(

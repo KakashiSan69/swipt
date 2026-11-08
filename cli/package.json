@@ -34,7 +34,8 @@
     "image-size": "^2.0.4",
     "multicast-dns": "^7.2.5",
     "react-native-worklets": "0.13.0",
-    "string-width": "^8.1.0"
+    "string-width": "^8.1.0",
+    "typescript": "7.0.2"
   },
   "peerDependencies": {
     "@swipt/api": "0.1.0"

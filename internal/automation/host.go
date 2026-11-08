@@ -10,6 +10,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"sync"
 	"time"
@@ -18,6 +19,7 @@ import (
 	"github.com/swipt-automation/swipt/api"
 	"github.com/swipt-automation/swipt/internal/device"
 	"github.com/swipt-automation/swipt/internal/log"
+	"github.com/swipt-automation/swipt/internal/version"
 )
 
 type Caller string
@@ -42,11 +44,21 @@ var (
 
 var packageFiles = []string{SourceFolder, AssetsFolder, ManifestFile, IconFile}
 
+type IOSOutdatedError struct {
+	Minimum string
+	Version string
+}
+
+func (e *IOSOutdatedError) Error() string {
+	return "the swiplet requires iOS " + e.Minimum + ", and this device runs iOS " + e.Version
+}
+
 type Options struct {
 	Device            *device.Phone
 	Directory         string
 	Caches            string
 	Languages         []string
+	OSVersion         string
 	LogFactory        *log.Factory
 	Dialog            Dialog
 	Graphics          Graphics
@@ -216,6 +228,19 @@ func (h *Host) runner(id string) (*runner, error) {
 	return r, nil
 }
 
+func (h *Host) Compatible(manifest Manifest) error {
+	if manifest.MinimumAPILevel > api.Level {
+		return E.Extend(ErrOutdated, "the swiplet requires API level ", manifest.MinimumAPILevel,
+			", and this Swipt implements API level ", api.Level, "; see ", UpdateGuide, " to update it")
+	}
+	if minimum, required := version.Parse(manifest.MinimumIOSVersion); required && runtime.GOOS == "ios" {
+		if current, _ := version.Parse(h.options.OSVersion); !current.AtLeast(minimum) {
+			return &IOSOutdatedError{Minimum: manifest.MinimumIOSVersion, Version: h.options.OSVersion}
+		}
+	}
+	return nil
+}
+
 func (h *Host) Install(archive io.ReaderAt, size int64) (Swiplet, error) {
 	reader, err := zip.NewReader(archive, size)
 	if err != nil {
@@ -225,9 +250,8 @@ func (h *Host) Install(archive io.ReaderAt, size int64) (Swiplet, error) {
 	if err != nil {
 		return Swiplet{}, err
 	}
-	if contents.Manifest.MinimumAPILevel > api.Level {
-		return Swiplet{}, E.Extend(ErrOutdated, "the swiplet requires API level ", contents.Manifest.MinimumAPILevel,
-			", and this Swipt implements API level ", api.Level, "; see ", UpdateGuide, " to update it")
+	if err = h.Compatible(contents.Manifest); err != nil {
+		return Swiplet{}, err
 	}
 	id := contents.Manifest.ID
 	err = h.install(contents)

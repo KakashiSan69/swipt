@@ -1,6 +1,7 @@
 import type * as swiplet from "@swipt/api/swiplet";
 
 import { appIntents } from "./app-intents";
+import { available } from "./available";
 import { chunk } from "./chunks";
 import { DOMException, failureOf } from "./errors";
 import { AbortController } from "./events";
@@ -156,7 +157,7 @@ const interfaceOnly = (name: string) => (): never => {
 };
 
 const moduleTable = {
-  "@swipt/api": () => ({ __esModule: true }),
+  "@swipt/api": () => ({ __esModule: true, available }),
   "@swipt/api/swiplet": () => ({
     __esModule: true,
     defineExtension,

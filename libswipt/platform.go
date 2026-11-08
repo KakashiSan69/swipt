@@ -31,6 +31,7 @@ type PlatformOptions struct {
 	SwipletDirectory      string
 	SwipletCacheDirectory string
 	Languages             string
+	OSVersion             string
 	AppBundleID           string
 	AppVersion            string
 	AppBuild              string
@@ -76,6 +77,7 @@ func NewPlatform(options *PlatformOptions, handler PlatformHandler, deviceOption
 		Directory:  options.SwipletDirectory,
 		Caches:     options.SwipletCacheDirectory,
 		Languages:  strings.Fields(options.Languages),
+		OSVersion:  options.OSVersion,
 		LogFactory: p.logFactory,
 		Dialog:     p.dialog,
 		Graphics: graphics.New(graphics.Options{
