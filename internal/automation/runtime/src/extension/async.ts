@@ -83,7 +83,11 @@ export function settle(id: string): void {
   entry.release();
   const failure = native.failure(id);
   if (failure === "") {
-    entry.resolve(native.value(id));
+    try {
+      entry.resolve(native.value(id));
+    } catch (error) {
+      entry.reject(error);
+    }
   } else if (entry.signal?.aborted) {
     entry.reject(entry.signal.reason);
   } else {
