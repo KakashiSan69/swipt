@@ -1,4 +1,3 @@
-import Network
 import Perception
 import SwiftUI
 import UIKit
@@ -21,12 +20,16 @@ struct SetupView: View {
     var body: some View {
         WithPerceptionTracking {
             NavigationStack(path: $path) {
-                PairingSetupView { path.append(.loopback) }
+                PairingSetupView { path.append(device.tunnelFound == true ? .autoUnlock : .loopback) }
                     .navigationDestination(for: SetupStep.self) { step in
                         Group {
                             switch step {
                             case .loopback:
-                                LoopbackSetupView { path.append(.autoUnlock) }
+                                LoopbackSetupView {
+                                    if path.last == .loopback {
+                                        path.append(.autoUnlock)
+                                    }
+                                }
                             case .autoUnlock:
                                 AutoUnlockSetupView {}
                             }
@@ -84,20 +87,18 @@ struct LoopbackSetupView: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var hasLocalDevVPN = false
     @State private var hasSingBox = false
-    @State private var usesCellular = false
-    @State private var pathMonitor: NWPathMonitor?
 
     private let device = Platform.shared.device
 
     var body: some View {
         SetupPage(
-            usesCellular ? "antenna.radiowaves.left.and.right.slash" : "network",
-            usesCellular ? Text("Unsupported Network") : Text("Loopback VPN"),
-            description: usesCellular
+            device.usesCellular ? "antenna.radiowaves.left.and.right.slash" : "network",
+            device.usesCellular ? Text("Unsupported Network") : Text("Loopback VPN"),
+            description: device.usesCellular
                 ? Text("Swipt only stops working on cellular data, due to Apple’s restrictions on developer services.")
                 : Text("Swipt needs a loopback VPN to connect to developer services. LocalDevVPN or sing-box is recommended.")
         ) {
-            if !usesCellular {
+            if !device.usesCellular {
                 VStack(spacing: 24) {
                     Divider()
                     VStack(spacing: 12) {
@@ -127,23 +128,10 @@ struct LoopbackSetupView: View {
             hasLocalDevVPN = UIApplication.shared.canOpenURL(Self.localDevVPN)
             hasSingBox = UIApplication.shared.canOpenURL(Self.singBox)
         }
-        .onChangeCompat(of: device.tunnelFound == true) { found in
+        .onChangeCompat(of: device.tunnelFound == true, initial: true) { found in
             if found {
                 next()
             }
-        }
-        .onAppear {
-            let monitor = NWPathMonitor()
-            monitor.pathUpdateHandler = { path in
-                let cellular = path.usesInterfaceType(.cellular)
-                Task { @MainActor in usesCellular = cellular }
-            }
-            monitor.start(queue: .main)
-            pathMonitor = monitor
-        }
-        .onDisappear {
-            pathMonitor?.cancel()
-            pathMonitor = nil
         }
     }
 

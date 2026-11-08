@@ -1,5 +1,6 @@
 import Foundation
 import LibSwipt
+import Network
 import Perception
 import os
 
@@ -25,11 +26,13 @@ final class DeviceConnection {
     private(set) var phase: Phase = .idle
     private(set) var tunnelFound: Bool?
     private(set) var tunnelThroughLocalNetwork = false
+    private(set) var usesCellular = false
 
     let remotePairing = RemotePairingBrowser()
     let pairingSession: PairingSession
     @PerceptionIgnored private let device: LibSwiptDevice
     @PerceptionIgnored private var probeTask: Task<Void, Never>?
+    @PerceptionIgnored private var pathMonitor: NWPathMonitor?
     @PerceptionIgnored private var probeClients = 0
     @PerceptionIgnored private var isBrowsing = false
 
@@ -41,6 +44,7 @@ final class DeviceConnection {
         pairingSession = PairingSession(device: device)
         remotePairing.onPortChange = { [weak self] port in
             self?.device.setRemotePairingPort(Int32(port))
+            self?.probe()
         }
         events.connect { [weak self] change in
             DispatchQueue.main.async { self?.handle(change) }
@@ -82,7 +86,25 @@ final class DeviceConnection {
     func startProbing() {
         remotePairing.start()
         probeClients += 1
-        guard probeTask == nil else { return }
+        guard pathMonitor == nil else { return }
+        let monitor = NWPathMonitor()
+        monitor.pathUpdateHandler = { [weak self] path in
+            let cellular = path.usesInterfaceType(.cellular)
+            Task { @MainActor in
+                guard let self else { return }
+                if self.usesCellular != cellular {
+                    self.usesCellular = cellular
+                }
+                self.probe()
+            }
+        }
+        monitor.start(queue: .main)
+        pathMonitor = monitor
+    }
+
+    private func probe() {
+        guard pathMonitor != nil else { return }
+        probeTask?.cancel()
         probeTask = Task {
             var reportedFailure: String?
             while !Task.isCancelled {
@@ -127,6 +149,8 @@ final class DeviceConnection {
         remotePairing.stop()
         probeClients = max(0, probeClients - 1)
         guard probeClients == 0 else { return }
+        pathMonitor?.cancel()
+        pathMonitor = nil
         probeTask?.cancel()
         probeTask = nil
     }
