@@ -34,5 +34,15 @@ create_draft() {
     delete "$draft" || return
   done
   gh release create "$tag" --draft "${@:2}" > /dev/null || return
-  drafts "$tag"
+  # The release list can leave out a draft for a few seconds after it is created.
+  for _ in 1 2 3 4 5 6 7 8 9 10; do
+    draft=$(drafts "$tag") || return
+    if [ -n "$draft" ]; then
+      echo "$draft"
+      return
+    fi
+    sleep 3
+  done
+  echo "the draft $tag is not in the release list" >&2
+  return 1
 }
