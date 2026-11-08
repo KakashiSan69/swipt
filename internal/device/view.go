@@ -445,7 +445,10 @@ func pointArray(point Point) [2]float64 {
 }
 
 func tenth(value float64) float64 {
-	return math.Round(value*10) / 10
+	if rounded := math.Round(value*10) / 10; !math.IsInf(rounded, 0) {
+		return rounded
+	}
+	return value
 }
 
 var lineFlags = []struct {
