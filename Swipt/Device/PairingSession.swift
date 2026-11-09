@@ -110,8 +110,8 @@ final class PairingSession {
             continuedTask?.setProgress(completed: 3, total: 3)
             finish(succeeded: true)
             state = .idle
-        case .failed(let errorCode, let message):
-            fail(DeviceProblem(code: errorCode, message: message))
+        case .failed(let message):
+            fail(DeviceProblem(kind: .pairing, message: message))
         }
     }
 

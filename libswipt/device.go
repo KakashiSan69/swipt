@@ -16,24 +16,23 @@ import (
 )
 
 const (
-	DeviceStopped    int32 = 0
-	DeviceConnecting int32 = 1
-	DevicePreparing  int32 = 2
-	DeviceConnected  int32 = 3
-	DeviceFailed     int32 = 4
+	DeviceStopped int32 = iota
+	DeviceConnecting
+	DevicePreparing
+	DeviceConnected
+	DeviceFailed
 )
 
 const (
-	DeviceErrorNone             int32 = 0
-	DeviceErrorNoTunnel         int32 = 1
-	DeviceErrorPairingRejected  int32 = 2
-	DeviceErrorDeveloperModeOff int32 = 3
-	DeviceErrorNoDiskImage      int32 = 4
-	DeviceErrorDiskImage        int32 = 5
-	DeviceErrorUnsupported      int32 = 7
-	DeviceErrorScreenInUse      int32 = 8
-	DeviceErrorPairing          int32 = 9
-	DeviceErrorLoopbackAddress  int32 = 10
+	DeviceErrorNone             = int32(device.ProblemNone)
+	DeviceErrorNoTunnel         = int32(device.ProblemNoTunnel)
+	DeviceErrorPairingRejected  = int32(device.ProblemPairingRejected)
+	DeviceErrorDeveloperModeOff = int32(device.ProblemDeveloperModeOff)
+	DeviceErrorNoDiskImage      = int32(device.ProblemNoDiskImage)
+	DeviceErrorDiskImage        = int32(device.ProblemDiskImage)
+	DeviceErrorUnsupported      = int32(device.ProblemUnsupported)
+	DeviceErrorScreenInUse      = int32(device.ProblemScreenInUse)
+	DeviceErrorLoopbackAddress  = int32(device.ProblemLoopbackAddress)
 )
 
 type DeviceOptions struct {

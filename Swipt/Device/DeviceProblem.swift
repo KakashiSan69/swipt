@@ -30,7 +30,6 @@ extension DeviceProblem {
             case LibSwiptDeviceErrorDiskImage: .diskImage
             case LibSwiptDeviceErrorUnsupported: .unsupported
             case LibSwiptDeviceErrorScreenInUse: .screenInUse
-            case LibSwiptDeviceErrorPairing: .pairing
             case LibSwiptDeviceErrorLoopbackAddress: .loopbackAddress
             default: .other
             }

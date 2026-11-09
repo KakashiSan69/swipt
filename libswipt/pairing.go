@@ -14,7 +14,7 @@ import (
 type PairingHandler interface {
 	OnPIN(pin string)
 	OnPaired(record []byte)
-	OnPairingFailed(errorCode int32, message string)
+	OnPairingFailed(message string)
 }
 
 type PairingResponder struct {
@@ -79,7 +79,7 @@ func (r *PairingResponder) accept() {
 		return
 	}
 	if err != nil {
-		r.handler.OnPairingFailed(DeviceErrorPairing, err.Error())
+		r.handler.OnPairingFailed(err.Error())
 		return
 	}
 	r.handler.OnPaired(data)

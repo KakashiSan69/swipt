@@ -36,8 +36,8 @@ const (
 	ProblemListen
 	ProblemUnsupported
 	ProblemScreenInUse
-	ProblemLoopbackAddress Problem = 10
-	ProblemOther           Problem = 100
+	ProblemLoopbackAddress
+	ProblemOther
 )
 
 func (p Problem) String() string {

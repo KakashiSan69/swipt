@@ -21,8 +21,8 @@ import (
 type Mode int32
 
 const (
-	ModeQuickTunnel Mode = 0
-	ModeTunnel      Mode = 1
+	ModeQuickTunnel Mode = iota
+	ModeTunnel
 )
 
 const maxRetryDelay = time.Minute

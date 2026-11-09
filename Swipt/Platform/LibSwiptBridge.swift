@@ -201,7 +201,7 @@ nonisolated final class ActionEvents: NSObject, LibSwiptActionObserverProtocol, 
 nonisolated enum PairingEvent: Sendable {
     case pin(String)
     case paired(Data)
-    case failed(errorCode: Int32, message: String)
+    case failed(String)
 }
 
 nonisolated final class PairingEvents: NSObject, LibSwiptPairingHandlerProtocol, @unchecked Sendable {
@@ -219,7 +219,7 @@ nonisolated final class PairingEvents: NSObject, LibSwiptPairingHandlerProtocol,
         deliver(.paired(record ?? Data()))
     }
 
-    func onPairingFailed(_ errorCode: Int32, message: String?) {
-        deliver(.failed(errorCode: errorCode, message: message ?? ""))
+    func onPairingFailed(_ message: String?) {
+        deliver(.failed(message ?? ""))
     }
 }
