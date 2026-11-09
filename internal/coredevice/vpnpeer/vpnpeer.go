@@ -2,6 +2,8 @@ package vpnpeer
 
 import (
 	"context"
+	"crypto/rand"
+	"io"
 	"net"
 	"net/netip"
 	"slices"
@@ -71,62 +73,82 @@ func Find(ctx context.Context, port uint16, allowLocal bool) (Peer, error) {
 	}
 	ctx, cancel := context.WithTimeout(ctx, answerLimit)
 	defer cancel()
-	type result struct {
+	deadline, _ := ctx.Deadline()
+	var listenConfig net.ListenConfig
+	listener, err := listenConfig.Listen(ctx, "tcp", ":0")
+	if err != nil {
+		return Peer{}, E.Cause(err, "vpnpeer: listen for the loopback")
+	}
+	defer listener.Close()
+	loopbackPort := M.AddrPortFromNet(listener.Addr()).Port()
+	tokens := make([][16]byte, len(addresses))
+	for index := range tokens {
+		rand.Read(tokens[index][:])
+	}
+	type arrival struct {
 		index int
 		local netip.Addr
+	}
+	arrivals := make(chan arrival)
+	go func() {
+		for {
+			conn, err := listener.Accept()
+			if err != nil {
+				return
+			}
+			go func() {
+				defer conn.Close()
+				_ = conn.SetReadDeadline(deadline)
+				var token [16]byte
+				if _, err := io.ReadFull(conn, token[:]); err != nil {
+					return
+				}
+				index := slices.Index(tokens, token)
+				if index < 0 {
+					return
+				}
+				select {
+				case arrivals <- arrival{index: index, local: M.AddrPortFromNet(conn.LocalAddr()).Addr().Unmap()}:
+				case <-ctx.Done():
+				}
+			}()
+		}
+	}()
+	type failure struct {
+		index int
 		err   error
 	}
-	results := make(chan result, len(addresses))
+	failures := make(chan failure, len(addresses))
 	for index, address := range addresses {
 		go func() {
 			var dialer net.Dialer
 			conn, err := dialer.DialContext(ctx, "tcp", netip.AddrPortFrom(address, port).String())
-			var local netip.Addr
 			if err == nil {
-				local = M.AddrPortFromNet(conn.LocalAddr()).Addr().Unmap()
+				_ = conn.Close()
+				conn, err = dialer.DialContext(ctx, "tcp", netip.AddrPortFrom(address, loopbackPort).String())
+			}
+			if err == nil {
+				_, err = conn.Write(tokens[index][:])
 				_ = conn.Close()
 			}
-			results <- result{index: index, local: local, err: err}
+			if err != nil {
+				failures <- failure{index: index, err: err}
+			}
 		}()
 	}
 	errs := make([]error, len(addresses))
+wait:
 	for range addresses {
-		answer := <-results
-		if answer.err == nil {
-			address := addresses[answer.index]
-			return Peer{Address: address, LocalNetwork: address != answer.local && (onLocalNetwork(answer.local) || loopsThroughLocalNetwork(ctx, address))}, nil
+		select {
+		case failure := <-failures:
+			errs[failure.index] = failure.err
+		case arrival := <-arrivals:
+			address := addresses[arrival.index]
+			return Peer{Address: address, LocalNetwork: address != arrival.local && onLocalNetwork(arrival.local)}, nil
+		case <-ctx.Done():
+			errs = append(errs, ctx.Err())
+			break wait
 		}
-		errs[answer.index] = answer.err
 	}
-	return Peer{}, E.Cause(E.Errors(append(errs, scanErr)...), "none of the VPN addresses ", strings.Join(F.MapToString(addresses), ", "), " answers on port ", port)
-}
-
-func loopsThroughLocalNetwork(ctx context.Context, address netip.Addr) bool {
-	var listenConfig net.ListenConfig
-	listener, err := listenConfig.Listen(ctx, "tcp", ":0")
-	if err != nil {
-		return false
-	}
-	defer listener.Close()
-	accepted := make(chan netip.Addr, 1)
-	go func() {
-		conn, err := listener.Accept()
-		if err != nil {
-			return
-		}
-		accepted <- M.AddrPortFromNet(conn.LocalAddr()).Addr().Unmap()
-		_ = conn.Close()
-	}()
-	var dialer net.Dialer
-	conn, err := dialer.DialContext(ctx, "tcp", netip.AddrPortFrom(address, M.AddrPortFromNet(listener.Addr()).Port()).String())
-	if err != nil {
-		return false
-	}
-	defer conn.Close()
-	select {
-	case local := <-accepted:
-		return onLocalNetwork(local)
-	case <-ctx.Done():
-		return false
-	}
+	return Peer{}, E.Cause(E.Errors(append(errs, scanErr)...), "none of the VPN addresses ", strings.Join(F.MapToString(addresses), ", "), " loops back to port ", port)
 }
