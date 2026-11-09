@@ -1,4 +1,6 @@
-import { spawnSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
+import crypto from "node:crypto";
+import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
@@ -15,6 +17,17 @@ const app = path.join(
   root,
   "build/DerivedData/Build/Products/Debug-iphoneos/Swipt.app",
 );
+const builds = path.join(root, "build/dev-install.json");
+const goSources = [
+  "Makefile",
+  "go.mod",
+  "go.sum",
+  "api/*.go",
+  "api/package.json",
+  "internal",
+  ":!internal/automation/runtime",
+  ":!*_test.go",
+];
 
 const interrupt = new AbortController();
 process.on("SIGINT", () => interrupt.abort());
@@ -33,6 +46,62 @@ function run(command, args, env?) {
     throw new Error(
       `${[command, ...args].join(" ")} exited with ${result.status ?? `signal ${result.signal}`}`,
     );
+  }
+}
+
+const capture = (command, ...args) =>
+  execFileSync(command, args, { cwd: root, encoding: "utf8" });
+
+function committed(paths) {
+  const status = capture(
+    "git",
+    "status",
+    "--porcelain",
+    "--untracked-files=all",
+    "--ignore-submodules=none",
+    "--",
+    ...paths,
+  );
+  return status === ""
+    ? capture("git", "ls-files", "--stage", "--", ...paths)
+    : undefined;
+}
+
+const modified = (file) =>
+  file === undefined
+    ? undefined
+    : fs.statSync(path.resolve(root, file), { throwIfNoEntry: false })?.mtimeMs;
+
+function build(name, { paths, inputs = [], product = undefined }, command) {
+  const records = fs.existsSync(builds)
+    ? JSON.parse(fs.readFileSync(builds, "utf8"))
+    : {};
+  const save = () => {
+    fs.mkdirSync(path.dirname(builds), { recursive: true });
+    fs.writeFileSync(builds, `${JSON.stringify(records, null, 2)}\n`);
+  };
+  const files = committed(paths);
+  const key =
+    files === undefined
+      ? undefined
+      : crypto
+          .createHash("sha256")
+          .update([files, ...inputs].join("\0"))
+          .digest("hex");
+  if (
+    key !== undefined &&
+    records[name]?.key === key &&
+    records[name].product === modified(product)
+  ) {
+    console.log(`${name} is up to date`);
+    return;
+  }
+  delete records[name];
+  save();
+  command();
+  if (key !== undefined && committed(paths) === files) {
+    records[name] = { key, product: modified(product) };
+    save();
   }
 }
 
@@ -59,16 +128,82 @@ async function installApp(context) {
     (it) => it.bundleIdentifier === bundleId,
   );
   const passcode = await installPasscode(context, device, current);
-  const stamp = Math.floor(Date.now() / 1000);
-  run("make", ["lib", "server", "build_ios"], {
-    XCODEBUILD_FLAGS: [
-      process.env.XCODEBUILD_FLAGS,
-      `CURRENT_PROJECT_VERSION=${stamp}`,
-      ...(device.virtual ? ["CODE_SIGNING_ALLOWED=NO"] : []),
-    ]
-      .filter(Boolean)
-      .join(" "),
-  });
+  const toolchain = [
+    capture("go", "version"),
+    capture("xcodebuild", "-version"),
+  ];
+  const flags = [
+    process.env.XCODEBUILD_FLAGS,
+    ...(device.virtual ? ["CODE_SIGNING_ALLOWED=NO"] : []),
+  ].filter(Boolean);
+  const info = path.join(app, "Info.plist");
+  run("bun", ["install", "--frozen-lockfile"]);
+  build(
+    "runtime",
+    {
+      paths: [
+        "Makefile",
+        "package.json",
+        "bun.lock",
+        "bunfig.toml",
+        "api",
+        "internal/automation/runtime",
+        "internal/automation/runtime.js",
+        "internal/automation/rewrite.js",
+        "internal/automation/chunks",
+        "internal/automation/declarations/api.d.ts",
+      ],
+    },
+    () => run("make", ["runtime"]),
+  );
+  build(
+    "lib",
+    {
+      paths: [...goSources, "libswipt"],
+      inputs: toolchain,
+      product: "Frameworks/LibSwipt.xcframework/Info.plist",
+    },
+    () => run("make", ["-o", "runtime", "lib"]),
+  );
+  build(
+    "server",
+    {
+      paths: [...goSources, "cmd/swipt-server"],
+      inputs: toolchain,
+      product: "build/swipt-server",
+    },
+    () => run("make", ["server"]),
+  );
+  build(
+    "app",
+    {
+      paths: [
+        ".",
+        ":!.github",
+        ":!cli",
+        ":!cmd",
+        ":!*.md",
+        ":!LICENSE",
+        ":!.gitignore",
+        ":!.golangci.yml",
+        ":!.prettierignore",
+        ":!dev/strings.ts",
+        ":!*_test.go",
+      ],
+      inputs: [...toolchain, ...flags],
+      product: info,
+    },
+    () =>
+      run("make", ["build_ios"], {
+        XCODEBUILD_FLAGS: [
+          ...flags,
+          `CURRENT_PROJECT_VERSION=${Math.floor(Date.now() / 1000)}`,
+        ].join(" "),
+      }),
+  );
+  const stamp = Number(
+    capture("plutil", "-extract", "CFBundleVersion", "raw", "-o", "-", info),
+  );
   await installAndOpen(context, { device, id: bundleId, current }, app, stamp, {
     passcode,
   });
