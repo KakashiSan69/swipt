@@ -24,9 +24,11 @@ struct RepositoryView: View {
                 } else if isLoaded {
                     Text("No Swiplets in This Repository")
                         .foregroundStyle(.secondary)
-                } else {
+                }
+            }
+            .overlay {
+                if !isLoaded, repository?.swiplets.isEmpty ?? true {
                     ProgressView()
-                        .frame(maxWidth: .infinity)
                 }
             }
             .navigationTitle(Text(verbatim: repository?.title ?? ""))
