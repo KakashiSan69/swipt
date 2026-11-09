@@ -127,6 +127,10 @@ func (c *PlistConn) checkin(label string) error {
 	return nil
 }
 
+func (c *PlistConn) Read(data []byte) (int, error) {
+	return c.conn.Read(data)
+}
+
 func (c *PlistConn) Write(data []byte) (int, error) {
 	return c.conn.Write(data)
 }

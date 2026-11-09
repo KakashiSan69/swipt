@@ -445,11 +445,15 @@ func (w *axWorker) shown(named uint64) (pid uint64, subject, basis string, shown
 	case pid == w.conn.springboard.Load(), strings.HasSuffix(executables[pid], "/SpringBoard.app/SpringBoard"):
 		return pid, subject, via + "it is SpringBoard, which is on the screen", true
 	}
-	running, err := front.foregroundProcesses(ctx, []uint64{pid})
+	info, err := front.deviceInfo(ctx, &front.info)
+	running := false
+	if err == nil {
+		running, err = info.Foreground(ctx, pid)
+	}
 	switch {
 	case err != nil:
 		return pid, subject, via + "its foreground state could not be read: " + err.Error(), true
-	case len(running) > 0:
+	case running:
 		return pid, subject, via + "the device runs it in the foreground", true
 	}
 	return pid, subject, via + "the device does not run it in the foreground", false
