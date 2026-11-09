@@ -1204,14 +1204,7 @@ async function printAPI(context, device) {
   );
 }
 
-async function openConfigured(
-  context,
-  device,
-  id,
-  passcode,
-  updated?,
-  app?,
-) {
+async function openConfigured(context, device, id, passcode, updated?, app?) {
   const publishes = !context.options["no-setup-api"];
   if (device.virtual) {
     await step(

@@ -5,11 +5,7 @@ import { parseArgs } from "node:util";
 
 import { apps, coreDevice } from "@swipt/cli/coredevice";
 import { FalseResult } from "@swipt/cli/output";
-import {
-  bundleId,
-  installAndOpen,
-  installPasscode,
-} from "@swipt/cli/sideload";
+import { bundleId, installAndOpen, installPasscode } from "@swipt/cli/sideload";
 
 import { buildExpoModulesCore } from "./expo-modules-core";
 import { syncLocales } from "./strings";
