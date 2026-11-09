@@ -81,13 +81,6 @@ func ParseManifest(data []byte) (Manifest, error) {
 	}, nil
 }
 
-func IsNewer(remote Manifest, version string, versionCode int64) bool {
-	if remote.VersionCode > 0 && versionCode > 0 {
-		return remote.VersionCode > versionCode
-	}
-	return remote.Version != "" && remote.Version != version
-}
-
 func EncodeManifest(manifest Manifest) ([]byte, error) {
 	out := make(map[string]any, len(manifest.fields)+10)
 	for key, value := range manifest.fields {

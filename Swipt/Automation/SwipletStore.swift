@@ -30,6 +30,7 @@ final class SwipletStore {
     private(set) var outdated: Set<String> = []
     private(set) var updates: [String: SwipletUpdate] = [:]
     private(set) var updating: Set<String> = []
+    private(set) var downloadProgress: [String: SwipletDownloadProgress] = [:]
     private(set) var repositories: [Repository] = []
     @PerceptionIgnored private var manifests: [String: LibSwiptSwipletManifest] = [:]
     @PerceptionIgnored private var repositoriesChecked: [String: Date] = [:]
@@ -259,7 +260,7 @@ final class SwipletStore {
         guard let link = URL(string: swiplet.url, relativeTo: URL(string: repository.url))?.absoluteString else {
             throw MessageError(String(localized: "The repository has no URL for the swiplet."))
         }
-        let download = try await Self.download(link, sha256: swiplet.sha256)
+        let download = try await self.download(swiplet.id, from: link, sha256: swiplet.sha256)
         defer { Self.discard(download.file) }
         guard download.id == swiplet.id else { throw MessageError(String(localized: "The repository sent a different swiplet.")) }
         let id = try await Platform.shared.installSwiplet(download.file)
@@ -283,31 +284,22 @@ final class SwipletStore {
         checked[id] = .now
         guard let local = manifests[id], !local.version.isEmpty, !local.updateURL.isEmpty else { return false }
         let incompatible = incompatibleUpdates[id]
-        let download = try await Self.download(
-            local.updateURL, etag: incompatible ?? SwipletDatabase.etag(of: id), version: local.version, versionCode: local.versionCode)
-        guard Self.isNewer(download, than: local) else {
-            Self.discard(download.file)
-            if !download.etag.isEmpty, download.etag != incompatible {
-                try SwipletDatabase.setETag(download.etag, of: id)
+        let fetched = try await Self.fetchManifest(local.updateURL, etag: incompatible ?? SwipletDatabase.etag(of: id))
+        guard let remote = fetched.manifest?.value, Self.isNewer(remote, than: local) else {
+            if !fetched.etag.isEmpty, fetched.etag != incompatible {
+                try SwipletDatabase.setETag(fetched.etag, of: id)
             }
             return false
         }
-        guard download.id == id else {
-            Self.discard(download.file)
-            throw MessageError(String(localized: "The update is a different swiplet."))
-        }
+        guard remote.id_ == id else { throw MessageError(String(localized: "The update is a different swiplet.")) }
         do {
-            try await Platform.shared.checkSwipletInstall(download.file)
+            try Platform.shared.checkSwipletCompatible(remote)
         } catch is SwiptOutdatedError, is IOSOutdatedError {
-            Self.discard(download.file)
-            incompatibleUpdates[id] = download.etag
+            incompatibleUpdates[id] = fetched.etag
             return false
         }
         incompatibleUpdates[id] = nil
-        if let previous = updates[id] {
-            Self.discard(previous.file)
-        }
-        updates[id] = SwipletUpdate(id: id, file: download.file, version: download.version, etag: download.etag)
+        updates[id] = SwipletUpdate(id: id, version: remote.version)
         return true
     }
 
@@ -318,11 +310,13 @@ final class SwipletStore {
         var failure: (any Error)?
         for id in ids {
             defer { updating.remove(id) }
-            guard let update = updates[id] else { continue }
+            guard updates[id] != nil, let link = manifests[id]?.updateURL else { continue }
             do {
-                _ = try await Platform.shared.installSwiplet(update.file)
-                try SwipletDatabase.setETag(update.etag, of: id)
-                Self.discard(update.file)
+                let download = try await self.download(id, from: link)
+                defer { Self.discard(download.file) }
+                guard download.id == id else { throw MessageError(String(localized: "The update is a different swiplet.")) }
+                _ = try await Platform.shared.installSwiplet(download.file)
+                try SwipletDatabase.setETag(download.etag, of: id)
                 updates[id] = nil
                 reload()
             } catch {
@@ -332,6 +326,17 @@ final class SwipletStore {
         if let failure {
             throw failure
         }
+    }
+
+    @available(iOS 17.4, *)
+    private func download(_ id: String, from link: String, sha256: String = "") async throws -> SwipletDownload {
+        let (progress, continuation) = AsyncStream.makeStream(of: SwipletDownloadProgress.self, bufferingPolicy: .bufferingNewest(1))
+        async let download = Self.download(link, sha256: sha256, progress: continuation)
+        for await received in progress {
+            downloadProgress[id] = received
+        }
+        downloadProgress[id] = nil
+        return try await download
     }
 
     nonisolated private static let updateInterval: TimeInterval = 60 * 60
@@ -351,46 +356,46 @@ final class SwipletStore {
         let downloader = UncheckedSendable(value: LibSwiptNewSwipletDownloader()!)
         return try await withTaskCancellationHandler {
             try await blocking {
-                let fetched = downloader.value.fetch(link, etag: etag, asSource: source)!
-                switch fetched.errorCode {
-                case LibSwiptSwipletErrorNone:
-                    return Fetched(etag: fetched.entityTag, notModified: fetched.notModified, data: fetched.data ?? Data())
-                case LibSwiptSwipletErrorTimeout:
-                    throw MessageError(String(localized: "The connection timed out."))
-                default:
-                    throw MessageError(fetched.errorMessage)
-                }
+                let fetched = try downloader.value.fetch(link, etag: etag, asSource: source)
+                return Fetched(etag: fetched.entityTag, notModified: fetched.notModified, data: fetched.data ?? Data())
             }
         } onCancel: {
             downloader.value.cancel()
         }
     }
 
-    nonisolated private static func isNewer(_ download: SwipletDownload, than local: LibSwiptSwipletManifest) -> Bool {
-        if download.versionCode > 0, local.versionCode > 0 {
-            return download.versionCode > local.versionCode
+    nonisolated private static func fetchManifest(_ link: String, etag: String) async throws -> FetchedManifest {
+        let downloader = UncheckedSendable(value: LibSwiptNewSwipletDownloader()!)
+        return try await withTaskCancellationHandler {
+            try await blocking {
+                let fetched = try downloader.value.fetchManifest(link, etag: etag)
+                return FetchedManifest(etag: fetched.entityTag, manifest: fetched.manifest.map { UncheckedSendable(value: $0) })
+            }
+        } onCancel: {
+            downloader.value.cancel()
         }
-        return !download.version.isEmpty && download.version != local.version
     }
 
-    nonisolated private static func download(_ link: String, etag: String = "", version: String = "", versionCode: Int64 = 0, sha256: String = "") async throws -> SwipletDownload {
+    nonisolated private static func isNewer(_ remote: LibSwiptSwipletManifest, than local: LibSwiptSwipletManifest) -> Bool {
+        if remote.versionCode > 0, local.versionCode > 0 {
+            return remote.versionCode > local.versionCode
+        }
+        return !remote.version.isEmpty && remote.version != local.version
+    }
+
+    nonisolated private static func download(
+        _ link: String, sha256: String = "", progress: AsyncStream<SwipletDownloadProgress>.Continuation? = nil
+    ) async throws -> SwipletDownload {
+        defer { progress?.finish() }
         let file = try temporaryFile()
         let downloader = UncheckedSendable(value: LibSwiptNewSwipletDownloader()!)
+        let handler = SwipletDownloadEvents(progress)
         do {
             return try await withTaskCancellationHandler {
                 try await blocking {
-                    let download = downloader.value.download(link, destination: file.path, etag: etag, version: version, versionCode: versionCode, checksum: sha256)!
-                    switch download.errorCode {
-                    case LibSwiptSwipletErrorNone:
-                        let declared = FileManager.default.fileExists(atPath: file.path) ? (try? manifest(of: file))?.updateURL ?? "" : ""
-                        return SwipletDownload(
-                            file: file, url: download.url, etag: download.entityTag, id: download.id_, version: download.version,
-                            versionCode: download.versionCode, updateURL: declared)
-                    case LibSwiptSwipletErrorTimeout:
-                        throw MessageError(String(localized: "The connection timed out."))
-                    default:
-                        throw MessageError(download.errorMessage)
-                    }
+                    let download = try downloader.value.download(link, destination: file.path, checksum: sha256, handler: handler)
+                    let declared = (try? manifest(of: file))?.updateURL ?? ""
+                    return SwipletDownload(file: file, etag: download.entityTag, id: download.id_, updateURL: declared)
                 }
             } onCancel: {
                 downloader.value.cancel()
@@ -448,9 +453,7 @@ final class SwipletStore {
     }
 
     private func forgetUpdate(of id: String) {
-        if let update = updates.removeValue(forKey: id) {
-            Self.discard(update.file)
-        }
+        updates[id] = nil
         checked[id] = nil
     }
 
@@ -475,9 +478,12 @@ nonisolated struct SwipletAction: Hashable, Sendable {
 
 nonisolated struct SwipletUpdate: Sendable {
     let id: String
-    let file: URL
     let version: String
-    let etag: String
+}
+
+nonisolated struct SwipletDownloadProgress: Equatable, Sendable {
+    let received: Int64
+    let total: Int64
 }
 
 nonisolated struct SwipletPreview: Identifiable, Sendable {
@@ -623,12 +629,26 @@ nonisolated private struct Fetched: Sendable {
     let data: Data
 }
 
+nonisolated private struct FetchedManifest: Sendable {
+    let etag: String
+    let manifest: UncheckedSendable<LibSwiptSwipletManifest>?
+}
+
 nonisolated private struct SwipletDownload: Sendable {
     let file: URL
-    let url: String
     let etag: String
     let id: String
-    let version: String
-    let versionCode: Int64
     let updateURL: String
+}
+
+nonisolated private final class SwipletDownloadEvents: NSObject, LibSwiptSwipletDownloadHandlerProtocol, @unchecked Sendable {
+    private let progress: AsyncStream<SwipletDownloadProgress>.Continuation?
+
+    init(_ progress: AsyncStream<SwipletDownloadProgress>.Continuation?) {
+        self.progress = progress
+    }
+
+    func onProgress(_ received: Int64, total: Int64) {
+        progress?.yield(SwipletDownloadProgress(received: received, total: total))
+    }
 }

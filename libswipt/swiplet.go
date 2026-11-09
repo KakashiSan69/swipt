@@ -41,6 +41,7 @@ type SwipletManifest struct {
 	languages   []string
 	names       []string
 	actions     []automation.ActionInfo
+	manifest    automation.Manifest
 }
 
 func (m *SwipletManifest) Len() int32 { return int32(len(m.languages)) }
@@ -65,7 +66,7 @@ func newSwipletManifest(manifest automation.Manifest) *SwipletManifest {
 	out := &SwipletManifest{
 		ID: manifest.ID, Color: manifest.Icon.Color, Symbol: manifest.Icon.Symbol, Version: manifest.Version,
 		VersionCode: manifest.VersionCode, UpdateURL: manifest.UpdateURL, Service: manifest.Service,
-		languages: []string{""}, names: []string{manifest.Name}, actions: manifest.Actions,
+		languages: []string{""}, names: []string{manifest.Name}, actions: manifest.Actions, manifest: manifest,
 	}
 	for _, language := range slices.Sorted(maps.Keys(manifest.LocalizedNames)) {
 		out.languages = append(out.languages, language)
@@ -140,12 +141,8 @@ func (p *Platform) InstallSwiplet(file string) *SwipletInstall {
 	return newSwipletInstall(id, err)
 }
 
-func (p *Platform) CheckSwipletInstall(file string) *SwipletInstall {
-	archive, err := readSwipletArchive(file)
-	if err == nil {
-		err = p.host.Compatible(archive.Manifest)
-	}
-	return newSwipletInstall(archive.Manifest.ID, err)
+func (p *Platform) CheckSwipletCompatible(manifest *SwipletManifest) *SwipletInstall {
+	return newSwipletInstall(manifest.ID, p.host.Compatible(manifest.manifest))
 }
 
 func newSwipletInstall(id string, err error) *SwipletInstall {

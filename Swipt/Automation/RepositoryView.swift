@@ -73,7 +73,7 @@ struct RepositoryView: View {
     @ViewBuilder
     private func trailing(_ swiplet: RepositorySwiplet, in repository: Repository) -> some View {
         if swiplets.updating.contains(swiplet.id) {
-            ProgressView()
+            SwipletDownloadIndicator(progress: swiplets.downloadProgress[swiplet.id])
         } else if !swiplets.ids.contains(swiplet.id) {
             Button("Add") { install(swiplet, from: repository) }
                 .buttonStyle(.bordered)

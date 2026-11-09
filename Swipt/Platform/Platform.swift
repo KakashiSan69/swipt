@@ -260,10 +260,8 @@ final class Platform {
         return try Self.result(of: installed.value)
     }
 
-    func checkSwipletInstall(_ file: URL) async throws {
-        let box = UncheckedSendable(value: core)
-        let checked = try await blocking { UncheckedSendable(value: box.value.checkSwipletInstall(file.path)!) }
-        _ = try Self.result(of: checked.value)
+    func checkSwipletCompatible(_ manifest: LibSwiptSwipletManifest) throws {
+        _ = try Self.result(of: core.checkSwipletCompatible(manifest)!)
     }
 
     private static func result(of installed: LibSwiptSwipletInstall) throws -> String {

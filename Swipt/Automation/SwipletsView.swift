@@ -269,7 +269,7 @@ struct SwipletUpdatesView: View {
             }
             Spacer()
             if swiplets.updating.contains(update.id) {
-                ProgressView()
+                SwipletDownloadIndicator(progress: swiplets.downloadProgress[update.id])
             } else {
                 Button("Update") { apply([update.id]) }
                     .buttonStyle(.bordered)
@@ -308,5 +308,22 @@ struct SwipletVersionChange: View {
         }
         .font(.footnote)
         .foregroundStyle(.secondary)
+    }
+}
+
+struct SwipletDownloadIndicator: View {
+    let progress: SwipletDownloadProgress?
+
+    var body: some View {
+        HStack(spacing: 8) {
+            if let progress {
+                let received = progress.received.formatted(.byteCount(style: .file))
+                Text(verbatim: progress.total > 0 ? "\(received) / \(progress.total.formatted(.byteCount(style: .file)))" : received)
+                    .font(.footnote)
+                    .monospacedDigit()
+                    .foregroundStyle(.secondary)
+            }
+            ProgressView()
+        }
     }
 }
